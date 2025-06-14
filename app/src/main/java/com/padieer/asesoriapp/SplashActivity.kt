@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : Activity() {
 
     private val splashDelay: Long = 3000 // 3 segundos
