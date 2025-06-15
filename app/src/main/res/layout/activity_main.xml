@@ -1,7 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-</LinearLayout>
+    <!-- Botón de asesor -->
+    <Button
+        android:id="@+id/btnAsesor"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="0dp"
+        android:background="@drawable/btn_asesor_background"
+        android:paddingLeft="12dp"
+        android:paddingRight="16dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:text="✪ Eres Asesor? Presiona Aquí"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"/>
+
+    <!-- Contenedor scrollable -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnAsesor"
+        android:fillViewport="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="32dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Contenido con ancho limitado -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:padding="24dp"
+                android:gravity="center_horizontal"
+                android:maxWidth="400dp">
+
+                <!-- Logo -->
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    android:layout_width="300dp"
+                    android:layout_height="240dp"
+                    android:src="@drawable/logo"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="Logo PADIEER" />
+
+                <!-- Titulo -->
+                <TextView
+                    android:id="@+id/txtInicioAlumnos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Inicio de Sesion Para Asesorados"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+                <!-- Número de control -->
+                <EditText
+                    android:id="@+id/edtControl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Número de Control"
+                    android:textColorHint="#AAAAAA"
+                    android:backgroundTint="#CCCCCC"
+                    android:layout_marginBottom="16dp"
+                    android:padding="10dp"
+                    android:textSize="15sp" />
+
+                <!-- Contraseña -->
+                <EditText
+                    android:id="@+id/edtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    android:textColorHint="#AAAAAA"
+                    android:backgroundTint="#CCCCCC"
+                    android:layout_marginBottom="24dp"
+                    android:padding="10dp"
+                    android:textSize="15sp" />
+
+                <!-- Botón login -->
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▶ Iniciar Sesión"
+                    android:backgroundTint="#007BFF"
+                    android:textColor="#FFFFFF"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="15sp"
+                    android:layout_marginBottom="24dp"/>
+
+
+                <!-- Crear cuenta -->
+                <TextView
+                    android:id="@+id/txtCrearCuenta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¿Eres Nuevo? ¡Crea una cuenta!"
+                    android:textColor="#007BFF"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <!-- Olvidé contraseña -->
+                <TextView
+                    android:id="@+id/txtOlvideContrasena"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¿Perdiste la contraseña? Presiona aquí"
+                    android:textColor="#007BFF"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
