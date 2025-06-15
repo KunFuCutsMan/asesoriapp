@@ -25,7 +25,16 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".AsesoradoInicioSesionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AsesorInicioSesionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminInicioSesionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearCuentaActivity"
             android:exported="false" />
     </application>
 

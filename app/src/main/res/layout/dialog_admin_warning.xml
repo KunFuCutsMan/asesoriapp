@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/txtAdvertencia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Esta sección es exclusiva para administradores. Si no eres uno, te invitamos amablemente a regresar a la pantalla anterior para continuar con tu experiencia en la app.."
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/btnSiAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Soy Admin (5...)"
+        android:textColor="#3F51B5"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:alpha="0.3"
+        android:enabled="false" />
+
+    <TextView
+        android:id="@+id/btnNoAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No soy Admin"
+        android:textColor="#D32F2F"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

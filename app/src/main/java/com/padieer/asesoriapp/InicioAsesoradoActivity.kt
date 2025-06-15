@@ -1,4 +1,4 @@
 package com.padieer.asesoriapp
 
-class InicioActivity {
+class InicioAsesoradoActivity {
 }

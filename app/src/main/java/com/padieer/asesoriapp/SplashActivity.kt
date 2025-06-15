@@ -32,7 +32,7 @@ class SplashActivity : Activity() {
         appName.startAnimation(fadeIn)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            startActivity(Intent(this@SplashActivity, AsesoradoInicioSesionActivity::class.java))
             finish()
         }, splashDelay)
     }

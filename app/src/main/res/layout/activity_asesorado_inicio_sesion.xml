@@ -20,7 +20,7 @@
         android:paddingBottom="6dp"
         android:text="✪ Eres Asesor? Presiona Aquí"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <!-- Contenedor scrollable -->
     <ScrollView
@@ -63,32 +63,47 @@
                     android:layout_height="wrap_content"
                     android:text="Inicio de Sesion Para Asesorados"
                     android:textColor="#000000"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp"/>
 
-                <!-- Número de control -->
-                <EditText
-                    android:id="@+id/edtControl"
+                <!-- Card: Número de control -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Número de Control"
-                    android:textColorHint="#AAAAAA"
-                    android:backgroundTint="#CCCCCC"
-                    android:layout_marginBottom="16dp"
-                    android:padding="10dp"
-                    android:textSize="15sp" />
+                    android:background="@drawable/card_background"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                <!-- Contraseña -->
-                <EditText
-                    android:id="@+id/edtPassword"
+                    <EditText
+                        android:id="@+id/edtControl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Número de Control"
+                        android:padding="12dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#9E9E9E"
+                        android:textSize="15sp"  />
+                </LinearLayout>
+
+                <!-- Card: Contraseña -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    android:textColorHint="#AAAAAA"
-                    android:backgroundTint="#CCCCCC"
-                    android:layout_marginBottom="24dp"
-                    android:padding="10dp"
-                    android:textSize="15sp" />
+                    android:background="@drawable/card_background"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="24dp">
+
+                    <EditText
+                        android:id="@+id/edtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Contraseña"
+                        android:inputType="textPassword"
+                        android:padding="12dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#9E9E9E"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
                 <!-- Botón login -->
                 <Button
@@ -96,6 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="▶ Iniciar Sesión"
+                    android:background="@drawable/button_background"
                     android:backgroundTint="#007BFF"
                     android:textColor="#FFFFFF"
                     android:paddingLeft="24dp"
@@ -104,7 +120,6 @@
                     android:paddingBottom="10dp"
                     android:textSize="15sp"
                     android:layout_marginBottom="24dp"/>
-
 
                 <!-- Crear cuenta -->
                 <TextView
@@ -116,7 +131,7 @@
                     android:textSize="14sp"
                     android:layout_marginBottom="12dp"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"/>
 
                 <!-- Olvidé contraseña -->
                 <TextView
@@ -127,7 +142,7 @@
                     android:textColor="#007BFF"
                     android:textSize="14sp"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
