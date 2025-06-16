@@ -1,7 +1,10 @@
 package com.padieer.asesoriapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +24,11 @@ class SplashActivity : ComponentActivity() {
                 SplashScreen()
             }
         }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            finish()
+        }, splashDelay)
         /*
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
