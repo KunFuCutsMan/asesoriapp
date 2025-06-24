@@ -30,6 +30,11 @@
         <activity
             android:name=".AsesorInicioSesionActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".InicioAsesorActivity"
+            android:exported="false" />
+
         <activity
             android:name=".AdminInicioSesionActivity"
             android:exported="false" />

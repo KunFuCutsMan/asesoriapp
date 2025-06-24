@@ -1,13 +1,19 @@
 package com.padieer.asesoriapp
 
-import android.graphics.Color
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.StrictMode
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 class CrearCuentaActivity : AppCompatActivity() {
 
@@ -26,6 +32,9 @@ class CrearCuentaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crear_cuenta)
 
+        // Permitir operaciones de red en el hilo principal (sólo para pruebas, evita en producción)
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
+
         edtNombres = findViewById(R.id.edtNombres)
         edtApellidoP = findViewById(R.id.edtApellidoP)
         edtApellidoM = findViewById(R.id.edtApellidoM)
@@ -41,28 +50,60 @@ class CrearCuentaActivity : AppCompatActivity() {
         btnIrInicioSesion.setOnClickListener {
             val intent = Intent(this, AsesoradoInicioSesionActivity::class.java)
             startActivity(intent)
-            finish() // Opcional, para que no regrese a CrearCuenta al pulsar atrás
+            finish()
         }
 
-        // Validación Nombre, Apellidos y Carrera: solo letras y espacios
-        val letrasRegex = Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+\$")
-
-        val textWatcherLetras = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Determinar qué EditText fue modificado y validar
-                val editText = currentFocus as? EditText ?: return
-                val text = s.toString()
-                val valido = text.matches(letrasRegex) && text.isNotBlank()
-                setEditTextColor(editText, valido)
+        btnCrearCuenta.setOnClickListener {
+            if (validarCampos()) {
+                enviarDatosAlServidor()
+            } else {
+                Toast.makeText(this, "Revisa los campos en rojo.", Toast.LENGTH_SHORT).show()
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
+    }
 
-        edtNombres.addTextChangedListener(textWatcherLetras)
-        edtApellidoP.addTextChangedListener(textWatcherLetras)
-        edtApellidoM.addTextChangedListener(textWatcherLetras)
-        edtCarrera.addTextChangedListener(textWatcherLetras)
+    private fun enviarDatosAlServidor() {
+        val json = JSONObject()
+        json.put("nombre", edtNombres.text.toString())
+        json.put("apellidoPaterno", edtApellidoP.text.toString())
+        json.put("apellidoMaterno", edtApellidoM.text.toString())
+        json.put("numeroControl", edtNumControl.text.toString())
+        json.put("numeroTelefonico", edtNumTel.text.toString())
+        json.put("semestre", edtSemestre.text.toString().toInt())
+        json.put("carrera", edtCarrera.text.toString())
+        json.put("contrasena", edtContrasena.text.toString()) // Se encripta en el servidor
+
+        try {
+            val url = URL("http://10.0.2.2:5000/registro_estudiante")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json; utf-8")
+            conn.doOutput = true
+
+            val output = OutputStreamWriter(conn.outputStream)
+            output.write(json.toString())
+            output.flush()
+
+            val responseCode = conn.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                runOnUiThread {
+                    Toast.makeText(this, "Cuenta creada exitosamente!", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this, AsesoradoInicioSesionActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this, "Error al crear cuenta: $responseCode", Toast.LENGTH_LONG).show()
+                }
+            }
+            conn.disconnect()
+        } catch (e: Exception) {
+            Log.e("CrearCuenta", "Error: ${e.message}")
+            runOnUiThread {
+                Toast.makeText(this, "Excepción: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
 
         // Validación Número Control: máximo 8 dígitos numéricos
         edtNumControl.addTextChangedListener(object : TextWatcher {
