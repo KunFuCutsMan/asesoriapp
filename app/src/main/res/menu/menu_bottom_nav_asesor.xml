@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_asesorias"
+        android:icon="@drawable/icaseso"
+    android:title="Asesorías" />
+    <item
+        android:id="@+id/nav_configuracion"
+        android:icon="@drawable/icconfi"
+        android:title="Configuración" />
+</menu>
