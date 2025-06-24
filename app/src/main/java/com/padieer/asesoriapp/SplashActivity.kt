@@ -1,21 +1,35 @@
 package com.padieer.asesoriapp
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import com.padieer.asesoriapp.ui.SplashScreen
+import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : Activity() {
+class SplashActivity : ComponentActivity() {
 
     private val splashDelay: Long = 3000 // 3 segundos
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            AsesoriAppTheme {
+                SplashScreen()
+            }
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            finish()
+        }, splashDelay)
+        /*
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
@@ -35,5 +49,6 @@ class SplashActivity : Activity() {
             startActivity(Intent(this@SplashActivity, AsesoradoInicioSesionActivity::class.java))
             finish()
         }, splashDelay)
+        */
     }
 }
