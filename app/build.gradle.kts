@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.padieer.asesoriapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.padieer.asesoriapp"
         minSdk = 27
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

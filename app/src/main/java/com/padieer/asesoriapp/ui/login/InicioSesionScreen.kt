@@ -31,7 +31,7 @@ import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
-fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
+fun InicioSesionScreen() {
     val viewModel = viewModel<InicioSesionScreenViewModel>()
 
     Column (
@@ -40,7 +40,7 @@ fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
         modifier = Modifier
             .fillMaxSize()
             .background( color = MaterialTheme.colorScheme.background )
-            .padding( vertical = 16.dp )
+            .padding( vertical = 32.dp )
             .verticalScroll( rememberScrollState() )
     ) {
         Row {
@@ -49,7 +49,7 @@ fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
                 shape = RoundedCornerShape( topStart = 20.dp, bottomStart = 20.dp ),
                 contentPadding = ButtonDefaults.TextButtonContentPadding,
                 modifier = Modifier.height(40.dp),
-                onClick = onAsesorButtonClick
+                onClick = {}
             ) {
                 Text("✪ ¿Eres Asesor? Presiona Aquí", fontSize = 14.sp)
             }
@@ -110,8 +110,6 @@ fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
 @Composable
 fun InicioSesionScreenPreview() {
     AsesoriAppTheme {
-        InicioSesionScreen(
-            onAsesorButtonClick = fun () {}
-        )
+        InicioSesionScreen()
     }
 }
