@@ -1,4 +1,4 @@
-package com.padieer.asesoriapp.ui
+package com.padieer.asesoriapp.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,23 +20,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
 fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
-    var numeroControl by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
+    val viewModel = viewModel<InicioSesionScreenViewModel>()
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -70,14 +67,14 @@ fun InicioSesionScreen( onAsesorButtonClick: () -> Unit ) {
             Text("Inicio de Sesion Para Asesorados", fontSize = 16.sp)
 
             OutlinedTextField(
-                value = numeroControl,
-                onValueChange = { numeroControl = it },
+                value = viewModel.numeroControl,
+                onValueChange = { viewModel.changeNumeroControl(it) },
                 label = { Text("Número de Control") }
             )
 
             OutlinedTextField(
-                value = contrasena,
-                onValueChange = { contrasena = it },
+                value = viewModel.contrasena,
+                onValueChange = { viewModel.changeContrasena(it) },
                 label = { Text("Contraseña") }
             )
 
