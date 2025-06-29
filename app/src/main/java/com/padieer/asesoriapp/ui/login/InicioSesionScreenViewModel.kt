@@ -1,22 +1,33 @@
 package com.padieer.asesoriapp.ui.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+data class InicioSesionUIState(
+    val numeroControl: String = "",
+    val contrasena: String = "" ) {
+}
 
 class InicioSesionScreenViewModel : ViewModel() {
 
-    var numeroControl by mutableStateOf("")
-        private set
+    private val _uiState = MutableStateFlow(InicioSesionUIState())
+    val uiState = _uiState.asStateFlow()
 
-    var contrasena by mutableStateOf("")
-
-    fun changeNumeroControl(it: String): Unit {
-        numeroControl = it
+    fun setNumeroControl(numeroControl: String) {
+        _uiState.update {
+            it.copy( numeroControl = numeroControl )
+        }
     }
 
-    fun changeContrasena(it: String): Unit {
-        contrasena = it
+    fun setContrasena(contrasena: String) {
+        _uiState.update {
+            it.copy( contrasena = contrasena )
+        }
+    }
+
+    fun login() {
+
     }
 }
