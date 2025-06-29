@@ -9,6 +9,8 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontSynthesis
+import androidx.compose.ui.text.style.TextAlign
 
 private val DarkColorScheme = darkColorScheme(
     primary = Blue35,
@@ -51,7 +53,17 @@ fun AsesoriAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography.copy(
+            titleLarge = Typography.titleLarge.copy(
+                color = colorScheme.primary,
+            ),
+            titleMedium = Typography.titleMedium.copy(
+                color = colorScheme.primary,
+            ),
+            titleSmall = Typography.titleSmall.copy(
+                color = colorScheme.primary,
+            )
+        ),
         content = content
     )
 }

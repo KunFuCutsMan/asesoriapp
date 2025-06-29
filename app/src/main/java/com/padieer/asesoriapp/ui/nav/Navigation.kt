@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.padieer.asesoriapp.ui.SplashScreen
+import com.padieer.asesoriapp.ui.cuentas.CreaCuentaScreen
 import com.padieer.asesoriapp.ui.login.InicioSesionScreen
 
 @Composable
@@ -18,6 +19,10 @@ fun Navigation() {
 
         composable( route = Screen.InicioSesionScreen.route ) {
             InicioSesionScreen()
+        }
+
+        composable( route = Screen.CreaCuentaScreen.route ) {
+            CreaCuentaScreen()
         }
     }
 }
