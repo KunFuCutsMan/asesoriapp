@@ -100,7 +100,7 @@ fun OutlinedDropdown(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
     ) {
-        TextField(
+        OutlinedTextField(
             selectedValue,
             onValueChange = onValueChange,
             readOnly = true,
