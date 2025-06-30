@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
@@ -39,6 +40,8 @@ fun CreaCuentaScreen() {
         onApeMaternoChange = { viewModel.setApeMaterno(it) },
         onNumeroControlChange = { viewModel.setNumeroControl(it) },
         onNumeroTelefonoChange = { viewModel.setNumeroTelefono(it) },
+        onSemestreChange = { viewModel.setSemestre(it.toInt()) },
+        onCarreraChange = { viewModel.setCarrera(it) },
         onContrasenaChange = { viewModel.setContrasena(it) },
         onContrasenaRepiteChange = { viewModel.setContrasenaRepite(it) }
     )
@@ -52,8 +55,10 @@ fun CreaCuentaScreen(
     onApeMaternoChange: (String) -> Unit,
     onNumeroControlChange: (String) -> Unit,
     onNumeroTelefonoChange: (String) -> Unit,
+    onSemestreChange: (String) -> Unit,
+    onCarreraChange: (String) -> Unit,
     onContrasenaChange: (String) -> Unit,
-    onContrasenaRepiteChange: (String) -> Unit
+    onContrasenaRepiteChange: (String) -> Unit,
 ) {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -115,8 +120,20 @@ fun CreaCuentaScreen(
         )
 
         // Semestre
+        OutlinedDropdown(
+            onValueChange = onSemestreChange,
+            label = { Text("Semestre") },
+            // TODO Que se obtenga del repo o algo
+            data = (1..15).toList().map { it.toString() }
+        )
 
         // Carrera
+        OutlinedDropdown(
+            onValueChange = onCarreraChange,
+            label = { Text("Carrera") },
+            // TODO que se obtenga de un repo
+            data = arrayListOf("Mecatronica", "Industrial", "Renovables")
+        )
 
         OutlinedTextFieldConMaximo(
             value = uiState.contrasena,
