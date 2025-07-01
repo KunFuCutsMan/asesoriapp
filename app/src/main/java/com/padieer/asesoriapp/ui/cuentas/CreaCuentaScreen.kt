@@ -146,7 +146,7 @@ fun CreaCuentaScreen(
                     onValueChange = onCarreraChange,
                     label = { Text("Carrera") },
                     // TODO que se obtenga de un repo
-                    data = arrayListOf("Mecatronica", "Industrial", "Renovables")
+                    data = uiState.carrerasList.map { it.nombre }
                 )
                 OutlinedTextFieldConMaximo(
                     value = uiState.contrasena,
