@@ -1,6 +1,7 @@
 package com.padieer.asesoriapp.ui.cuentas
 
 import androidx.lifecycle.ViewModel
+import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +18,9 @@ data class CreaCuentaUIState(
     val contrasenaRepite: String = "",
 )
 
-class CreaCuentaViewModel : ViewModel() {
+class CreaCuentaViewModel(
+    private val carreraRepository: CarreraRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(CreaCuentaUIState())
     val uiState = _uiState.asStateFlow()
 

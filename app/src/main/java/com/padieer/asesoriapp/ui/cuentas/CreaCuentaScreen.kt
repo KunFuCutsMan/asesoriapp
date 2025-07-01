@@ -29,14 +29,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
 fun CreaCuentaScreen() {
-    val viewModel = viewModel<CreaCuentaViewModel>()
+    val viewModel = viewModel<CreaCuentaViewModel>(
+        factory = viewModelFactory {
+            CreaCuentaViewModel(
+                carreraRepository = App.appModule.carreraRepository
+            )
+        }
+    )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CreaCuentaScreen(
