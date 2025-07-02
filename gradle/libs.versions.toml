@@ -13,6 +13,7 @@ composeBom = "2025.06.01"
 material = "1.12.0"
 navigationComposeJvmstubs = "2.9.0"
 navigationComposeAndroid = "2.9.0"
+kotlinSerialization = "2.2.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
@@ -49,4 +50,4 @@ androidx-navigation-compose-android = { group = "androidx.navigation", name = "n
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}
