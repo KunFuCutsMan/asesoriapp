@@ -21,7 +21,7 @@ data class CreaCuentaUIState(
     val contrasena: String = "",
     val contrasenaRepite: String = "",
 
-    val carrerasList: List<Carrera> = emptyList()
+    val carrerasList: List<Carrera> = listOf(Carrera(""))
 )
 
 class CreaCuentaViewModel(
