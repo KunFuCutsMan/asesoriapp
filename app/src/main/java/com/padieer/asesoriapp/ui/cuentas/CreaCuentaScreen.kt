@@ -32,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.data.viewModelFactory
+import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
@@ -45,47 +46,23 @@ fun CreaCuentaScreen() {
             )
         }
     )
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    CreaCuentaScreen(
-        uiState = uiState,
-        onNombreChange = { viewModel.setNombre(it) },
-        onApePaternoChange = { viewModel.setApePaterno(it) },
-        onApeMaternoChange = { viewModel.setApeMaterno(it) },
-        onNumeroControlChange = { viewModel.setNumeroControl(it) },
-        onNumeroTelefonoChange = { viewModel.setNumeroTelefono(it) },
-        onSemestreChange = { viewModel.setSemestre(it.toInt()) },
-        onCarreraChange = { viewModel.setCarrera(it) },
-        onContrasenaChange = { viewModel.setContrasena(it) },
-        onContrasenaRepiteChange = { viewModel.setContrasenaRepite(it) },
-        onCreaCuentaClick = {},
-        onIniciaSesionClick = {},
-    )
+    CreaCuentaScreen(viewModel)
 }
 
 @Composable
 fun CreaCuentaScreen(
-    uiState: CreaCuentaUIState,
-    onNombreChange: (String) -> Unit,
-    onApePaternoChange: (String) -> Unit,
-    onApeMaternoChange: (String) -> Unit,
-    onNumeroControlChange: (String) -> Unit,
-    onNumeroTelefonoChange: (String) -> Unit,
-    onSemestreChange: (String) -> Unit,
-    onCarreraChange: (String) -> Unit,
-    onContrasenaChange: (String) -> Unit,
-    onContrasenaRepiteChange: (String) -> Unit,
-    onCreaCuentaClick: () -> Unit,
-    onIniciaSesionClick: () -> Unit,
+    viewModel: CreaCuentaViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxSize()
-            .background( MaterialTheme.colorScheme.background )
+            .background(MaterialTheme.colorScheme.background)
             .padding(32.dp)
-            .verticalScroll( rememberScrollState() )
+            .verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = R.drawable.logosinletras),
@@ -99,82 +76,98 @@ fun CreaCuentaScreen(
         )
 
         OutlinedCard {
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
-            ) {
-                OutlinedTextFieldConMaximo(
-                    value = uiState.nombre,
-                    maxLength = 32,
-                    label = { Text("Nombre") },
-                    onValueChange = onNombreChange
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.apePaterno,
-                    maxLength = 32,
-                    label = { Text("Apellido Paterno") },
-                    onValueChange = onApePaternoChange
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.apeMaterno,
-                    maxLength = 32,
-                    label = { Text("Apellido Materno") },
-                    onValueChange = onApeMaternoChange
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.numControl,
-                    maxLength = 8,
-                    label = { Text("Número de Control") },
-                    keyboardType = KeyboardType.Number,
-                    onValueChange = onNumeroControlChange
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.numTelefono,
-                    maxLength = 10,
-                    label = { Text("Número Telefónico") },
-                    keyboardType = KeyboardType.Phone,
-                    onValueChange = onNumeroTelefonoChange
-                )
-                OutlinedDropdown(
-                    onValueChange = onSemestreChange,
-                    label = { Text("Semestre") },
-                    // TODO Que se obtenga del repo o algo
-                    data = (1..15).toList().map { it.toString() }
-                )
-                OutlinedDropdown(
-                    onValueChange = onCarreraChange,
-                    label = { Text("Carrera") },
-                    // TODO que se obtenga de un repo
-                    data = uiState.carrerasList.map { it.nombre }
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.contrasena,
-                    maxLength = 32,
-                    label = { Text("Contraseña") },
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = onContrasenaChange
-                )
-                OutlinedTextFieldConMaximo(
-                    value = uiState.contrasenaRepite,
-                    maxLength = 32,
-                    label = { Text("Confirma tu contraseña") },
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = onContrasenaRepiteChange
-                )
-            }
+           if (uiState.isLoading) {
+               FullScreenLoading()
+           } else {
+               FormCreaCuenta(viewModel, uiState.carrerasList)
+           }
         }
 
         Button(
-            onClick = { onCreaCuentaClick() },
+            onClick = { viewModel.onCreaCuentaClick() },
             contentPadding = ButtonDefaults.TextButtonContentPadding
         ) { Text("Crear Cuenta", fontSize = 16.sp) }
 
-        TextButton(onClick = { onIniciaSesionClick() }) {
+        TextButton(onClick = { viewModel.onIniciaSesionClick() }) {
             Text("¿Ya tienes cuenta? Inicia sesión")
         }
+    }
+}
+
+@Composable
+fun FormCreaCuenta(
+    viewModel: CreaCuentaViewModel,
+    carrerasList: List<Carrera>,
+) {
+    val formDataState by viewModel.formDataState.collectAsStateWithLifecycle()
+
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        OutlinedTextFieldConMaximo(
+            value = formDataState.nombre,
+            maxLength = 32,
+            label = { Text("Nombre") },
+            onValueChange = { viewModel.setNombre(it) }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.apePaterno,
+            maxLength = 32,
+            label = { Text("Apellido Paterno") },
+            onValueChange = { viewModel.setApePaterno(it) }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.apeMaterno,
+            maxLength = 32,
+            label = { Text("Apellido Materno") },
+            onValueChange = { viewModel.setApeMaterno(it) }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.numControl,
+            maxLength = 8,
+            label = { Text("Número de Control") },
+            keyboardType = KeyboardType.Number,
+            onValueChange = { viewModel.setApeMaterno(it) }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.numTelefono,
+            maxLength = 10,
+            label = { Text("Número Telefónico") },
+            keyboardType = KeyboardType.Phone,
+            onValueChange = { viewModel.setNumeroControl(it) }
+        )
+        OutlinedDropdown(
+            onValueChange = { viewModel.setSemestre(it.toInt()) },
+            label = { Text("Semestre") },
+            // TODO Que se obtenga del repo o algo
+            data = (1..15).toList().map { it.toString() }
+        )
+        OutlinedDropdown(
+            onValueChange = { viewModel.setCarrera(it) },
+            label = { Text("Carrera") },
+            // TODO que se obtenga de un repo
+            data = carrerasList.map { it.nombre }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.contrasena,
+            maxLength = 32,
+            label = { Text("Contraseña") },
+            keyboardType = KeyboardType.Password,
+            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { viewModel.setContrasena(it) }
+        )
+        OutlinedTextFieldConMaximo(
+            value = formDataState.contrasenaRepite,
+            maxLength = 32,
+            label = { Text("Confirma tu contraseña") },
+            keyboardType = KeyboardType.Password,
+            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { viewModel.setContrasenaRepite(it) }
+        )
     }
 }
 

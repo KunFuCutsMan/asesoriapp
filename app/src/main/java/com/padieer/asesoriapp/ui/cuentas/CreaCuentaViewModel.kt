@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class CreaCuentaUIState(
+    val isLoading: Boolean = false,
+    val carrerasList: List<Carrera> = listOf(Carrera(""))
+)
+
+data class FormData(
     val nombre: String = "",
     val apePaterno: String = "",
     val apeMaterno: String = "",
@@ -20,8 +25,6 @@ data class CreaCuentaUIState(
     val carrera: String = "",
     val contrasena: String = "",
     val contrasenaRepite: String = "",
-
-    val carrerasList: List<Carrera> = listOf(Carrera(""))
 )
 
 class CreaCuentaViewModel(
@@ -30,32 +33,44 @@ class CreaCuentaViewModel(
     private val _uiState = MutableStateFlow(CreaCuentaUIState())
     val uiState = _uiState.asStateFlow()
 
+    private val _formDataState = MutableStateFlow(FormData())
+    val formDataState = _formDataState.asStateFlow()
+
     init {
+        getInitialData()
+    }
+
+    private fun getInitialData() {
+        _uiState.update { it.copy( isLoading = true ) }
+
         viewModelScope.launch {
-            getInitialData()
-        }
-    }
-
-    private suspend fun getInitialData() {
-        coroutineScope {
-            launch {
-                val carreras = carreraRepository.getCarreras()
-                _uiState.update { state ->
-                    state.copy( carrerasList = carreras.map { it.toUIModel() } )
-                }
+            val carreras = carreraRepository.getCarreras()
+            _uiState.update { state ->
+                state.copy(
+                    carrerasList = carreras.map { it.toUIModel() },
+                    isLoading = false
+                )
             }
+
         }
     }
 
-    fun setNombre(nom: String) = _uiState.update { it.copy( nombre = nom ) }
-    fun setApePaterno(ape: String) = _uiState.update { it.copy( apePaterno = ape ) }
-    fun setApeMaterno(ape: String) = _uiState.update { it.copy( apeMaterno = ape ) }
-    fun setNumeroControl(num: String) = _uiState.update { it.copy( numControl = num ) }
-    fun setNumeroTelefono(num: String) = _uiState.update { it.copy( numTelefono = num ) }
-    fun setSemestre(num: Int) = _uiState.update { it.copy( numSemestre = num ) }
-    fun setCarrera(car: String) = _uiState.update { it.copy( carrera = car ) }
-    fun setContrasena(con: String) = _uiState.update { it.copy( contrasena = con ) }
-    fun setContrasenaRepite(con: String) = _uiState.update { it.copy( contrasenaRepite = con ) }
+    fun onCreaCuentaClick() {
+        //
+    }
+    fun onIniciaSesionClick() {
+        //
+    }
+
+    fun setNombre(nom: String) = _formDataState.update { it.copy( nom ) }
+    fun setApePaterno(ape: String) = _formDataState.update { it.copy( apePaterno = ape ) }
+    fun setApeMaterno(ape: String) = _formDataState.update { it.copy( apeMaterno = ape ) }
+    fun setNumeroControl(num: String) = _formDataState.update { it.copy( numControl = num ) }
+    fun setNumeroTelefono(num: String) = _formDataState.update { it.copy( numTelefono = num ) }
+    fun setSemestre(num: Int) = _formDataState.update { it.copy( numSemestre = num ) }
+    fun setCarrera(car: String) = _formDataState.update { it.copy( carrera = car ) }
+    fun setContrasena(con: String) = _formDataState.update { it.copy( contrasena = con ) }
+    fun setContrasenaRepite(con: String) = _formDataState.update { it.copy( contrasenaRepite = con ) }
 }
 
 fun CarreraModel.toUIModel(): Carrera {
