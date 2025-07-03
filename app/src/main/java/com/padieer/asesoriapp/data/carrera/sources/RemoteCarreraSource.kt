@@ -9,8 +9,8 @@ import io.ktor.http.appendPathSegments
 class RemoteCarreraSource(
     private val client: HttpClient,
     private val initialURL: String,
-) : CarreraSource {
-    override suspend fun fetchCarreras(): Result<List<CarreraModel>> {
+) {
+    suspend fun fetchCarreras(): Result<List<CarreraModel>> {
         return runCatching {
             val response = client.get( urlString = initialURL ) {
                 url { urlBuilder ->

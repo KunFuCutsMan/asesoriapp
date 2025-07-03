@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.di
 import android.content.Context
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
+import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.FakeCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import io.ktor.client.HttpClient
@@ -28,6 +29,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         FakeCarreraSource()
     }
 
+    private val cacheCarreraSource by lazy {
+        CacheCarreraSource()
+    }
+
     private val remoteCarreraSource by lazy {
         RemoteCarreraSource(
             client = client,
@@ -37,7 +42,8 @@ class AppModuleImpl(private val appContext: Context): AppModule {
 
     override val carreraRepository by lazy {
         CarreraRepositoryImpl(
-            remoteCarreraSource = remoteCarreraSource
+            remoteCarreraSource = remoteCarreraSource,
+            cacheCarreraSource = cacheCarreraSource,
         )
     }
 }

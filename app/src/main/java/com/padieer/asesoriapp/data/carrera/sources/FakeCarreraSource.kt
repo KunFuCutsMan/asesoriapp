@@ -2,9 +2,9 @@ package com.padieer.asesoriapp.data.carrera.sources
 
 import com.padieer.asesoriapp.data.carrera.CarreraModel
 
-class FakeCarreraSource : CarreraSource {
+class FakeCarreraSource {
 
-    override suspend fun fetchCarreras(): Result<List<CarreraModel>> {
+     fun fetchCarreras(): Result<List<CarreraModel>> {
         return runCatching {
             listOf(
                 CarreraModel(1,"Administración", "A" ),

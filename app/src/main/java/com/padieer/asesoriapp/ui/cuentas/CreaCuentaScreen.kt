@@ -84,11 +84,11 @@ fun CreaCuentaScreen(
         }
 
         Button(
-            onClick = { viewModel.onCreaCuentaClick() },
+            onClick = { viewModel.onEvent(CreaCuentaEvent.Submit) },
             contentPadding = ButtonDefaults.TextButtonContentPadding
         ) { Text("Crear Cuenta", fontSize = 16.sp) }
 
-        TextButton(onClick = { viewModel.onIniciaSesionClick() }) {
+        TextButton(onClick = { viewModel.onEvent(CreaCuentaEvent.InicioSesionClick) }) {
             Text("¿Ya tienes cuenta? Inicia sesión")
         }
     }
@@ -112,43 +112,43 @@ fun FormCreaCuenta(
             value = formDataState.nombre,
             maxLength = 32,
             label = { Text("Nombre") },
-            onValueChange = { viewModel.setNombre(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.NombreChanged(it) ) }
         )
         OutlinedTextFieldConMaximo(
             value = formDataState.apePaterno,
             maxLength = 32,
             label = { Text("Apellido Paterno") },
-            onValueChange = { viewModel.setApePaterno(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.ApePaternoChanged(it) ) }
         )
         OutlinedTextFieldConMaximo(
             value = formDataState.apeMaterno,
             maxLength = 32,
             label = { Text("Apellido Materno") },
-            onValueChange = { viewModel.setApeMaterno(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.ApeMaternoChanged(it) ) }
         )
         OutlinedTextFieldConMaximo(
             value = formDataState.numControl,
             maxLength = 8,
             label = { Text("Número de Control") },
             keyboardType = KeyboardType.Number,
-            onValueChange = { viewModel.setApeMaterno(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.NumControlChanged(it) ) }
         )
         OutlinedTextFieldConMaximo(
             value = formDataState.numTelefono,
             maxLength = 10,
             label = { Text("Número Telefónico") },
             keyboardType = KeyboardType.Phone,
-            onValueChange = { viewModel.setNumeroControl(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.NumTelefonoChanged(it) ) }
         )
         OutlinedDropdown(
-            onValueChange = { viewModel.setSemestre(it.toInt()) },
             label = { Text("Semestre") },
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.SemestreChanged(it.toInt()) ) },
             // TODO Que se obtenga del repo o algo
             data = (1..15).toList().map { it.toString() }
         )
         OutlinedDropdown(
-            onValueChange = { viewModel.setCarrera(it) },
             label = { Text("Carrera") },
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.CarreraChanged(it) ) },
             // TODO que se obtenga de un repo
             data = carrerasList.map { it.nombre }
         )
@@ -158,7 +158,7 @@ fun FormCreaCuenta(
             label = { Text("Contraseña") },
             keyboardType = KeyboardType.Password,
             visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { viewModel.setContrasena(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.ContrasenaChanged(it) ) }
         )
         OutlinedTextFieldConMaximo(
             value = formDataState.contrasenaRepite,
@@ -166,7 +166,7 @@ fun FormCreaCuenta(
             label = { Text("Confirma tu contraseña") },
             keyboardType = KeyboardType.Password,
             visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { viewModel.setContrasenaRepite(it) }
+            onValueChange = { viewModel.onEvent( CreaCuentaEvent.ContrasenaRepiteChanged(it) ) }
         )
     }
 }
