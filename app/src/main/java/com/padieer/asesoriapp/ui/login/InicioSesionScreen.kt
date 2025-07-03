@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,38 +29,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
-fun InicioSesionScreen() {
+fun InicioSesionScreen(navController: NavController? = null) {
     val viewModel = viewModel<InicioSesionScreenViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.eventChannel.collect {
+            when (it) {
+                InicioSesionScreenViewModel.NavEvent.CreaCuenta -> {
+                    navController?.navigate(Screen.CreaCuentaScreen.route)
+                }
+            }
+        }
+    }
 
     InicioSesionScren(
-        uiState = uiState,
-        onNumeroControlChanged = { viewModel.setNumeroControl(it) },
-        onContrasenaChanged = { viewModel.setContrasena(it) },
-        onInicioSesionClick = { viewModel.login() },
-        onCreaCuentaClick = {},
-        onContrasenaPerdidaClick = {}
+        viewModel = viewModel,
     )
 }
 
 @Composable
 fun InicioSesionScren(
-        uiState: InicioSesionUIState,
-        onNumeroControlChanged: (String) -> Unit,
-        onContrasenaChanged: (String) -> Unit,
-        onInicioSesionClick: () -> Unit,
-        onCreaCuentaClick: () -> Unit,
-        onContrasenaPerdidaClick: () -> Unit) {
+    viewModel: InicioSesionScreenViewModel,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -101,7 +105,7 @@ fun InicioSesionScren(
                     imeAction = ImeAction.Next,
                     showKeyboardOnFocus = true
                 ),
-                onValueChange = { onNumeroControlChanged(it) }
+                onValueChange = { viewModel.onEvent( InicioSesionEvent.NumControlChanged(it) ) }
             )
 
             OutlinedTextField(
@@ -113,11 +117,11 @@ fun InicioSesionScren(
                     imeAction = ImeAction.Next
                 ),
                 visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { onContrasenaChanged(it) }
+                onValueChange = { viewModel.onEvent( InicioSesionEvent.ContrasenaChanged(it) ) }
             )
 
             Button(
-                onClick = { onInicioSesionClick() },
+                onClick = { viewModel.onEvent(InicioSesionEvent.LoginClick) },
                 contentPadding = ButtonDefaults.TextButtonContentPadding
             ) {
                 Text("▶ Iniciar Sesión", fontSize = 16.sp)
@@ -129,11 +133,11 @@ fun InicioSesionScren(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                TextButton(onClick = { onCreaCuentaClick() }) {
+                TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.CreaCuentaScreenClick) }) {
                     Text("¿Eres Nuevo? ¡Crea una cuenta!")
                 }
 
-                TextButton(onClick = { onContrasenaPerdidaClick() }) {
+                TextButton(onClick = {}) {
                     Text("¿Perdiste la contraseña? Presiona aquí")
                 }
             }

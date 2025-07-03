@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,16 +32,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
+import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
-fun CreaCuentaScreen() {
+fun CreaCuentaScreen(navController: NavController? = null) {
     val viewModel = viewModel<CreaCuentaViewModel>(
         factory = viewModelFactory {
             CreaCuentaViewModel(
@@ -48,6 +51,21 @@ fun CreaCuentaScreen() {
             )
         }
     )
+
+    LaunchedEffect(true) {
+        viewModel.navigationEvents.collect {
+            when(it) {
+                CreaCuentaViewModel.NavEvent.InicioSesion -> {
+                    navController?.navigate(Screen.InicioSesionScreen.route)
+                }
+
+                CreaCuentaViewModel.NavEvent.CuentaCreada -> {
+                    // La cuenta a sido creada
+                }
+            }
+        }
+    }
+
     CreaCuentaScreen(viewModel)
 }
 

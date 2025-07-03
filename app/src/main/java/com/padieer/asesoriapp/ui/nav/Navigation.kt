@@ -18,11 +18,11 @@ fun Navigation() {
         }
 
         composable( route = Screen.InicioSesionScreen.route ) {
-            InicioSesionScreen()
+            InicioSesionScreen(navController)
         }
 
         composable( route = Screen.CreaCuentaScreen.route ) {
-            CreaCuentaScreen()
+            CreaCuentaScreen(navController)
         }
     }
 }

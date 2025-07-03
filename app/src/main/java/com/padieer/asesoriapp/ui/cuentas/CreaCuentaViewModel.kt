@@ -13,8 +13,10 @@ import com.padieer.asesoriapp.domain.validators.ValidateNombreUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefono
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -58,6 +60,9 @@ class CreaCuentaViewModel(
 
     private val _formErrorState = MutableStateFlow(FormDataErrors())
     val formErrorState = _formErrorState.asStateFlow()
+
+    private val _eventChannel = Channel<NavEvent>()
+    val navigationEvents = _eventChannel.receiveAsFlow()
 
     init {
         getInitialData()
@@ -157,9 +162,14 @@ class CreaCuentaViewModel(
                 viewModelScope.launch { submit() }
             }
             is CreaCuentaEvent.InicioSesionClick -> {
-                //
+                viewModelScope.launch { _eventChannel.send(NavEvent.InicioSesion) }
             }
         }
+    }
+
+    sealed class NavEvent {
+        object InicioSesion: NavEvent()
+        object CuentaCreada: NavEvent()
     }
 }
 
