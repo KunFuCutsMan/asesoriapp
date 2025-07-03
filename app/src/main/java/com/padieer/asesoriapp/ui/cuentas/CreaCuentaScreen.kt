@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -100,32 +102,48 @@ fun FormCreaCuenta(
     carrerasList: List<Carrera>,
 ) {
     val formDataState by viewModel.formDataState.collectAsStateWithLifecycle()
+    val formErrorState by viewModel.formErrorState.collectAsStateWithLifecycle()
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // Nombre
         OutlinedTextFieldConMaximo(
             value = formDataState.nombre,
             maxLength = 32,
             label = { Text("Nombre") },
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.NombreChanged(it) ) }
         )
+        if (formErrorState.nombreError != null) ErrorText(formErrorState.nombreError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Apellido Paterno
         OutlinedTextFieldConMaximo(
             value = formDataState.apePaterno,
             maxLength = 32,
             label = { Text("Apellido Paterno") },
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.ApePaternoChanged(it) ) }
         )
+        if (formErrorState.apePatError != null) ErrorText(formErrorState.apePatError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Apellido Materno
         OutlinedTextFieldConMaximo(
             value = formDataState.apeMaterno,
             maxLength = 32,
             label = { Text("Apellido Materno") },
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.ApeMaternoChanged(it) ) }
         )
+        if (formErrorState.apeMatError != null) ErrorText(formErrorState.apeMatError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Numero de Control
         OutlinedTextFieldConMaximo(
             value = formDataState.numControl,
             maxLength = 8,
@@ -133,6 +151,11 @@ fun FormCreaCuenta(
             keyboardType = KeyboardType.Number,
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.NumControlChanged(it) ) }
         )
+        if (formErrorState.numControlError != null) ErrorText(formErrorState.numControlError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Numero Telefonico
         OutlinedTextFieldConMaximo(
             value = formDataState.numTelefono,
             maxLength = 10,
@@ -140,18 +163,33 @@ fun FormCreaCuenta(
             keyboardType = KeyboardType.Phone,
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.NumTelefonoChanged(it) ) }
         )
+        if (formErrorState.numTelefonoError != null) ErrorText(formErrorState.numTelefonoError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Semestre
         OutlinedDropdown(
             label = { Text("Semestre") },
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.SemestreChanged(it.toInt()) ) },
             // TODO Que se obtenga del repo o algo
             data = (1..15).toList().map { it.toString() }
         )
+        if (formErrorState.semestreError != null) ErrorText(formErrorState.semestreError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Carrera
         OutlinedDropdown(
             label = { Text("Carrera") },
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.CarreraChanged(it) ) },
             // TODO que se obtenga de un repo
             data = carrerasList.map { it.nombre }
         )
+        if (formErrorState.carreraError != null) ErrorText(formErrorState.carreraError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Contraseña
         OutlinedTextFieldConMaximo(
             value = formDataState.contrasena,
             maxLength = 32,
@@ -160,6 +198,11 @@ fun FormCreaCuenta(
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.ContrasenaChanged(it) ) }
         )
+        if (formErrorState.contraError != null) ErrorText(formErrorState.contraError!!)
+
+        Spacer( Modifier.height(16.dp) )
+
+        // Repite Contraseña
         OutlinedTextFieldConMaximo(
             value = formDataState.contrasenaRepite,
             maxLength = 32,
@@ -168,7 +211,13 @@ fun FormCreaCuenta(
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent( CreaCuentaEvent.ContrasenaRepiteChanged(it) ) }
         )
+        if (formErrorState.contraRepiteError != null) ErrorText(formErrorState.contraRepiteError!!)
     }
+}
+
+@Composable
+private fun ErrorText(text: String) {
+    Text(text, color = MaterialTheme.colorScheme.error )
 }
 
 @Preview
