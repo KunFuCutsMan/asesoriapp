@@ -38,12 +38,6 @@ class ValidateContrasenaUseCase(private val contra: String) {
                 "Contraseña debe incluir al menos un caracter mayúsculo y otro minúsculo"
             )
 
-        if (!contra.hasSymbols())
-            return ValidationResult(
-                isSuccessful = false,
-                "Contraseña debe incluir al menos un símbolo"
-            )
-
         return ValidationResult(isSuccessful = true)
     }
 }

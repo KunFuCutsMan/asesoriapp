@@ -57,6 +57,11 @@ fun CreaCuentaScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (uiState.isLoading) {
+        FullScreenLoading()
+        return
+    }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -78,11 +83,7 @@ fun CreaCuentaScreen(
         )
 
         OutlinedCard {
-           if (uiState.isLoading) {
-               FullScreenLoading()
-           } else {
-               FormCreaCuenta(viewModel, uiState.carrerasList)
-           }
+            FormCreaCuenta(viewModel, uiState.carrerasList)
         }
 
         Button(
@@ -119,7 +120,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.nombreError != null) ErrorText(formErrorState.nombreError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Apellido Paterno
         OutlinedTextFieldConMaximo(
@@ -130,7 +131,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.apePatError != null) ErrorText(formErrorState.apePatError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Apellido Materno
         OutlinedTextFieldConMaximo(
@@ -141,7 +142,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.apeMatError != null) ErrorText(formErrorState.apeMatError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Numero de Control
         OutlinedTextFieldConMaximo(
@@ -153,7 +154,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.numControlError != null) ErrorText(formErrorState.numControlError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Numero Telefonico
         OutlinedTextFieldConMaximo(
@@ -165,7 +166,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.numTelefonoError != null) ErrorText(formErrorState.numTelefonoError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Semestre
         OutlinedDropdown(
@@ -176,7 +177,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.semestreError != null) ErrorText(formErrorState.semestreError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Carrera
         OutlinedDropdown(
@@ -187,7 +188,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.carreraError != null) ErrorText(formErrorState.carreraError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Contraseña
         OutlinedTextFieldConMaximo(
@@ -200,7 +201,7 @@ fun FormCreaCuenta(
         )
         if (formErrorState.contraError != null) ErrorText(formErrorState.contraError!!)
 
-        Spacer( Modifier.height(16.dp) )
+        Spacer( Modifier.height(20.dp) )
 
         // Repite Contraseña
         OutlinedTextFieldConMaximo(
@@ -217,7 +218,11 @@ fun FormCreaCuenta(
 
 @Composable
 private fun ErrorText(text: String) {
-    Text(text, color = MaterialTheme.colorScheme.error )
+    Text(text, modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.error,
+        textAlign = TextAlign.Start,
+        fontSize = MaterialTheme.typography.labelLarge.fontSize
+    )
 }
 
 @Preview

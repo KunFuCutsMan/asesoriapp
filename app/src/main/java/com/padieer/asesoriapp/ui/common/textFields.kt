@@ -11,7 +11,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -96,13 +95,15 @@ fun OutlinedDropdown(
     var isExpanded by remember { mutableStateOf(false) }
     var selectedValue by remember { mutableStateOf(data[0]) }
 
+    onValueChange( data[0] )
+
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
     ) {
         OutlinedTextField(
             selectedValue,
-            onValueChange = onValueChange,
+            onValueChange = {},
             readOnly = true,
             label = label,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon( isExpanded ) },
@@ -119,6 +120,7 @@ fun OutlinedDropdown(
                     onClick = {
                         selectedValue = it
                         isExpanded = false
+                        onValueChange(selectedValue)
                     }
                 )
             }
