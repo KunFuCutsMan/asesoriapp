@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.ui.cuentas
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -53,16 +55,19 @@ fun CreaCuentaScreen(navController: NavController? = null) {
             )
         }
     )
+    val context = LocalContext.current
 
     LaunchedEffect(true) {
-        viewModel.navigationEvents.collect {
-            when(it) {
-                CreaCuentaViewModel.NavEvent.InicioSesion -> {
+        viewModel.navigationEvents.collect { event ->
+            when(event) {
+                is CreaCuentaViewModel.Event.InicioSesionNav -> {
                     navController?.navigate(Screen.InicioSesionScreen.route)
                 }
-
-                CreaCuentaViewModel.NavEvent.CuentaCreada -> {
-                    // La cuenta a sido creada
+                is CreaCuentaViewModel.Event.ValidationError -> {
+                    Toast.makeText(context, event.response.message, Toast.LENGTH_LONG).show()
+                }
+                is CreaCuentaViewModel.Event.Success -> {
+                    Toast.makeText(context, "Usuario creado", Toast.LENGTH_LONG).show()
                 }
             }
         }

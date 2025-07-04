@@ -3,10 +3,11 @@ package com.padieer.asesoriapp.ui.cuentas
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.padieer.asesoriapp.data.ValidationErrorResponse
 import com.padieer.asesoriapp.data.carrera.CarreraModel
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
-import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
+import com.padieer.asesoriapp.data.parseBody
 import com.padieer.asesoriapp.domain.validators.ValidateApellidoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
@@ -15,6 +16,7 @@ import com.padieer.asesoriapp.domain.validators.ValidateNombreUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefono
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,7 +66,7 @@ class CreaCuentaViewModel(
     private val _formErrorState = MutableStateFlow(FormDataErrors())
     val formErrorState = _formErrorState.asStateFlow()
 
-    private val _eventChannel = Channel<NavEvent>()
+    private val _eventChannel = Channel<Event>()
     val navigationEvents = _eventChannel.receiveAsFlow()
 
     init {
@@ -130,7 +132,7 @@ class CreaCuentaViewModel(
 
         Log.i("[SUCCESS]", "Datos enviados: ${formDataState.value}")
 
-        estudianteRepository.insertEstudiante(
+        val result = estudianteRepository.insertEstudiante(
             nombre = formDataState.value.nombre,
             apellidoPaterno = formDataState.value.apePaterno,
             apellidoMaterno = formDataState.value.apeMaterno,
@@ -139,6 +141,24 @@ class CreaCuentaViewModel(
             semestre = formDataState.value.numSemestre,
             carrera = formDataState.value.carrera,
             contrasena = formDataState.value.contrasena,
+        )
+
+        result.fold(
+            onSuccess = {
+                if (!it.statusCode.isSuccess()) {
+                    Log.i("VIEW MODEL", "Hubo un error: ${it.body}")
+                    val errors: ValidationErrorResponse = it.parseBody()
+                    viewModelScope.launch { _eventChannel.send(Event.ValidationError(errors)) }
+                    return@fold
+                }
+
+                Log.i("VIEW MODEL", "Usuario Enviado: ${it.statusCode}")
+
+                viewModelScope.launch { _eventChannel.send(Event.Success) }
+            },
+            onFailure = {
+                Log.e("[ERROR]", it.toString())
+            },
         )
 
     }
@@ -176,14 +196,15 @@ class CreaCuentaViewModel(
                 viewModelScope.launch { submit() }
             }
             is CreaCuentaEvent.InicioSesionClick -> {
-                viewModelScope.launch { _eventChannel.send(NavEvent.InicioSesion) }
+                viewModelScope.launch { _eventChannel.send(Event.InicioSesionNav) }
             }
         }
     }
 
-    sealed class NavEvent {
-        object InicioSesion: NavEvent()
-        object CuentaCreada: NavEvent()
+    sealed class Event {
+        data object InicioSesionNav: Event()
+        data class ValidationError(val response: ValidationErrorResponse ): Event()
+        data object Success: Event()
     }
 }
 

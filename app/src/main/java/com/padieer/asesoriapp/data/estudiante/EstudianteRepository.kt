@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.data.estudiante
 
+import com.padieer.asesoriapp.data.Response
 import kotlinx.serialization.Serializable
 
 interface EstudianteRepository {
@@ -13,7 +14,7 @@ interface EstudianteRepository {
         semestre: Int,
         contrasena: String,
         carrera: String,
-    )
+    ): Result<Response>
 }
 
 @Serializable
