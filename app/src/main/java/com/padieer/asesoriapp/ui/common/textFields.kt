@@ -14,6 +14,7 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -97,7 +98,7 @@ fun OutlinedDropdown(
     var isExpanded by remember { mutableStateOf(false) }
     var selectedValue by remember { mutableStateOf(data[0]) }
 
-    onValueChange( data[0] )
+    LaunchedEffect(true) { onValueChange(data[0]) }
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
