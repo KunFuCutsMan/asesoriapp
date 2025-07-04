@@ -3,11 +3,13 @@ package com.padieer.asesoriapp.ui.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -126,4 +128,13 @@ fun OutlinedDropdown(
             }
         }
     }
+}
+
+@Composable
+fun ErrorText(text: String) {
+    Text(text, modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.error,
+        textAlign = TextAlign.Start,
+        fontSize = MaterialTheme.typography.labelLarge.fontSize
+    )
 }

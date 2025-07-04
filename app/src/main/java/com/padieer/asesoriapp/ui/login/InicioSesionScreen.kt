@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.ui.common.ErrorText
+import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
@@ -70,9 +69,10 @@ fun InicioSesionScren(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
-            .padding(vertical = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Spacer(Modifier.height(32.dp))
+
         Row {
             Spacer(modifier = Modifier.weight(1f))
             Button(
@@ -87,6 +87,7 @@ fun InicioSesionScren(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding( horizontal = 16.dp )
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
@@ -96,29 +97,35 @@ fun InicioSesionScren(
 
             Text("Inicio de Sesión", fontSize = 16.sp)
 
-            OutlinedTextField(
-                value = uiState.numeroControl,
-                label = { Text("Número de Control") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                    showKeyboardOnFocus = true
-                ),
-                onValueChange = { viewModel.onEvent( InicioSesionEvent.NumControlChanged(it) ) }
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.padding( horizontal = 32.dp )
+            ) {
+                OutlinedTextFieldConMaximo(
+                    value = uiState.numeroControl,
+                    maxLength = 8,
+                    label = { Text("Número de Control") },
+                    onValueChange = { viewModel.onEvent( InicioSesionEvent.NumControlChanged(it) ) }
+                )
+                if (uiState.numControlError != null) ErrorText(uiState.numControlError!!)
 
-            OutlinedTextField(
-                value = uiState.contrasena,
-                label = { Text("Contraseña") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
+                Spacer(Modifier.height(20.dp))
+
+                OutlinedTextFieldConMaximo(
+                    value = uiState.contrasena,
+                    maxLength = 32,
+                    label = { Text("Contraseña") },
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { viewModel.onEvent( InicioSesionEvent.ContrasenaChanged(it) ) }
-            )
+                    visualTransformation = PasswordVisualTransformation(),
+                    onValueChange = { viewModel.onEvent( InicioSesionEvent.ContrasenaChanged(it) ) }
+                )
+                if (uiState.contraError != null) ErrorText(uiState.contraError!!)
+
+                Spacer(Modifier.height(20.dp))
+            }
+
+
 
             Button(
                 onClick = { viewModel.onEvent(InicioSesionEvent.LoginClick) },
@@ -142,7 +149,7 @@ fun InicioSesionScren(
                 }
             }
 
-
+            Spacer(Modifier.height(32.dp))
         }
     }
 }

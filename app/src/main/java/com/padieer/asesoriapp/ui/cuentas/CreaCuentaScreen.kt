@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.data.viewModelFactory
+import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
@@ -232,15 +233,6 @@ fun FormCreaCuenta(
         )
         if (formErrorState.contraRepiteError != null) ErrorText(formErrorState.contraRepiteError!!)
     }
-}
-
-@Composable
-private fun ErrorText(text: String) {
-    Text(text, modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.error,
-        textAlign = TextAlign.Start,
-        fontSize = MaterialTheme.typography.labelLarge.fontSize
-    )
 }
 
 @Preview
