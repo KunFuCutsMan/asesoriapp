@@ -6,6 +6,9 @@ import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.FakeCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
+import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
+import com.padieer.asesoriapp.data.estudiante.EstudianteRepositoryImpl
+import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -14,6 +17,7 @@ import kotlinx.serialization.json.Json
 
 interface AppModule {
     val carreraRepository: CarreraRepository
+    val estudianteRepository: EstudianteRepository
 }
 
 class AppModuleImpl(private val appContext: Context): AppModule {
@@ -40,10 +44,23 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         )
     }
 
+    private val remoteEstudianteSource by lazy {
+        RemoteEstudianteSource(
+            client = client,
+            initialURL = URL,
+        )
+    }
+
     override val carreraRepository by lazy {
         CarreraRepositoryImpl(
             remoteCarreraSource = remoteCarreraSource,
             cacheCarreraSource = cacheCarreraSource,
+        )
+    }
+    override val estudianteRepository by lazy {
+        EstudianteRepositoryImpl(
+            remoteEstudianteSource = remoteEstudianteSource,
+            carreraRepository = carreraRepository,
         )
     }
 }

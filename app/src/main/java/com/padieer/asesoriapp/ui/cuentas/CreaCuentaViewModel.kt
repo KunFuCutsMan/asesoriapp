@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.data.carrera.CarreraModel
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
+import com.padieer.asesoriapp.data.estudiante.EstudianteModel
+import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.domain.validators.ValidateApellidoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
@@ -50,6 +52,7 @@ data class FormDataErrors(
 )
 
 class CreaCuentaViewModel(
+    private val estudianteRepository: EstudianteRepository,
     private val carreraRepository: CarreraRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreaCuentaUIState())
@@ -125,8 +128,19 @@ class CreaCuentaViewModel(
             return
         }
 
-        // Envia los datos
         Log.i("[SUCCESS]", "Datos enviados: ${formDataState.value}")
+
+        estudianteRepository.insertEstudiante(
+            nombre = formDataState.value.nombre,
+            apellidoPaterno = formDataState.value.apePaterno,
+            apellidoMaterno = formDataState.value.apeMaterno,
+            numeroControl = formDataState.value.numControl,
+            numeroTelefono = formDataState.value.numTelefono,
+            semestre = formDataState.value.numSemestre,
+            carrera = formDataState.value.carrera,
+            contrasena = formDataState.value.contrasena,
+        )
+
     }
 
     fun onEvent( event: CreaCuentaEvent ) {

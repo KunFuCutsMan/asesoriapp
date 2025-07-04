@@ -48,6 +48,7 @@ fun CreaCuentaScreen(navController: NavController? = null) {
     val viewModel = viewModel<CreaCuentaViewModel>(
         factory = viewModelFactory {
             CreaCuentaViewModel(
+                estudianteRepository = App.appModule.estudianteRepository,
                 carreraRepository = App.appModule.carreraRepository
             )
         }
