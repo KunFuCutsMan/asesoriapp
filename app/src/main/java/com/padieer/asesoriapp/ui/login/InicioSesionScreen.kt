@@ -45,7 +45,7 @@ fun InicioSesionScreen(navController: NavController? = null) {
     LaunchedEffect(true) {
         viewModel.eventChannel.collect {
             when (it) {
-                is InicioSesionScreenViewModel.NavEvent.CreaCuenta -> {
+                is InicioSesionScreenViewModel.Event.CreaCuentaNav -> {
                     navController?.navigate(Screen.CreaCuentaScreen.route)
                 }
             }

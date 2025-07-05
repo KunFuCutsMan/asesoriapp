@@ -24,7 +24,7 @@ class InicioSesionScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(InicioSesionUIState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventChannel = Channel<NavEvent>()
+    private val _eventChannel = Channel<Event>()
     val eventChannel = _eventChannel.receiveAsFlow()
 
     fun onEvent(event: InicioSesionEvent) {
@@ -40,7 +40,7 @@ class InicioSesionScreenViewModel : ViewModel() {
                 this.login()
             }
             is InicioSesionEvent.CreaCuentaScreenClick -> {
-                viewModelScope.launch { _eventChannel.send(NavEvent.CreaCuenta) }
+                viewModelScope.launch { _eventChannel.send(Event.CreaCuentaNav) }
             }
         }
     }
@@ -67,7 +67,7 @@ class InicioSesionScreenViewModel : ViewModel() {
     /**
      * Eventos que debería recibir la pantalla
      */
-    sealed class NavEvent {
-        data object CreaCuenta: NavEvent()
+    sealed class Event {
+        data object CreaCuentaNav: Event()
     }
 }
