@@ -9,6 +9,10 @@ import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepositoryImpl
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
+import com.padieer.asesoriapp.data.token.LoginRepository
+import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
+import com.padieer.asesoriapp.data.token.sources.LocalTokenSource
+import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -17,6 +21,7 @@ import io.ktor.serialization.kotlinx.json.json
 interface AppModule {
     val carreraRepository: CarreraRepository
     val estudianteRepository: EstudianteRepository
+    val loginRepository: LoginRepository
 }
 
 class AppModuleImpl(private val appContext: Context): AppModule {
@@ -50,6 +55,17 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         )
     }
 
+    private val remoteTokenSource by lazy {
+        RemoteTokenSource(
+            client = client,
+            initialURL = URL
+        )
+    }
+
+    private val localTokenSource by lazy {
+        LocalTokenSource(context = appContext)
+    }
+
     override val carreraRepository by lazy {
         CarreraRepositoryImpl(
             remoteCarreraSource = remoteCarreraSource,
@@ -60,6 +76,13 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         EstudianteRepositoryImpl(
             remoteEstudianteSource = remoteEstudianteSource,
             carreraRepository = carreraRepository,
+        )
+    }
+
+    override val loginRepository by lazy {
+        LoginRepositoryImpl(
+            localTokenSource = localTokenSource,
+            remoteTokenSource = remoteTokenSource,
         )
     }
 }
