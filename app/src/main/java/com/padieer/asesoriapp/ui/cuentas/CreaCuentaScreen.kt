@@ -61,7 +61,7 @@ fun CreaCuentaScreen(navController: NavController? = null) {
         viewModel.navigationEvents.collect { event ->
             when(event) {
                 is CreaCuentaViewModel.Event.InicioSesionNav -> {
-                    navController?.navigate(Screen.InicioSesionScreen.route)
+                    navController?.navigate(Screen.Auth.InicioSesionScreen)
                 }
                 is CreaCuentaViewModel.Event.ValidationError -> {
                     Toast.makeText(context, event.response.message, Toast.LENGTH_LONG).show()

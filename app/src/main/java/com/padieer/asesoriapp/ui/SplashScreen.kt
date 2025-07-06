@@ -32,7 +32,7 @@ fun SplashScreen( navController: NavController? ) {
 
     LaunchedEffect(key1 = true) {
         delay(3000L)
-        navController?.navigate( Screen.InicioSesionScreen.route )
+        navController?.navigate(Screen.Auth )
     }
 
     Column (

@@ -1,10 +1,28 @@
 package com.padieer.asesoriapp.ui.nav
 
-sealed class Screen( val route: String ) {
+import kotlinx.serialization.Serializable
 
-    data object SplashScreen : Screen("splash_screen")
+sealed class Screen {
 
-    data object InicioSesionScreen : Screen("inicio_sesion_screen")
+    @Serializable
+    data object SplashScreen : Screen()
 
-    data object CreaCuentaScreen : Screen("crea_cuenta_screen")
+    /**
+     * Grafo para la sección de Auth, que incluye las pantallas de inicio de sesión y creación
+     * de cuentas
+     */
+    @Serializable
+    data object Auth : Screen() {
+        @Serializable
+        data object InicioSesionScreen : Screen()
+
+        @Serializable
+        data object CreaCuentaScreen : Screen()
+    }
+
+    @Serializable
+    data object App : Screen() {
+        @Serializable
+        data object PerfilScreen : Screen()
+    }
 }
