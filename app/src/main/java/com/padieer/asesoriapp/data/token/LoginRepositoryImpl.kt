@@ -2,31 +2,24 @@ package com.padieer.asesoriapp.data.token
 
 import com.padieer.asesoriapp.data.token.sources.LocalTokenSource
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
-import io.ktor.http.isSuccess
+import com.padieer.asesoriapp.domain.error.DataError
+import com.padieer.asesoriapp.domain.error.Result
 
 class LoginRepositoryImpl(
     private val remoteTokenSource: RemoteTokenSource,
     private val localTokenSource: LocalTokenSource,
 ): LoginRepository {
-    override suspend fun getToken(numControl: String, contrasena: String): String? {
+    override suspend fun getToken(numControl: String, contrasena: String): Result<String, DataError.Network> {
         // Check if there's one locally
-        val token = localTokenSource.fetchToken()
-        if (token != null) return token
+        val localResult = localTokenSource.fetchToken()
+        if (localResult is Result.Success)
+            return Result.Success(localResult.data)
 
         // Get the remote version
-        val result = remoteTokenSource.fetchToken(numControl, contrasena)
-        result.fold(
-            onSuccess = {
-                if (!it.statusCode.isSuccess())
-                    return null
-                // Save the token
-                val remoteToken = it.body
-                localTokenSource.saveToken(remoteToken!!)
-                return remoteToken
-            },
-            onFailure = {
-                return null
-            },
-        )
+        val remoteResult = remoteTokenSource.fetchToken(numControl, contrasena)
+        if ( remoteResult is Result.Success )
+            localTokenSource.saveToken(remoteResult.data)
+
+        return remoteResult
     }
 }

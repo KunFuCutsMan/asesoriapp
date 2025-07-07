@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.data.token.LoginRepository
+import com.padieer.asesoriapp.domain.error.DataError
+import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import kotlinx.coroutines.channels.Channel
@@ -67,13 +69,23 @@ class InicioSesionScreenViewModel(
         Log.i("[SUCCESS]", "Datos enviados: ${uiState.value}")
 
         viewModelScope.launch {
-            val token = loginRepository.getToken(
+            val result = loginRepository.getToken(
                 numControl = uiState.value.numeroControl,
                 contrasena = uiState.value.contrasena,
             )
 
-            if (token == null) {
-                // There was an error
+            when (result) {
+                is Result.Success -> {
+                    // Manda a la app
+                    viewModelScope.launch { _eventChannel.send(Event.AplicacionNav) }
+                }
+                is Result.Error -> {
+                    val message = when(result.error) {
+                        DataError.Network.BAD_PARAMS -> "Los parámetros son incorrectos"
+                        else -> "Ocurrió un error y no sabemos que pasó :("
+                    }
+                    viewModelScope.launch { _eventChannel.send(Event.Toast(message)) }
+                }
             }
         }
     }
@@ -84,5 +96,6 @@ class InicioSesionScreenViewModel(
     sealed class Event {
         data object CreaCuentaNav: Event()
         data object AplicacionNav: Event()
+        data class Toast(val message: String): Event()
     }
 }
