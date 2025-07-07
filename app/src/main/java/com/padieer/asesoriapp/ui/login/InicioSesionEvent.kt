@@ -5,6 +5,6 @@ sealed class InicioSesionEvent {
     data class NumControlChanged(val numControl: String): InicioSesionEvent()
     data class ContrasenaChanged(val contrasena: String): InicioSesionEvent()
 
-    object LoginClick: InicioSesionEvent()
-    object CreaCuentaScreenClick: InicioSesionEvent()
+    data object LoginClick: InicioSesionEvent()
+    data object CreaCuentaScreenClick: InicioSesionEvent()
 }

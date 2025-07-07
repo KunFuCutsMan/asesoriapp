@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.nav.Screen
@@ -40,13 +42,24 @@ import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
 fun InicioSesionScreen(navController: NavController? = null) {
-    val viewModel = viewModel<InicioSesionScreenViewModel>()
+    val viewModel = viewModel<InicioSesionScreenViewModel>(
+        factory = viewModelFactory {
+            InicioSesionScreenViewModel(
+                 loginRepository = App.appModule.loginRepository
+            )
+        }
+    )
 
     LaunchedEffect(true) {
         viewModel.eventChannel.collect {
             when (it) {
                 is InicioSesionScreenViewModel.Event.CreaCuentaNav -> {
                     navController?.navigate(Screen.Auth.CreaCuentaScreen)
+                }
+                is InicioSesionScreenViewModel.Event.AplicacionNav -> {
+                    navController?.navigate(Screen.App) {
+                        popUpTo(Screen.Auth){ inclusive = true }
+                    }
                 }
             }
         }

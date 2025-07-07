@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.ui.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +20,9 @@ data class InicioSesionUIState(
     val contraError: String? = null
 )
 
-class InicioSesionScreenViewModel : ViewModel() {
+class InicioSesionScreenViewModel(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InicioSesionUIState())
     val uiState = _uiState.asStateFlow()
@@ -62,6 +65,17 @@ class InicioSesionScreenViewModel : ViewModel() {
 
         // Envia datos al servidor
         Log.i("[SUCCESS]", "Datos enviados: ${uiState.value}")
+
+        viewModelScope.launch {
+            val token = loginRepository.getToken(
+                numControl = uiState.value.numeroControl,
+                contrasena = uiState.value.contrasena,
+            )
+
+            if (token == null) {
+                // There was an error
+            }
+        }
     }
 
     /**
@@ -69,5 +83,6 @@ class InicioSesionScreenViewModel : ViewModel() {
      */
     sealed class Event {
         data object CreaCuentaNav: Event()
+        data object AplicacionNav: Event()
     }
 }
