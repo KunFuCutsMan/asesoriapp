@@ -32,7 +32,9 @@ fun SplashScreen( navController: NavController? ) {
 
     LaunchedEffect(key1 = true) {
         delay(3000L)
-        navController?.navigate(Screen.Auth )
+        navController?.navigate(Screen.Auth) {
+            popUpTo(Screen.SplashScreen) { inclusive = true }
+        }
     }
 
     Column (
