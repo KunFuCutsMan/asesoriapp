@@ -1,6 +1,8 @@
 package com.padieer.asesoriapp.data.estudiante
 
-import com.padieer.asesoriapp.data.Response
+import com.padieer.asesoriapp.domain.error.DataError
+import com.padieer.asesoriapp.domain.error.Result
+import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
 interface EstudianteRepository {
@@ -14,7 +16,7 @@ interface EstudianteRepository {
         semestre: Int,
         contrasena: String,
         carrera: String,
-    ): Result<Response>
+    ): Result<Unit, DataError.Network>
 }
 
 @Serializable

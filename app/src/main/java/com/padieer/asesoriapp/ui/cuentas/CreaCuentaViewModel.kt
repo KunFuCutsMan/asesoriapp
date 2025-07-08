@@ -3,11 +3,12 @@ package com.padieer.asesoriapp.ui.cuentas
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.padieer.asesoriapp.data.ValidationErrorResponse
 import com.padieer.asesoriapp.data.carrera.CarreraModel
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
-import com.padieer.asesoriapp.data.parseBody
+import com.padieer.asesoriapp.domain.error.DataError
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.message
 import com.padieer.asesoriapp.domain.validators.ValidateApellidoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
@@ -113,19 +114,19 @@ class CreaCuentaViewModel(
             contrasenaResult,
             contraRepiteResult
 
-        ).all { it.isSuccessful }
+        ).all { it is Result.Success }
 
         if (!isValid) {
             _formErrorState.update { it.copy(
-                nombreError = nombreResult.errorMessage,
-                apePatError = apePatResult.errorMessage,
-                apeMatError = apeMatResult.errorMessage,
-                numControlError = numControlResult.errorMessage,
-                numTelefonoError = telefonoResult.errorMessage,
-                semestreError = semestreResult.errorMessage,
-                carreraError = carreraResult.errorMessage,
-                contraError = contrasenaResult.errorMessage,
-                contraRepiteError = contraRepiteResult.errorMessage
+                nombreError = (nombreResult as Result.Error).error.message(),
+                apePatError = (apePatResult as Result.Error).error.message(),
+                apeMatError = (apeMatResult as Result.Error).error.message(),
+                numControlError = (numControlResult as Result.Error).error.message(),
+                numTelefonoError = (telefonoResult as Result.Error).error.message(),
+                semestreError = (semestreResult as Result.Error).error.message(),
+                carreraError = (carreraResult as Result.Error).error.message(),
+                contraError = (contrasenaResult as Result.Error).error.message(),
+                contraRepiteError = (contraRepiteResult as Result.Error).error.message()
             ) }
             return
         }
@@ -143,24 +144,21 @@ class CreaCuentaViewModel(
             contrasena = formDataState.value.contrasena,
         )
 
-        result.fold(
-            onSuccess = {
-                if (!it.statusCode.isSuccess()) {
-                    Log.i("VIEW MODEL", "Hubo un error: ${it.body}")
-                    val errors: ValidationErrorResponse = it.parseBody()
-                    viewModelScope.launch { _eventChannel.send(Event.ValidationError(errors)) }
-                    return@fold
-                }
-
-                Log.i("VIEW MODEL", "Usuario Enviado: ${it.statusCode}")
-
+        when (result) {
+            is Result.Success -> {
                 viewModelScope.launch { _eventChannel.send(Event.Success) }
-            },
-            onFailure = {
-                Log.e("[ERROR]", it.toString())
-            },
-        )
-
+            }
+            is Result.Error -> {
+                when (result.error) {
+                    DataError.Network.BAD_PARAMS -> viewModelScope.launch {
+                        _eventChannel.send(Event.Toast("Hubo un error al validar los datos"))
+                    }
+                    DataError.Network.UNKWOWN -> viewModelScope.launch {
+                        _eventChannel.send((Event.Toast("Hubo un error y no sabemos que es :(")))
+                    }
+                }
+            }
+        }
     }
 
     fun onEvent( event: CreaCuentaEvent ) {
@@ -203,7 +201,7 @@ class CreaCuentaViewModel(
 
     sealed class Event {
         data object InicioSesionNav: Event()
-        data class ValidationError(val response: ValidationErrorResponse ): Event()
+        data class Toast(val message: String): Event()
         data object Success: Event()
     }
 }

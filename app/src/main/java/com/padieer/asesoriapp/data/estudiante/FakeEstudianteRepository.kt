@@ -1,7 +1,7 @@
 package com.padieer.asesoriapp.data.estudiante
 
-import com.padieer.asesoriapp.data.Response
-import io.ktor.http.HttpStatusCode
+import com.padieer.asesoriapp.domain.error.DataError
+import com.padieer.asesoriapp.domain.error.Result
 
 class FakeEstudianteRepository: EstudianteRepository {
     override suspend fun insertEstudiante(
@@ -13,7 +13,7 @@ class FakeEstudianteRepository: EstudianteRepository {
         semestre: Int,
         contrasena: String,
         carrera: String
-    ): Result<Response> {
-        return runCatching { Response( statusCode = HttpStatusCode.Created ) }
+    ): Result<Unit, DataError.Network> {
+        return Result.Success(Unit)
     }
 }

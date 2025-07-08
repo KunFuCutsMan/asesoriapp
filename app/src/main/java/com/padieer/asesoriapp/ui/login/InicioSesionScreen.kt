@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.ui.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -50,6 +52,7 @@ fun InicioSesionScreen(navController: NavController? = null) {
         }
     )
 
+    val context = LocalContext.current
     LaunchedEffect(true) {
         viewModel.eventChannel.collect {
             when (it) {
@@ -60,6 +63,9 @@ fun InicioSesionScreen(navController: NavController? = null) {
                     navController?.navigate(Screen.App) {
                         popUpTo(Screen.Auth){ inclusive = true }
                     }
+                }
+                is InicioSesionScreenViewModel.Event.Toast -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -16,7 +16,3 @@ fun String.isNumeric(): Boolean {
 fun String.hasMixedCase(): Boolean {
     return this.any { it.isLowerCase() } && this.any { it.isUpperCase() }
 }
-
-fun String.hasSymbols(): Boolean {
-    return "/\\p{Z}|\\p{S}|\\p{P}/u".toRegex().containsMatchIn(this)
-}

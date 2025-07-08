@@ -58,16 +58,16 @@ fun CreaCuentaScreen(navController: NavController? = null) {
     val context = LocalContext.current
 
     LaunchedEffect(true) {
-        viewModel.navigationEvents.collect { event ->
-            when(event) {
+        viewModel.navigationEvents.collect {
+            when(it) {
                 is CreaCuentaViewModel.Event.InicioSesionNav -> {
                     navController?.navigate(Screen.Auth.InicioSesionScreen)
                 }
-                is CreaCuentaViewModel.Event.ValidationError -> {
-                    Toast.makeText(context, event.response.message, Toast.LENGTH_LONG).show()
-                }
                 is CreaCuentaViewModel.Event.Success -> {
                     Toast.makeText(context, "Usuario creado", Toast.LENGTH_LONG).show()
+                }
+                is CreaCuentaViewModel.Event.Toast -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.message
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import kotlinx.coroutines.channels.Channel
@@ -54,13 +55,13 @@ class InicioSesionScreenViewModel(
         val numControlResult = ValidateNumeroControlUseCase(uiState.value.numeroControl).execute()
         val contrasenaResult = ValidateContrasenaUseCase(uiState.value.contrasena).execute()
 
-        val isValid = listOf(numControlResult, contrasenaResult).all { it.isSuccessful }
+        val isValid = listOf(numControlResult, contrasenaResult).all { it is Result.Success }
 
         if (!isValid) {
             // Envia errores
             _uiState.update { it.copy(
-                numControlError = numControlResult.errorMessage,
-                contraError = contrasenaResult.errorMessage
+                numControlError = (numControlResult as Result.Error).error.message(),
+                contraError = (contrasenaResult as Result.Error).error.message()
             ) }
             return
         }
