@@ -1,29 +1,22 @@
 package com.padieer.asesoriapp.domain.validators
 
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateCarreraUseCase(private val carrera: String, private val carreraRepository: CarreraRepository) {
 
-    suspend fun execute(): ValidationResult {
+    suspend fun execute(): Result<Unit, ValidationError.CarreraError> {
         if (carrera.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Carrera no debe de ser vacío"
-            )
+            return Result.Error(ValidationError.CarreraError.NOT_EMPTY)
 
         if (!carrera.isAlpha())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Carrera debe contener letras"
-            )
+            return Result.Error(ValidationError.CarreraError.NOT_ALPHA)
 
         // ¿Existe la carrera?
         carreraRepository.getCarreras().firstOrNull { it.nombre == carrera }
-            ?: return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Carrera no existe"
-            )
+            ?: return Result.Error(ValidationError.CarreraError.NOT_FOUND)
 
-        return ValidationResult(isSuccessful = true)
+        return Result.Success(Unit)
     }
 }

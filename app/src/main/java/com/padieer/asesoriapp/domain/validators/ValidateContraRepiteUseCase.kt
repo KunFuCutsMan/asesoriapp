@@ -1,20 +1,17 @@
 package com.padieer.asesoriapp.domain.validators
 
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
+
 class ValidateContraRepiteUseCase(private val contra: String, private val repite: String) {
 
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.ContrasenaRepiteError> {
         if ( contra.isBlank() || repite.isBlank() )
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Repite tu contraseña"
-            )
+            return Result.Error(ValidationError.ContrasenaRepiteError.NOT_EMPTY)
 
         if (contra != repite)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "La contraseña no es la misma"
-            )
+            return Result.Error(ValidationError.ContrasenaRepiteError.NOT_EQUAL)
 
-        return ValidationResult(isSuccessful = true)
+        return Result.Success(Unit)
     }
 }

@@ -1,26 +1,20 @@
 package com.padieer.asesoriapp.domain.validators
 
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
+
 class ValidateNumeroControlUseCase(private val numControl: String) {
 
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.NumeroControlError> {
         if (numControl.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Numero de Control no debe de ser vacío"
-            )
+            return Result.Error(ValidationError.NumeroControlError.NOT_EMPTY)
 
         if (!numControl.isNumeric())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Numero de Control debe de ser numérico"
-            )
+            return Result.Error(ValidationError.NumeroControlError.NOT_NUMERIC)
 
         if (numControl.length != 8)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Numero de Control debe de ser de 8 números"
-            )
+            return Result.Error(ValidationError.NumeroControlError.WRONG_LENGTH)
 
-        return ValidationResult( isSuccessful = true )
+        return Result.Success(Unit)
     }
 }

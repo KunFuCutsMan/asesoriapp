@@ -1,43 +1,28 @@
 package com.padieer.asesoriapp.domain.validators
 
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
+
 class ValidateContrasenaUseCase(private val contra: String) {
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.ContrasenaError> {
         if (contra.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Contraseña no debe ser vacía"
-            )
+            return Result.Error(ValidationError.ContrasenaError.NOT_EMPTY)
 
         if (contra.length < 8)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Contraseña debe tener al menos 8 caracteres"
-            )
+            return Result.Error(ValidationError.ContrasenaError.TOO_SHORT)
 
         if (contra.length > 32)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Contraseña no debe exceder 32 caracteres"
-            )
+            return Result.Error(ValidationError.ContrasenaError.TOO_LONG)
 
         if (!contra.any { it.isLetter() })
-            return ValidationResult(
-                isSuccessful = false,
-                "Contraseña debe incluir un caracter"
-            )
+            return Result.Error(ValidationError.ContrasenaError.NEEDS_LETTER)
 
         if (!contra.any { it.isDigit() })
-            return ValidationResult(
-                isSuccessful = false,
-                "Contraseña debe incluir un dígito"
-            )
+            return Result.Error(ValidationError.ContrasenaError.NEEDS_DIGIT)
 
         if (!contra.hasMixedCase())
-            return ValidationResult(
-                isSuccessful = false,
-                "Contraseña debe incluir al menos un caracter mayúsculo y otro minúsculo"
-            )
+            return Result.Error(ValidationError.ContrasenaError.NOT_MIXED_CASE)
 
-        return ValidationResult(isSuccessful = true)
+        return Result.Success(Unit)
     }
 }

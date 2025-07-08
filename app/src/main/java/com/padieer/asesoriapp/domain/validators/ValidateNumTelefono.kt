@@ -1,35 +1,25 @@
 package com.padieer.asesoriapp.domain.validators
 
 import android.util.Patterns
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateNumTelefono(private val numero: String) {
 
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.TelefonoError> {
         if (numero.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Número Telefónico no debe de ser vacío"
-            )
+            return Result.Error(ValidationError.TelefonoError.NOT_EMPTY)
 
         if (!numero.isNumeric())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Número Telefónico debe ser numérico"
-            )
+            return Result.Error(ValidationError.TelefonoError.NOT_NUMERIC)
 
         if (numero.length != 10)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Número Telefónico debe ser de 10 dígitos"
-            )
+            return Result.Error(ValidationError.TelefonoError.WRONG_LENGTH)
 
         if ( !Patterns.PHONE.matcher(numero).matches() ) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Número Telefónico no es válido"
-            )
+            return Result.Error(ValidationError.TelefonoError.NOT_VALID)
         }
 
-        return ValidationResult(isSuccessful = true)
+        return Result.Success(Unit)
     }
 }

@@ -1,26 +1,20 @@
 package com.padieer.asesoriapp.domain.validators
 
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
+
 class ValidateApellidoUseCase(private val apellido: String) {
 
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.ApellidoError> {
         if (apellido.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Apellido no debe de ser vacío"
-            )
+            return Result.Error(ValidationError.ApellidoError.NOT_EMPTY)
 
         if (apellido.length > 32)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Apellido no puede ser mayor a 32 carácteres"
-            )
+            return Result.Error(ValidationError.ApellidoError.TOO_LONG)
 
-        if ( !apellido.isAlpha() )
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Apellido solo puede ser contener letras"
-            )
+        if (!apellido.isAlpha())
+            return Result.Error(ValidationError.ApellidoError.NOT_ALPHA)
 
-        return ValidationResult( isSuccessful = true )
+        return Result.Success(Unit)
     }
 }

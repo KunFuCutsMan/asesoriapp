@@ -1,26 +1,20 @@
 package com.padieer.asesoriapp.domain.validators
 
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.ValidationError
+
 class ValidateNombreUseCase(private val nombre: String) {
 
-    fun execute(): ValidationResult {
+    fun execute(): Result<Unit, ValidationError.NombreError> {
         if (nombre.isBlank())
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Nombre no debe de ser vacío"
-            )
+            return Result.Error(ValidationError.NombreError.NOT_EMPTY)
 
         if (nombre.length > 32)
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Nombre no puede ser mayor a 32 carácteres"
-            )
+            return Result.Error(ValidationError.NombreError.TOO_LONG)
 
-        if ( !nombre.isAlpha() )
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = "Nombre solo puede ser contener letras"
-            )
+        if (!nombre.isAlpha())
+            return Result.Error(ValidationError.NombreError.NOT_ALPHA)
 
-        return ValidationResult( isSuccessful = true )
+        return Result.Success(Unit)
     }
 }
