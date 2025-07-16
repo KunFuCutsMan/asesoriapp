@@ -30,15 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.padieer.asesoriapp.ui.nav.graph.AppGraph
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApplicationScaffold() {
+fun ApplicationNavigationDrawer() {
     val drawerState = rememberDrawerState( initialValue = DrawerValue.Closed )
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(1) }
     val scope = rememberCoroutineScope()
+    val navController = rememberNavController()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -53,6 +56,7 @@ fun ApplicationScaffold() {
                                 label = { Text(item.title) },
                                 selected = index == selectedItemIndex,
                                 onClick = {
+                                    navController.navigate(item.route)
                                     selectedItemIndex = index
                                     scope.launch { drawerState.close() }
                                 },
@@ -106,7 +110,7 @@ fun ApplicationScaffold() {
                     .fillMaxSize()
                     .padding(innerPadding),
             ) {
-                Text("Hola")
+                AppGraph(navController)
             }
         }
 
@@ -117,6 +121,6 @@ fun ApplicationScaffold() {
 @Composable
 fun ApplicationScaffoldPreview() {
     AsesoriAppTheme {
-        ApplicationScaffold()
+        ApplicationNavigationDrawer()
     }
 }
