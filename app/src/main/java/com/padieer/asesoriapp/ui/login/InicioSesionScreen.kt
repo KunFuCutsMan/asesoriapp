@@ -124,6 +124,7 @@ fun InicioSesionScren(
                 OutlinedTextFieldConMaximo(
                     value = uiState.numeroControl,
                     maxLength = 8,
+                    keyboardType = KeyboardType.Number,
                     label = { Text("Número de Control") },
                     onValueChange = { viewModel.onEvent( InicioSesionEvent.NumControlChanged(it) ) }
                 )
