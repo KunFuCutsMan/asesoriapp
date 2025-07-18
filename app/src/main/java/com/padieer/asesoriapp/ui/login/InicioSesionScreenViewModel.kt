@@ -50,6 +50,9 @@ class InicioSesionScreenViewModel(
             is InicioSesionEvent.CreaCuentaScreenClick -> {
                 viewModelScope.launch { _eventChannel.send(Event.CreaCuentaNav) }
             }
+            is InicioSesionEvent.ForgotPasswordClick -> {
+                viewModelScope.launch { _eventChannel.send(Event.ForgotPasswordNav) }
+            }
         }
     }
 
@@ -99,6 +102,7 @@ class InicioSesionScreenViewModel(
     sealed class Event {
         data object CreaCuentaNav: Event()
         data object AplicacionNav: Event()
+        data object ForgotPasswordNav: Event()
         data class Toast(val message: String): Event()
     }
 

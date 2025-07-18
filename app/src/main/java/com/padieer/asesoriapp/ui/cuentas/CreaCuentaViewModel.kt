@@ -15,7 +15,7 @@ import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNombreUseCase
-import com.padieer.asesoriapp.domain.validators.ValidateNumTelefono
+import com.padieer.asesoriapp.domain.validators.ValidateNumTelefonoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
@@ -95,7 +95,7 @@ class CreaCuentaViewModel(
         val apePatResult = ValidateApellidoUseCase(formDataState.value.apePaterno).execute()
         val apeMatResult = ValidateApellidoUseCase(formDataState.value.apeMaterno).execute()
         val numControlResult = ValidateNumeroControlUseCase(formDataState.value.numControl).execute()
-        val telefonoResult = ValidateNumTelefono(formDataState.value.numTelefono).execute()
+        val telefonoResult = ValidateNumTelefonoUseCase(formDataState.value.numTelefono).execute()
         val semestreResult = ValidateSemestreUseCase(formDataState.value.numSemestre).execute()
         val carreraResult = ValidateCarreraUseCase(formDataState.value.carrera, carreraRepository).execute()
         val contrasenaResult = ValidateContrasenaUseCase(formDataState.value.contrasena).execute()

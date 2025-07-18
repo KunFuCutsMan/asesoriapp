@@ -7,6 +7,7 @@ import androidx.navigation.compose.navigation
 import com.padieer.asesoriapp.ui.cuentas.CreaCuentaScreen
 import com.padieer.asesoriapp.ui.login.InicioSesionScreen
 import com.padieer.asesoriapp.ui.nav.Screen
+import com.padieer.asesoriapp.ui.password.ForgotPasswordScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation<Screen.Auth>( startDestination = Screen.Auth.InicioSesionScreen ) {
@@ -15,6 +16,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         }
         composable<Screen.Auth.CreaCuentaScreen> {
             CreaCuentaScreen(navController)
+        }
+        composable<Screen.Auth.ForgotPasswordScreen> {
+            ForgotPasswordScreen(navController)
         }
     }
 }

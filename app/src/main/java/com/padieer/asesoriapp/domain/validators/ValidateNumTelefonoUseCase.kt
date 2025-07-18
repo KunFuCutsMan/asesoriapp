@@ -4,7 +4,7 @@ import android.util.Patterns
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.error.ValidationError
 
-class ValidateNumTelefono(private val numero: String) {
+class ValidateNumTelefonoUseCase(private val numero: String) {
 
     fun execute(): ValidationResult {
         if (numero.isBlank())

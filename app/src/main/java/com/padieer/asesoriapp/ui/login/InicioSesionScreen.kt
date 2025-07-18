@@ -59,6 +59,9 @@ fun InicioSesionScreen(navController: NavController? = null) {
                 is InicioSesionScreenViewModel.Event.Toast -> {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
+                is InicioSesionScreenViewModel.Event.ForgotPasswordNav -> {
+                    navController?.navigate(Screen.Auth.ForgotPasswordScreen)
+                }
             }
         }
     }
@@ -137,7 +140,7 @@ fun InicioSesionScren(
                 Text("¿Eres Nuevo? ¡Crea una cuenta!")
             }
 
-            TextButton(onClick = {}) {
+            TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.ForgotPasswordClick) }) {
                 Text("¿Perdiste la contraseña? Presiona aquí")
             }
         }

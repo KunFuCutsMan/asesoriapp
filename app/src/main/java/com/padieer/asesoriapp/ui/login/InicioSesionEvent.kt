@@ -7,4 +7,5 @@ sealed class InicioSesionEvent {
 
     data object LoginClick: InicioSesionEvent()
     data object CreaCuentaScreenClick: InicioSesionEvent()
+    data object ForgotPasswordClick: InicioSesionEvent()
 }

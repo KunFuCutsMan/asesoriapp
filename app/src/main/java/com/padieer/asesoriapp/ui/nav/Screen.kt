@@ -18,6 +18,9 @@ sealed class Screen {
 
         @Serializable
         data object CreaCuentaScreen : Screen()
+
+        @Serializable
+        data object ForgotPasswordScreen: Screen()
     }
 
     @Serializable
