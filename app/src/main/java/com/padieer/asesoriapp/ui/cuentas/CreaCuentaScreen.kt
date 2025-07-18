@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
+import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
@@ -235,7 +237,9 @@ fun FormCreaCuenta(
 @Preview
 @Composable
 fun CreaCuentaScreenPreview() {
+    App.appModule = FakeAppModule()
+    val viewModel: CreaCuentaViewModel = viewModel(factory = CreaCuentaViewModel.Factory())
     AsesoriAppTheme {
-        CreaCuentaScreen()
+        CreaCuentaScreen(viewModel = viewModel)
     }
 }
