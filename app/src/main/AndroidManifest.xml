@@ -27,24 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".AsesoradoInicioSesionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AsesorInicioSesionActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".InicioAsesorActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".AdminInicioSesionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CrearCuentaActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
