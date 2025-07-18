@@ -3,7 +3,9 @@ package com.padieer.asesoriapp.ui.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.token.LoginRepository
+import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.error.message
@@ -98,5 +100,13 @@ class InicioSesionScreenViewModel(
         data object CreaCuentaNav: Event()
         data object AplicacionNav: Event()
         data class Toast(val message: String): Event()
+    }
+
+    companion object {
+        fun Factory() = viewModelFactory {
+            InicioSesionScreenViewModel(
+                loginRepository = App.appModule.loginRepository
+            )
+        }
     }
 }

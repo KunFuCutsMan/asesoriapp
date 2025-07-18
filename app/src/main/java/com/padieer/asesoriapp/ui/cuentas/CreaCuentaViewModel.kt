@@ -3,9 +3,11 @@ package com.padieer.asesoriapp.ui.cuentas
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.carrera.CarreraModel
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
+import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.error.message
@@ -17,7 +19,6 @@ import com.padieer.asesoriapp.domain.validators.ValidateNombreUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefono
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -203,6 +204,15 @@ class CreaCuentaViewModel(
         data object InicioSesionNav: Event()
         data class Toast(val message: String): Event()
         data object Success: Event()
+    }
+
+    companion object {
+        fun Factory() = viewModelFactory {
+                CreaCuentaViewModel(
+                    estudianteRepository = App.appModule.estudianteRepository,
+                    carreraRepository = App.appModule.carreraRepository,
+                )
+            }
     }
 }
 

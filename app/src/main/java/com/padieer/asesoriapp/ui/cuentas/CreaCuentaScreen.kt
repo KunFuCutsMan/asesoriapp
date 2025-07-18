@@ -35,9 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
-import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
@@ -47,14 +45,7 @@ import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
 fun CreaCuentaScreen(navController: NavController? = null) {
-    val viewModel = viewModel<CreaCuentaViewModel>(
-        factory = viewModelFactory {
-            CreaCuentaViewModel(
-                estudianteRepository = App.appModule.estudianteRepository,
-                carreraRepository = App.appModule.carreraRepository
-            )
-        }
-    )
+    val viewModel = viewModel<CreaCuentaViewModel>(factory = CreaCuentaViewModel.Factory())
     val context = LocalContext.current
 
     LaunchedEffect(true) {
