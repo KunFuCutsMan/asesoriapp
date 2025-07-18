@@ -10,7 +10,6 @@ import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
-import com.padieer.asesoriapp.domain.error.message
 import com.padieer.asesoriapp.domain.validators.ValidateApellidoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
@@ -19,6 +18,7 @@ import com.padieer.asesoriapp.domain.validators.ValidateNombreUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefono
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
+import com.padieer.asesoriapp.domain.validators.messageOrNull
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -119,15 +119,15 @@ class CreaCuentaViewModel(
 
         if (!isValid) {
             _formErrorState.update { it.copy(
-                nombreError = (nombreResult as Result.Error).error.message(),
-                apePatError = (apePatResult as Result.Error).error.message(),
-                apeMatError = (apeMatResult as Result.Error).error.message(),
-                numControlError = (numControlResult as Result.Error).error.message(),
-                numTelefonoError = (telefonoResult as Result.Error).error.message(),
-                semestreError = (semestreResult as Result.Error).error.message(),
-                carreraError = (carreraResult as Result.Error).error.message(),
-                contraError = (contrasenaResult as Result.Error).error.message(),
-                contraRepiteError = (contraRepiteResult as Result.Error).error.message()
+                nombreError = nombreResult.messageOrNull(),
+                apePatError = apePatResult.messageOrNull(),
+                apeMatError = apeMatResult.messageOrNull(),
+                numControlError = numControlResult.messageOrNull(),
+                numTelefonoError = telefonoResult.messageOrNull(),
+                semestreError = semestreResult.messageOrNull(),
+                carreraError = carreraResult.messageOrNull(),
+                contraError = contrasenaResult.messageOrNull(),
+                contraRepiteError = contraRepiteResult.messageOrNull()
             ) }
             return
         }

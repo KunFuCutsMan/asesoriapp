@@ -6,7 +6,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateNumTelefono(private val numero: String) {
 
-    fun execute(): Result<Unit, ValidationError.TelefonoError> {
+    fun execute(): ValidationResult {
         if (numero.isBlank())
             return Result.Error(ValidationError.TelefonoError.NOT_EMPTY)
 

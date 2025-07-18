@@ -5,7 +5,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateNumeroControlUseCase(private val numControl: String) {
 
-    fun execute(): Result<Unit, ValidationError.NumeroControlError> {
+    fun execute(): ValidationResult {
         if (numControl.isBlank())
             return Result.Error(ValidationError.NumeroControlError.NOT_EMPTY)
 

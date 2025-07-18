@@ -8,9 +8,9 @@ import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
-import com.padieer.asesoriapp.domain.error.message
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
+import com.padieer.asesoriapp.domain.validators.messageOrNull
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,8 +62,8 @@ class InicioSesionScreenViewModel(
         if (!isValid) {
             // Envia errores
             _uiState.update { it.copy(
-                numControlError = (numControlResult as Result.Error).error.message(),
-                contraError = (contrasenaResult as Result.Error).error.message()
+                numControlError = numControlResult.messageOrNull(),
+                contraError = contrasenaResult.messageOrNull()
             ) }
             return
         }

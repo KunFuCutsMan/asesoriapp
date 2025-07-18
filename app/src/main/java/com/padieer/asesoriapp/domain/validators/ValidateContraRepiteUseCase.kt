@@ -5,7 +5,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateContraRepiteUseCase(private val contra: String, private val repite: String) {
 
-    fun execute(): Result<Unit, ValidationError.ContrasenaRepiteError> {
+    fun execute(): ValidationResult {
         if ( contra.isBlank() || repite.isBlank() )
             return Result.Error(ValidationError.ContrasenaRepiteError.NOT_EMPTY)
 

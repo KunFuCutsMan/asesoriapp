@@ -5,7 +5,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateApellidoUseCase(private val apellido: String) {
 
-    fun execute(): Result<Unit, ValidationError.ApellidoError> {
+    fun execute(): ValidationResult {
         if (apellido.isBlank())
             return Result.Error(ValidationError.ApellidoError.NOT_EMPTY)
 

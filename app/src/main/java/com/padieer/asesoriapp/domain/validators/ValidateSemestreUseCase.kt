@@ -5,7 +5,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateSemestreUseCase(private val semestre: Int) {
 
-    fun execute(): Result<Unit, ValidationError.SemestreError> {
+    fun execute(): ValidationResult {
         if (semestre < 0)
             return Result.Error(ValidationError.SemestreError.NOT_VALID)
 

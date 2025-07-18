@@ -4,7 +4,7 @@ import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateContrasenaUseCase(private val contra: String) {
-    fun execute(): Result<Unit, ValidationError.ContrasenaError> {
+    fun execute(): ValidationResult {
         if (contra.isBlank())
             return Result.Error(ValidationError.ContrasenaError.NOT_EMPTY)
 

@@ -6,7 +6,7 @@ import com.padieer.asesoriapp.domain.error.ValidationError
 
 class ValidateCarreraUseCase(private val carrera: String, private val carreraRepository: CarreraRepository) {
 
-    suspend fun execute(): Result<Unit, ValidationError.CarreraError> {
+    suspend fun execute(): ValidationResult {
         if (carrera.isBlank())
             return Result.Error(ValidationError.CarreraError.NOT_EMPTY)
 

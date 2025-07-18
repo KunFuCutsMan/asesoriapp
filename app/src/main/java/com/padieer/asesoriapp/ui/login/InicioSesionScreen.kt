@@ -5,14 +5,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -82,51 +80,34 @@ fun InicioSesionScren(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.height(32.dp))
-
-        Row {
-            Spacer(modifier = Modifier.weight(1f))
-            Button(
-                shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp),
-                contentPadding = ButtonDefaults.TextButtonContentPadding,
-                modifier = Modifier.height(40.dp),
-                onClick = {}
-            ) {
-                Text("✪ ¿Eres Asesor? Presiona Aquí", fontSize = 14.sp)
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding( horizontal = 16.dp )
-        ) {
-            Image(
+        Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo PADIEER",
                 modifier = Modifier.size(240.dp)
             )
 
-            Text("Inicio de Sesión", fontSize = 16.sp)
+        Text("Inicio de Sesión", fontSize = 16.sp)
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier.padding( horizontal = 32.dp )
-            ) {
-                OutlinedTextFieldConMaximo(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        ) {
+            OutlinedTextFieldConMaximo(
                     value = uiState.numeroControl,
                     maxLength = 8,
                     keyboardType = KeyboardType.Number,
                     label = { Text("Número de Control") },
                     onValueChange = { viewModel.onEvent( InicioSesionEvent.NumControlChanged(it) ) }
                 )
-                if (uiState.numControlError != null) ErrorText(uiState.numControlError!!)
+            if (uiState.numControlError != null) ErrorText(uiState.numControlError!!)
 
-                Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
 
-                OutlinedTextFieldConMaximo(
+            OutlinedTextFieldConMaximo(
                     value = uiState.contrasena,
                     maxLength = 32,
                     label = { Text("Contraseña") },
@@ -134,36 +115,31 @@ fun InicioSesionScren(
                     visualTransformation = PasswordVisualTransformation(),
                     onValueChange = { viewModel.onEvent( InicioSesionEvent.ContrasenaChanged(it) ) }
                 )
-                if (uiState.contraError != null) ErrorText(uiState.contraError!!)
+            if (uiState.contraError != null) ErrorText(uiState.contraError!!)
 
-                Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
+        }
+
+        Button(
+            onClick = { viewModel.onEvent(InicioSesionEvent.LoginClick) },
+            contentPadding = ButtonDefaults.TextButtonContentPadding
+        ) {
+            Text("▶ Iniciar Sesión", fontSize = 16.sp)
+        }
+
+        Spacer(modifier = Modifier.weight(1f, fill = true))
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.CreaCuentaScreenClick) }) {
+                Text("¿Eres Nuevo? ¡Crea una cuenta!")
             }
 
-
-
-            Button(
-                onClick = { viewModel.onEvent(InicioSesionEvent.LoginClick) },
-                contentPadding = ButtonDefaults.TextButtonContentPadding
-            ) {
-                Text("▶ Iniciar Sesión", fontSize = 16.sp)
+            TextButton(onClick = {}) {
+                Text("¿Perdiste la contraseña? Presiona aquí")
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.CreaCuentaScreenClick) }) {
-                    Text("¿Eres Nuevo? ¡Crea una cuenta!")
-                }
-
-                TextButton(onClick = {}) {
-                    Text("¿Perdiste la contraseña? Presiona aquí")
-                }
-            }
-
-            Spacer(Modifier.height(32.dp))
         }
     }
 }

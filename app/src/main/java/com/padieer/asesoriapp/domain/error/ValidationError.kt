@@ -2,101 +2,54 @@ package com.padieer.asesoriapp.domain.error
 
 sealed interface ValidationError: Error {
 
+    val message: String
+
     enum class NombreError: ValidationError {
-        NOT_EMPTY,
-        TOO_LONG,
-        NOT_ALPHA,
+        NOT_EMPTY { override val message = "Nombre no debe de ser vacío" },
+        TOO_LONG { override val message = "Nombre no puede ser mayor a 32 caracteres" },
+        NOT_ALPHA { override val message = "Nombre solo puede ser contener letras" }
     }
 
     enum class ApellidoError: ValidationError {
-        NOT_EMPTY,
-        TOO_LONG,
-        NOT_ALPHA,
+        NOT_EMPTY { override val message = "Apellido no debe de ser vacío" },
+        TOO_LONG { override val message = "Apellido no puede ser mayor a 32 caracteres" },
+        NOT_ALPHA { override val message = "Apellido solo puede ser contener letras" },
     }
 
     enum class NumeroControlError: ValidationError {
-        NOT_EMPTY,
-        NOT_NUMERIC,
-        WRONG_LENGTH,
+        NOT_EMPTY { override val message = "Numero de Control no debe de ser vacío" },
+        NOT_NUMERIC { override val message = "Numero de Control debe de ser numérico" },
+        WRONG_LENGTH { override val message = "Numero de Control debe de ser de 8 números" },
     }
 
     enum class TelefonoError: ValidationError {
-        NOT_EMPTY,
-        NOT_NUMERIC,
-        WRONG_LENGTH,
-        NOT_VALID,
+        NOT_EMPTY { override val message = "Número Telefónico no debe de ser vacío" },
+        NOT_NUMERIC { override val message = "Número Telefónico debe ser numérico" },
+        WRONG_LENGTH { override val message = "Número Telefónico debe ser de 10 dígitos" },
+        NOT_VALID { override val message = "Número Telefónico no es válido" },
     }
 
     enum class SemestreError: ValidationError {
-        NOT_VALID,
+        NOT_VALID { override val message = "Semestre no es válido" },
     }
 
     enum class CarreraError: ValidationError {
-        NOT_EMPTY,
-        NOT_ALPHA,
-        NOT_FOUND,
+        NOT_EMPTY { override val message = "Carrera no debe de ser vacío" },
+        NOT_ALPHA { override val message = "Carrera debe contener letras" },
+        NOT_FOUND { override val message = "Carrera no existe" },
     }
 
     enum class ContrasenaError: ValidationError {
-        NOT_EMPTY,
-        TOO_SHORT,
-        TOO_LONG,
-        NEEDS_LETTER,
-        NEEDS_DIGIT,
-        NOT_MIXED_CASE
+        NOT_EMPTY { override val message = "Contraseña no debe ser vacía" },
+        TOO_SHORT { override val message = "Contraseña debe tener al menos 8 caracteres" },
+        TOO_LONG { override val message = "Contraseña no debe exceder 32 caracteres" },
+        NEEDS_LETTER { override val message = "Contraseña debe incluir un caracter" },
+        NEEDS_DIGIT { override val message = "Contraseña debe incluir un dígito" },
+        NOT_MIXED_CASE { override val message = "Contraseña debe incluir al menos un caracter mayúsculo y otro minúsculo" }
     }
 
     enum class ContrasenaRepiteError: ValidationError {
-        NOT_EMPTY,
-        NOT_EQUAL,
+        NOT_EMPTY { override val message = "Repite tu contraseña" },
+        NOT_EQUAL { override val message = "La contraseña no es la misma" },
     }
-}
-
-fun ValidationError.NombreError.message(): String = when (this) {
-    ValidationError.NombreError.NOT_EMPTY -> "Nombre no debe de ser vacío"
-    ValidationError.NombreError.TOO_LONG -> "Nombre no puede ser mayor a 32 caracteres"
-    ValidationError.NombreError.NOT_ALPHA -> "Nombre solo puede ser contener letras"
-}
-
-fun ValidationError.ApellidoError.message(): String = when (this) {
-    ValidationError.ApellidoError.NOT_EMPTY -> "Apellido no debe de ser vacío"
-    ValidationError.ApellidoError.TOO_LONG -> "Apellido no puede ser mayor a 32 caracteres"
-    ValidationError.ApellidoError.NOT_ALPHA -> "Apellido solo puede ser contener letras"
-}
-
-fun ValidationError.NumeroControlError.message(): String = when (this) {
-    ValidationError.NumeroControlError.NOT_EMPTY -> "Numero de Control no debe de ser vacío"
-    ValidationError.NumeroControlError.NOT_NUMERIC -> "Numero de Control debe de ser numérico"
-    ValidationError.NumeroControlError.WRONG_LENGTH -> "Numero de Control debe de ser de 8 números"
-}
-
-fun ValidationError.TelefonoError.message(): String = when (this) {
-    ValidationError.TelefonoError.NOT_EMPTY -> "Número Telefónico no debe de ser vacío"
-    ValidationError.TelefonoError.NOT_NUMERIC -> "Número Telefónico debe ser numérico"
-    ValidationError.TelefonoError.WRONG_LENGTH -> "Número Telefónico debe ser de 10 dígitos"
-    ValidationError.TelefonoError.NOT_VALID -> "Número Telefónico no es válido"
-}
-
-fun ValidationError.SemestreError.message(): String = when (this) {
-    ValidationError.SemestreError.NOT_VALID -> "Semestre no es válido"
-}
-
-fun ValidationError.CarreraError.message(): String = when (this) {
-    ValidationError.CarreraError.NOT_EMPTY -> "Carrera no debe de ser vacío"
-    ValidationError.CarreraError.NOT_ALPHA -> "Carrera debe contener letras"
-    ValidationError.CarreraError.NOT_FOUND -> "Carrera no existe"
-}
-
-fun ValidationError.ContrasenaError.message(): String = when (this) {
-    ValidationError.ContrasenaError.NOT_EMPTY -> "Contraseña no debe ser vacía"
-    ValidationError.ContrasenaError.TOO_SHORT -> "Contraseña debe tener al menos 8 caracteres"
-    ValidationError.ContrasenaError.TOO_LONG -> "Contraseña no debe exceder 32 caracteres"
-    ValidationError.ContrasenaError.NEEDS_LETTER -> "Contraseña debe incluir un caracter"
-    ValidationError.ContrasenaError.NEEDS_DIGIT -> "Contraseña debe incluir un dígito"
-    ValidationError.ContrasenaError.NOT_MIXED_CASE -> "Contraseña debe incluir al menos un caracter mayúsculo y otro minúsculo"
-}
-
-fun ValidationError.ContrasenaRepiteError.message(): String = when (this) {
-    ValidationError.ContrasenaRepiteError.NOT_EMPTY -> "Repite tu contraseña"
-    ValidationError.ContrasenaRepiteError.NOT_EQUAL -> "La contraseña no es la misma"
 }
