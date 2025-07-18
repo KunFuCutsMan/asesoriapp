@@ -6,10 +6,8 @@ import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefonoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
 data class FormData(
@@ -23,9 +21,6 @@ class ForgotPasswordViewModel: ViewModel() {
 
     private val _formDataState = MutableStateFlow(FormData())
     val formDataState = _formDataState.asStateFlow()
-
-    private val _eventChannel = Channel<VMEvent>()
-    val events = _eventChannel.receiveAsFlow()
 
     private fun submitForm() {
         val numControlResult = ValidateNumeroControlUseCase(formDataState.value.numControl).execute()
@@ -54,10 +49,6 @@ class ForgotPasswordViewModel: ViewModel() {
         data class NumeroControlChanged(val value: String): UIEvent()
         data class NumeroTelefonoChanged(val value: String): UIEvent()
         data object SubmitForm: UIEvent()
-    }
-
-    sealed class VMEvent {
-
     }
 
     companion object {

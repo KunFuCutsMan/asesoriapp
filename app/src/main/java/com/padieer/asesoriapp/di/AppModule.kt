@@ -4,11 +4,12 @@ import android.content.Context
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
-import com.padieer.asesoriapp.data.carrera.sources.FakeCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepositoryImpl
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
+import com.padieer.asesoriapp.data.password.FakePasswordRepository
+import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
 import com.padieer.asesoriapp.data.token.sources.LocalTokenSource
@@ -22,6 +23,7 @@ interface AppModule {
     val carreraRepository: CarreraRepository
     val estudianteRepository: EstudianteRepository
     val loginRepository: LoginRepository
+    val passwordRepository: PasswordRepository
 }
 
 class AppModuleImpl(private val appContext: Context): AppModule {
@@ -31,10 +33,6 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         install(ContentNegotiation) {
             json()
         }
-    }
-
-    private val fakeCarreraSource by lazy {
-        FakeCarreraSource()
     }
 
     private val cacheCarreraSource by lazy {
@@ -84,5 +82,9 @@ class AppModuleImpl(private val appContext: Context): AppModule {
             localTokenSource = localTokenSource,
             remoteTokenSource = remoteTokenSource,
         )
+    }
+
+    override val passwordRepository by lazy {
+        FakePasswordRepository()
     }
 }
