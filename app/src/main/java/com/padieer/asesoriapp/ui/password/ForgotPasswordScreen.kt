@@ -4,16 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -22,19 +17,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
-import com.padieer.asesoriapp.ui.common.ErrorText
-import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
+import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
@@ -54,6 +46,8 @@ val instrucciones = """
 @Composable
 fun ForgotPasswordScreen(viewModel: ForgotPasswordViewModel) {
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -61,7 +55,6 @@ fun ForgotPasswordScreen(viewModel: ForgotPasswordViewModel) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(32.dp)
-            .verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = R.drawable.logosinletras),
@@ -77,47 +70,17 @@ fun ForgotPasswordScreen(viewModel: ForgotPasswordViewModel) {
             style = MaterialTheme.typography.bodyMedium
         )
 
-        OutlinedCard { FormCuenta(viewModel) }
-
-        Button(
-            onClick = { viewModel.onEvent(ForgotPasswordViewModel.UIEvent.SubmitForm) },
-            contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) { Text("Enviar datos", fontSize = 16.sp) }
-    }
-}
-
-@Composable
-private fun FormCuenta(viewModel: ForgotPasswordViewModel) {
-    val formDataState by viewModel.formDataState.collectAsStateWithLifecycle()
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        OutlinedTextFieldConMaximo(
-            label = { Text("Número de Control") },
-            keyboardType = KeyboardType.Number,
-            maxLength = 8,
-            value = formDataState.numControl,
-            onValueChange = { viewModel.onEvent(ForgotPasswordViewModel.UIEvent.NumeroControlChanged(it)) }
-        )
-
-        if (formDataState.numControlError != null) ErrorText(formDataState.numControlError!!)
-
-        Spacer(Modifier.height(20.dp))
-
-        OutlinedTextFieldConMaximo(
-            label = { Text("Número Telefónico") },
-            keyboardType = KeyboardType.Phone,
-            maxLength = 10,
-            value = formDataState.numTelefono,
-            onValueChange = { viewModel.onEvent(ForgotPasswordViewModel.UIEvent.NumeroTelefonoChanged(it)) }
-        )
-
-        if (formDataState.numTelefonoError != null) ErrorText(formDataState.numTelefonoError!!)
-
-        Spacer(Modifier.height(20.dp))
+        val m = Modifier.fillMaxWidth().padding(16.dp)
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxHeight(1f)
+        ) {
+            when (uiState) {
+                UIState.Loading -> {  FullScreenLoading() }
+                UIState.OTPCodeForm -> { OTPCodeForm(viewModel, modifier = m) }
+                UIState.UbicaEstudianteForm -> { FormUbicaEstudiante(viewModel, modifier = m) }
+            }
+        }
     }
 }
 
@@ -126,6 +89,7 @@ private fun FormCuenta(viewModel: ForgotPasswordViewModel) {
 fun ForgotPasswordScreenPreview() {
     App.appModule = FakeAppModule()
     val viewModel: ForgotPasswordViewModel = viewModel(factory = ForgotPasswordViewModel.Factory())
+    // viewModel.onEvent( ForgotPasswordViewModel.UIEvent.Loading )
     AsesoriAppTheme {
         ForgotPasswordScreen(viewModel = viewModel)
     }

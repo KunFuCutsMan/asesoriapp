@@ -17,10 +17,20 @@ data class FormData(
     val numTelefonoError: String? = null,
 )
 
+sealed class UIState {
+
+    data object Loading: UIState()
+    data object UbicaEstudianteForm: UIState()
+    data object OTPCodeForm: UIState()
+}
+
 class ForgotPasswordViewModel: ViewModel() {
 
     private val _formDataState = MutableStateFlow(FormData())
     val formDataState = _formDataState.asStateFlow()
+
+    private val _uiState = MutableStateFlow<UIState>(UIState.UbicaEstudianteForm)
+    val uiState = _uiState.asStateFlow()
 
     private fun submitForm() {
         val numControlResult = ValidateNumeroControlUseCase(formDataState.value.numControl).execute()
@@ -42,6 +52,9 @@ class ForgotPasswordViewModel: ViewModel() {
             is UIEvent.NumeroControlChanged -> { _formDataState.update { it.copy(numControl = event.value) } }
             is UIEvent.NumeroTelefonoChanged -> { _formDataState.update { it.copy(numTelefono = event.value) } }
             is UIEvent.SubmitForm -> { submitForm() }
+            UIEvent.FormUbicaEstudiante -> { _uiState.update { UIState.UbicaEstudianteForm } }
+            UIEvent.Loading -> { _uiState.update { UIState.Loading } }
+            UIEvent.OTPCodeForm -> { _uiState.update { UIState.OTPCodeForm } }
         }
     }
 
@@ -49,6 +62,10 @@ class ForgotPasswordViewModel: ViewModel() {
         data class NumeroControlChanged(val value: String): UIEvent()
         data class NumeroTelefonoChanged(val value: String): UIEvent()
         data object SubmitForm: UIEvent()
+
+        data object Loading: UIEvent()
+        data object FormUbicaEstudiante: UIEvent()
+        data object OTPCodeForm: UIEvent()
     }
 
     companion object {
