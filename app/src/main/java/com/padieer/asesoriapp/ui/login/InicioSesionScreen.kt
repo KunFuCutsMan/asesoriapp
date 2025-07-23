@@ -36,6 +36,7 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
+import com.padieer.asesoriapp.ui.common.LogoPadieer
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
@@ -86,11 +87,7 @@ fun InicioSesionScren(
             .padding(horizontal = 16.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo PADIEER",
-                modifier = Modifier.size(240.dp)
-            )
+        LogoPadieer(Modifier.size(240.dp))
 
         Text("Inicio de Sesión", style = MaterialTheme.typography.titleMedium)
 

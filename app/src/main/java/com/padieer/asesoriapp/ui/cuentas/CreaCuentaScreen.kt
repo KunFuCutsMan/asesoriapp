@@ -40,6 +40,7 @@ import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
+import com.padieer.asesoriapp.ui.common.LogoPadieerSinLetras
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
 import com.padieer.asesoriapp.ui.nav.Screen
@@ -89,11 +90,7 @@ fun CreaCuentaScreen(
             .padding(32.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.logosinletras),
-            contentDescription = "Logo PADIEER",
-            modifier = Modifier.size(180.dp)
-        )
+        LogoPadieerSinLetras(Modifier.size(180.dp))
 
         Text(
             text = "Llena el formulario para crear tu cuenta",

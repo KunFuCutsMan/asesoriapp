@@ -29,6 +29,7 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
+import com.padieer.asesoriapp.ui.common.LogoPadieerSinLetras
 import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
@@ -68,11 +69,8 @@ fun ForgotPasswordScreen(viewModel: ForgotPasswordViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .padding(32.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.logosinletras),
-            contentDescription = "Logo PADIEER",
-            modifier = Modifier.size(180.dp)
-        )
+        LogoPadieerSinLetras(Modifier.size(180.dp))
+
         Text(
             text = "¿Ólvidaste tu contraseña?",
             style = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center)
