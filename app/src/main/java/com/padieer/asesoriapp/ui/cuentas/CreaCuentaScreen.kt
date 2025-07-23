@@ -107,10 +107,10 @@ fun CreaCuentaScreen(
         Button(
             onClick = { viewModel.onEvent(CreaCuentaEvent.Submit) },
             contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) { Text("Crear Cuenta", fontSize = 16.sp) }
+        ) { Text("Crear Cuenta", style = MaterialTheme.typography.labelLarge) }
 
         TextButton(onClick = { viewModel.onEvent(CreaCuentaEvent.InicioSesionClick) }) {
-            Text("¿Ya tienes cuenta? Inicia sesión")
+            Text("¿Ya tienes cuenta? Inicia sesión", style = MaterialTheme.typography.labelLarge)
         }
     }
 }

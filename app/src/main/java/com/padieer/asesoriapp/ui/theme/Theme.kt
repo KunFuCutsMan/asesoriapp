@@ -53,6 +53,7 @@ fun AsesoriAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+
         typography = Typography.copy(
             titleLarge = Typography.titleLarge.copy(
                 color = colorScheme.primary,
@@ -62,7 +63,19 @@ fun AsesoriAppTheme(
             ),
             titleSmall = Typography.titleSmall.copy(
                 color = colorScheme.primary,
-            )
+            ),
+            bodyLarge = Typography.bodyLarge.copy(
+                color = colorScheme.onBackground,
+            ),
+            bodyMedium = Typography.bodyMedium.copy(
+                color = colorScheme.onBackground,
+            ),
+            bodySmall = Typography.bodySmall.copy(
+                color = colorScheme.onBackground
+            ),
+            labelLarge = Typography.labelLarge,
+            labelMedium = Typography.labelMedium,
+            labelSmall = Typography.labelSmall,
         ),
         content = content
     )

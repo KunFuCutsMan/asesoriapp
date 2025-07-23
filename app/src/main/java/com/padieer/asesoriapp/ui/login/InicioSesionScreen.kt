@@ -92,7 +92,7 @@ fun InicioSesionScren(
                 modifier = Modifier.size(240.dp)
             )
 
-        Text("Inicio de Sesión", fontSize = 16.sp)
+        Text("Inicio de Sesión", style = MaterialTheme.typography.titleMedium)
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,7 +127,7 @@ fun InicioSesionScren(
             onClick = { viewModel.onEvent(InicioSesionEvent.LoginClick) },
             contentPadding = ButtonDefaults.TextButtonContentPadding
         ) {
-            Text("▶ Iniciar Sesión", fontSize = 16.sp)
+            Text("▶ Iniciar Sesión", style = MaterialTheme.typography.labelLarge)
         }
 
         Spacer(modifier = Modifier.weight(1f, fill = true))
@@ -137,11 +137,11 @@ fun InicioSesionScren(
             verticalArrangement = Arrangement.Top
         ) {
             TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.CreaCuentaScreenClick) }) {
-                Text("¿Eres Nuevo? ¡Crea una cuenta!")
+                Text("¿Eres Nuevo? ¡Crea una cuenta!", style = MaterialTheme.typography.labelLarge)
             }
 
             TextButton(onClick = { viewModel.onEvent(InicioSesionEvent.ForgotPasswordClick) }) {
-                Text("¿Perdiste la contraseña? Presiona aquí")
+                Text("¿Perdiste la contraseña? Presiona aquí", style = MaterialTheme.typography.labelLarge)
             }
         }
     }

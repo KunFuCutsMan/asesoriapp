@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
@@ -71,6 +70,6 @@ fun FormResetContrasena(viewModel: ForgotPasswordViewModel, modifier: Modifier =
         Button(
             onClick = { viewModel.onEvent( ForgotPasswordViewModel.UIEvent.NewPasswordSubmit ) },
             contentPadding = ButtonDefaults.TextButtonContentPadding,
-        ) { Text("Reiniciar contraseña", fontSize = 16.sp) }
+        ) { Text("Reiniciar contraseña") }
     }
 }

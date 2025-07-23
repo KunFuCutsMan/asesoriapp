@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
@@ -66,6 +65,6 @@ internal fun FormUbicaEstudiante(viewModel: ForgotPasswordViewModel, modifier: M
         Button(
             onClick = { viewModel.onEvent(ForgotPasswordViewModel.UIEvent.SubmitForm) },
             contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) { Text("Enviar datos", fontSize = 16.sp) }
+        ) { Text("Enviar datos") }
     }
 }

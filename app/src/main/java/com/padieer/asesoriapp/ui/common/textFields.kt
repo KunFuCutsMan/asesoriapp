@@ -136,6 +136,6 @@ fun ErrorText(text: String) {
     Text(text, modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.error,
         textAlign = TextAlign.Start,
-        fontSize = MaterialTheme.typography.labelLarge.fontSize
+        style = MaterialTheme.typography.labelMedium
     )
 }
