@@ -6,11 +6,16 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
+import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefonoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -35,11 +40,19 @@ enum class ValidationState {
     VALID,
 }
 
-sealed class UIState {
+data class NewPasswordFormData(
+    val password: String = "",
+    val passwordConf: String = "",
+    val passwordError: String? = null,
+    val passwordConfError: String? = null,
+    val validationState: ValidationState = ValidationState.UNVALIDATED,
+)
 
+sealed class UIState {
     data object Loading: UIState()
     data object UbicaEstudianteForm: UIState()
     data object OTPCodeForm: UIState()
+    data object ResetPasswordForm: UIState()
 }
 
 class ForgotPasswordViewModel(
@@ -52,8 +65,14 @@ class ForgotPasswordViewModel(
     private val _otpState = MutableStateFlow(OtpState())
     val otpState = _otpState.asStateFlow()
 
+    private val _newPasswordFormState = MutableStateFlow(NewPasswordFormData())
+    val newPasswordFormState = _newPasswordFormState.asStateFlow()
+
     private val _uiState = MutableStateFlow<UIState>(UIState.UbicaEstudianteForm)
     val uiState = _uiState.asStateFlow()
+
+    private val _events = Channel<NavEvent>()
+    val eventChannel = _events.receiveAsFlow()
 
     private fun submitForm() {
 
@@ -112,6 +131,7 @@ class ForgotPasswordViewModel(
                     _otpState.update { it.copy(
                         validState = ValidationState.VALID
                     ) }
+                    _uiState.update { UIState.ResetPasswordForm }
                 }
                 is Result.Error -> {
                     _otpState.update { it.copy(
@@ -120,6 +140,46 @@ class ForgotPasswordViewModel(
                 }
             }
         }
+    }
+
+    private fun newPasswordSubmit() {
+        val contrasena = newPasswordFormState.value.password
+        val contraRepite = newPasswordFormState.value.passwordConf
+        val passwordRes = ValidateContrasenaUseCase(contrasena).execute()
+        val passConfRes = ValidateContraRepiteUseCase(contrasena, contraRepite).execute()
+
+        val isValid = listOf(passwordRes, passConfRes).all { it is Result.Success }
+        if ( !isValid ) {
+            _newPasswordFormState.update { it.copy(
+                passwordError = passwordRes.messageOrNull(),
+                passwordConfError = passConfRes.messageOrNull()
+            ) }
+            return
+        }
+
+        viewModelScope.launch {
+            val result = passwordRepository.sendNewPassword(
+                password = contrasena,
+                passwordConf = contraRepite
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    _newPasswordFormState.update { it.copy(
+                        validationState = ValidationState.VALID
+                    ) }
+
+                    delay(3000L)
+                    _events.send(NavEvent.BackToLogin)
+                }
+                is Result.Error -> {
+                    _newPasswordFormState.update { it.copy(
+                        validationState = ValidationState.NOT_VALID,
+                    ) }
+                }
+            }
+        }
+
     }
 
     /*
@@ -215,6 +275,11 @@ class ForgotPasswordViewModel(
             is UIEvent.OTPNumberEntered -> { otpEnterNumber(event.number, event.index) }
             UIEvent.OTPKeyboardBack -> { otpKeyboardBack() }
 
+            // Eventos de NewPassword
+            is UIEvent.NewPasswordChanged -> { _newPasswordFormState.update { it.copy( password = event.value ) } }
+            is UIEvent.NewPasswordConfChanged -> { _newPasswordFormState.update { it.copy( passwordConf = event.value ) } }
+            UIEvent.NewPasswordSubmit -> { newPasswordSubmit() }
+
             // Eventos de UI
             UIEvent.FormUbicaEstudiante -> { _uiState.update { UIState.UbicaEstudianteForm } }
             UIEvent.Loading -> { _uiState.update { UIState.Loading } }
@@ -231,9 +296,17 @@ class ForgotPasswordViewModel(
         data class OTPNumberEntered( val number: Int?, val index: Int ): UIEvent()
         data object OTPKeyboardBack: UIEvent()
 
+        data class NewPasswordChanged(val value: String): UIEvent()
+        data class NewPasswordConfChanged(val value: String): UIEvent()
+        data object NewPasswordSubmit: UIEvent()
+
         data object Loading: UIEvent()
         data object FormUbicaEstudiante: UIEvent()
         data object OTPCodeForm: UIEvent()
+    }
+
+    sealed class NavEvent {
+        object BackToLogin: NavEvent()
     }
 
     companion object {
