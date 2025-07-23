@@ -87,7 +87,7 @@ fun OtpInputField(
             textStyle = TextStyle(
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Light,
-                fontSize = 36.sp,
+                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary
             ),
             keyboardOptions = KeyboardOptions(

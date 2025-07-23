@@ -5,13 +5,18 @@ import com.padieer.asesoriapp.domain.error.Result
 
 interface PasswordRepository {
 
-    fun sendPasswordResetRequest(
+    suspend fun sendPasswordResetRequest(
         numControl: String,
         numTelefono: String
     ): Result<Unit, DataError.Network>
 
-    fun sendNewPassword(
-        resetToken: String,
+    suspend fun verifyPasswordCode(
+        numControl: String,
+        numTelefono: String,
+        codigo: String,
+    ): Result<Unit, DataError.Network>
+
+    suspend fun sendNewPassword(
         password: String,
         passwordConf: String
     ): Result<Unit, DataError.Network>

@@ -1,13 +1,14 @@
 package com.padieer.asesoriapp.ui.password
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,7 +50,18 @@ internal fun FormUbicaEstudiante(viewModel: ForgotPasswordViewModel, modifier: M
 
         if (formDataState.numTelefonoError != null) ErrorText(formDataState.numTelefonoError!!)
 
-        Spacer(Modifier.height(20.dp))
+        when (formDataState.validationState) {
+            ValidationState.UNVALIDATED -> {
+                Spacer(Modifier.height(20.dp))
+            }
+            ValidationState.CHECKING_VALIDATION -> {
+                LinearProgressIndicator(Modifier.padding(vertical = 16.dp, horizontal = 32.dp))
+            }
+            ValidationState.NOT_VALID -> {
+                ErrorText("Hubo un error al validar el código")
+            }
+            else -> {}
+        }
 
         Button(
             onClick = { viewModel.onEvent(ForgotPasswordViewModel.UIEvent.SubmitForm) },
