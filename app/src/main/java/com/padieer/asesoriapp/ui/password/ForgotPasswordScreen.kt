@@ -91,7 +91,7 @@ fun ForgotPasswordScreen(viewModel: ForgotPasswordViewModel) {
                 UIState.Loading -> {  FullScreenLoading() }
                 UIState.OTPCodeForm -> { OTPCodeForm(viewModel, modifier = m) }
                 UIState.UbicaEstudianteForm -> { FormUbicaEstudiante(viewModel, modifier = m) }
-                UIState.ResetPasswordForm -> {}
+                UIState.ResetPasswordForm -> { FormResetContrasena(viewModel, modifier = m) }
             }
         }
     }

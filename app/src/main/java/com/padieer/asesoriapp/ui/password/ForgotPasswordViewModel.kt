@@ -143,6 +143,8 @@ class ForgotPasswordViewModel(
     }
 
     private fun newPasswordSubmit() {
+        _newPasswordFormState.update { it.copy( validationState = ValidationState.CHECKING_VALIDATION ) }
+
         val contrasena = newPasswordFormState.value.password
         val contraRepite = newPasswordFormState.value.passwordConf
         val passwordRes = ValidateContrasenaUseCase(contrasena).execute()
@@ -152,7 +154,8 @@ class ForgotPasswordViewModel(
         if ( !isValid ) {
             _newPasswordFormState.update { it.copy(
                 passwordError = passwordRes.messageOrNull(),
-                passwordConfError = passConfRes.messageOrNull()
+                passwordConfError = passConfRes.messageOrNull(),
+                validationState = ValidationState.UNVALIDATED,
             ) }
             return
         }
