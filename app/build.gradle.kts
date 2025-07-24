@@ -58,6 +58,7 @@ dependencies {
 
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose.android)
+    implementation(libs.androidx.core.splashscreen)
 
     implementation("io.ktor:ktor-client-core:${ktor_version}")
     implementation("io.ktor:ktor-client-android:${ktor_version}")

@@ -1,6 +1,7 @@
 [versions]
 agp = "8.11.0"
 appcompat = "1.7.1"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.7"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
@@ -19,6 +20,7 @@ kotlinSerialization = "2.2.0"
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
