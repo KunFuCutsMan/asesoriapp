@@ -18,6 +18,7 @@ interface PasswordRepository {
 
     suspend fun sendNewPassword(
         password: String,
-        passwordConf: String
+        passwordConf: String,
+        codigo: String
     ): Result<Unit, DataError.Network>
 }

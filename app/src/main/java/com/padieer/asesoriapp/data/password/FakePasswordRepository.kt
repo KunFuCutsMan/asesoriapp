@@ -15,7 +15,8 @@ class FakePasswordRepository: PasswordRepository {
 
     override suspend fun sendNewPassword(
         password: String,
-        passwordConf: String
+        passwordConf: String,
+        codigo: String
     ): Result<Unit, DataError.Network> {
         delay(3000L)
         return if (password == passwordConf) Result.Success(Unit)

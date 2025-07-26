@@ -154,7 +154,7 @@ class CreaCuentaViewModel(
                     DataError.Network.BAD_PARAMS -> viewModelScope.launch {
                         _eventChannel.send(Event.Toast("Hubo un error al validar los datos"))
                     }
-                    DataError.Network.UNKWOWN -> viewModelScope.launch {
+                    else -> viewModelScope.launch {
                         _eventChannel.send((Event.Toast("Hubo un error y no sabemos que es :(")))
                     }
                 }

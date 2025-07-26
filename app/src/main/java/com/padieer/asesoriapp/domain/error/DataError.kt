@@ -3,6 +3,8 @@ package com.padieer.asesoriapp.domain.error
 sealed interface DataError: Error {
     enum class Network: DataError {
         BAD_PARAMS,
+        NOT_FOUND,
+        FORBIDDEN,
         UNKWOWN
     }
 

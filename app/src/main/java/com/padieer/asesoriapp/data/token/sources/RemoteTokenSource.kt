@@ -10,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.serialization.Serializable
 
 class RemoteTokenSource(
     private val client: HttpClient,
@@ -40,7 +41,8 @@ class RemoteTokenSource(
         }
     }
 
-    internal data class TokenParams(
+    @Serializable
+    private data class TokenParams(
         val numeroControl: String,
         val contrasena: String
     )

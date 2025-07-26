@@ -74,6 +74,8 @@ class ForgotPasswordViewModel(
     private val _events = Channel<NavEvent>()
     val eventChannel = _events.receiveAsFlow()
 
+    private  var code: String = ""
+
     private fun submitForm() {
 
         val numControlResult = ValidateNumeroControlUseCase(formDataState.value.numControl).execute()
@@ -131,6 +133,7 @@ class ForgotPasswordViewModel(
                     _otpState.update { it.copy(
                         validState = ValidationState.VALID
                     ) }
+                    this@ForgotPasswordViewModel.code = code
                     _uiState.update { UIState.ResetPasswordForm }
                 }
                 is Result.Error -> {
@@ -163,7 +166,8 @@ class ForgotPasswordViewModel(
         viewModelScope.launch {
             val result = passwordRepository.sendNewPassword(
                 password = contrasena,
-                passwordConf = contraRepite
+                passwordConf = contraRepite,
+                codigo = this@ForgotPasswordViewModel.code
             )
 
             when (result) {
