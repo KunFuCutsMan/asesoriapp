@@ -1,11 +1,16 @@
 package com.padieer.asesoriapp.data.estudiante.sources
 
+import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -49,4 +54,24 @@ class RemoteEstudianteSource(
         @SerialName("contrasena_confirmation")
         val contrasenaConfirmation: String,
     )
+
+    suspend fun fetchByToken(token: String): Result<EstudianteModel, DataError.Network> {
+        val response = client.get(initialURL) {
+            url {
+                appendPathSegments("api", "v1", "estudiante", "by-token")
+                port = 8000
+            }
+            contentType(ContentType.Application.Json)
+            headers { append(HttpHeaders.Authorization, "Bearer $token") }
+        }
+
+        return when (response.status.value) {
+            200 -> {
+                val estudiante: EstudianteModel = response.body()
+                Result.Success(estudiante)
+            }
+            404 -> Result.Error(DataError.Network.NOT_FOUND)
+            else -> Result.Error(DataError.Network.UNKWOWN)
+        }
+    }
 }

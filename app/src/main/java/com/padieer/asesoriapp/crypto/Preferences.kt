@@ -2,6 +2,7 @@ package com.padieer.asesoriapp.crypto
 
 import android.util.Base64
 import androidx.datastore.core.Serializer
+import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -11,7 +12,8 @@ import java.io.OutputStream
 
 @Serializable
 data class Preferences(
-    val token: String? = null
+    val token: String? = null,
+    val estudiante: EstudianteModel? = null
 )
 
 /**

@@ -9,7 +9,7 @@ import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
-import com.padieer.asesoriapp.data.token.sources.LocalTokenSource
+import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -56,8 +56,8 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         )
     }
 
-    private val localTokenSource by lazy {
-        LocalTokenSource(context = appContext)
+    private val localPreferencesSource by lazy {
+        LocalPreferencesSource(context = appContext)
     }
 
     override val carreraRepository by lazy {
@@ -70,12 +70,13 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         EstudianteRepositoryImpl(
             remoteEstudianteSource = remoteEstudianteSource,
             carreraRepository = carreraRepository,
+            preferencesSource = localPreferencesSource
         )
     }
 
     override val loginRepository by lazy {
         LoginRepositoryImpl(
-            localTokenSource = localTokenSource,
+            localTokenSource = localPreferencesSource,
             remoteTokenSource = remoteTokenSource,
         )
     }
