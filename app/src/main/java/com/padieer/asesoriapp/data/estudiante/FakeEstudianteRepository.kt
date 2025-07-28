@@ -16,4 +16,18 @@ class FakeEstudianteRepository: EstudianteRepository {
     ): Result<Unit, DataError.Network> {
         return Result.Success(Unit)
     }
+
+    override suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError> {
+        return Result.Success(EstudianteModel(
+            id = 1,
+            numeroControl = "20000001",
+            nombre = "Juan",
+            apellidoPaterno = "Camanei",
+            apellidoMaterno = "Camanei",
+            numeroTelefono = "1800002402",
+            semestre = 6,
+            carreraID = 1,
+            asesor = null
+        ))
+    }
 }

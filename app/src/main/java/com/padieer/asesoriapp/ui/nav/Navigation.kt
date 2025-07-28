@@ -7,10 +7,10 @@ import androidx.navigation.compose.rememberNavController
 import com.padieer.asesoriapp.ui.nav.graph.authNavGraph
 
 @Composable
-fun Navigation() {
+fun Navigation(initialScreen: Screen = Screen.Auth) {
     val navController = rememberNavController()
 
-    NavHost( navController = navController, startDestination = Screen.Auth ) {
+    NavHost( navController = navController, startDestination = initialScreen ) {
 
         // Grafo de Auth
         authNavGraph(navController)

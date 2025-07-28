@@ -76,8 +76,9 @@ class AppModuleImpl(private val appContext: Context): AppModule {
 
     override val loginRepository by lazy {
         LoginRepositoryImpl(
-            localTokenSource = localPreferencesSource,
+            localPreferencesSource = localPreferencesSource,
             remoteTokenSource = remoteTokenSource,
+            estudianteRepository = estudianteRepository
         )
     }
 
