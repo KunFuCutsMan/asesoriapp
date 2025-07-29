@@ -16,10 +16,17 @@ private val Context.dataStore by dataStore(
 class LocalPreferencesSource(
     private val context: Context
 ) {
-    fun deletePreferences(): Result<Unit, DataError.Local> {
-        val deleted = context.deleteSharedPreferences("preferences")
-        return if (deleted) Result.Success(Unit) else Result.Error(DataError.Local.UNKWOWN)
-
+    suspend fun deletePreferences(): Result<Unit, DataError.Local> {
+        try {
+            context.dataStore.updateData { Preferences() }
+            return Result.Success(Unit)
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is IOException -> Result.Error(DataError.Local.DISK_FULL)
+                else -> Result.Error(DataError.Local.UNKWOWN)
+            }
+        }
     }
 
     suspend fun fetchToken(): Result<String, DataError.Local> {
