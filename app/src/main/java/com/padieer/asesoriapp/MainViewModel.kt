@@ -1,12 +1,11 @@
 package com.padieer.asesoriapp
 
-import android.util.Log
-import androidx.compose.ui.util.fastCbrt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -32,6 +31,7 @@ class MainViewModel(
                     isLoggedIn = true,
                 ) }
             }
+            delay(500L) // Espera que se actualice la UI
             _state.update { it.copy(
                 isReady = true
             ) }

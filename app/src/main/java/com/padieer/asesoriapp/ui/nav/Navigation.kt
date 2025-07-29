@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.padieer.asesoriapp.ui.app.ApplicationNavigationDrawer
 import com.padieer.asesoriapp.ui.nav.graph.authNavGraph
 
 @Composable
