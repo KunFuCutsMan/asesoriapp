@@ -1,6 +1,5 @@
 package com.padieer.asesoriapp.ui.password
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,33 +16,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.LogoPadieerSinLetras
-import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController? = null) {
     val viewModel: ForgotPasswordViewModel = viewModel(factory = ForgotPasswordViewModel.Factory())
 
+    val context = LocalContext.current
     LaunchedEffect(true) {
-        viewModel.eventChannel.collect {
-            when (it) {
-                ForgotPasswordViewModel.NavEvent.BackToLogin -> {
-                    navController?.navigate(Screen.Auth)
-                }
-            }
+        viewModel.navigator.channel.collect {
+            viewModel.navigator.consumeAction(it, navController, context)
         }
     }
 

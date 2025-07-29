@@ -6,16 +6,16 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.nav.Navigator
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumTelefonoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
-import kotlinx.coroutines.channels.Channel
+import com.padieer.asesoriapp.ui.nav.Screen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -71,8 +71,7 @@ class ForgotPasswordViewModel(
     private val _uiState = MutableStateFlow<UIState>(UIState.UbicaEstudianteForm)
     val uiState = _uiState.asStateFlow()
 
-    private val _events = Channel<NavEvent>()
-    val eventChannel = _events.receiveAsFlow()
+    val navigator = Navigator()
 
     private  var code: String = ""
 
@@ -177,7 +176,7 @@ class ForgotPasswordViewModel(
                     ) }
 
                     delay(3000L)
-                    _events.send(NavEvent.BackToLogin)
+                    navigator.emit(Navigator.Action.GoTo(Screen.Auth))
                 }
                 is Result.Error -> {
                     _newPasswordFormState.update { it.copy(
@@ -310,10 +309,6 @@ class ForgotPasswordViewModel(
         data object Loading: UIEvent()
         data object FormUbicaEstudiante: UIEvent()
         data object OTPCodeForm: UIEvent()
-    }
-
-    sealed class NavEvent {
-        object BackToLogin: NavEvent()
     }
 
     companion object {

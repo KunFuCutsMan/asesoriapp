@@ -6,6 +6,8 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.nav.Navigator
+import com.padieer.asesoriapp.ui.nav.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +25,8 @@ class AppViewModel(
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
+
+    val navigator = Navigator()
 
     init {
         viewModelScope.launch {
@@ -42,9 +46,20 @@ class AppViewModel(
         }
     }
 
+    private suspend fun logOut() {
+        when (val logOutResult = loginRepository.logOut()) {
+            is Result.Success -> {
+                navigator.emit(Navigator.Action.GoToInclusive(screen = Screen.Auth, upTo = Screen.App))
+            }
+            is Result.Error -> {
+                navigator.emit(Navigator.Action.Toast(logOutResult.error.toString()))
+            }
+        }
+    }
+
     fun onEvent(event: AppEvent) {
         when (event) {
-            AppEvent.LogOutClick -> {}
+            AppEvent.LogOutClick -> { viewModelScope.launch { logOut() } }
         }
     }
 

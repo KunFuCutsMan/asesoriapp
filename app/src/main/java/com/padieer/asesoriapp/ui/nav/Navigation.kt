@@ -18,7 +18,7 @@ fun Navigation(initialScreen: Screen = Screen.Auth) {
 
         // Grafo de App
         composable<Screen.App> {
-            ApplicationNavigationDrawer()
+            ApplicationNavigationDrawer(navController)
         }
 
     }

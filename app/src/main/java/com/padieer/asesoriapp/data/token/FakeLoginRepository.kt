@@ -16,4 +16,8 @@ class FakeLoginRepository: LoginRepository {
     override suspend fun getLoggedInUser(): Result<EstudianteModel, DataError> {
         return App.appModule.estudianteRepository.getEstudianteByToken("")
     }
+
+    override suspend fun logOut(): Result<Unit, DataError.Local> {
+        return Result.Success(Unit)
+    }
 }

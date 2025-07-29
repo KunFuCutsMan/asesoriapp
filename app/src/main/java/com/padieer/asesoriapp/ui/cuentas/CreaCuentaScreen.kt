@@ -1,7 +1,5 @@
 package com.padieer.asesoriapp.ui.cuentas
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,25 +23,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.LogoPadieerSinLetras
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
-import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
@@ -52,18 +46,8 @@ fun CreaCuentaScreen(navController: NavController? = null) {
     val context = LocalContext.current
 
     LaunchedEffect(true) {
-        viewModel.navigationEvents.collect {
-            when(it) {
-                is CreaCuentaViewModel.Event.InicioSesionNav -> {
-                    navController?.navigate(Screen.Auth.InicioSesionScreen)
-                }
-                is CreaCuentaViewModel.Event.Success -> {
-                    Toast.makeText(context, "Usuario creado", Toast.LENGTH_LONG).show()
-                }
-                is CreaCuentaViewModel.Event.Toast -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                }
-            }
+        viewModel.navigator.channel.collect {
+            viewModel.navigator.consumeAction(it, navController, context)
         }
     }
 

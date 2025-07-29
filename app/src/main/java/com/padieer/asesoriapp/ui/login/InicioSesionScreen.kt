@@ -23,22 +23,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.LogoPadieer
 import com.padieer.asesoriapp.ui.common.OutlinedTextFieldConMaximo
-import com.padieer.asesoriapp.ui.nav.Screen
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 @Composable
@@ -47,23 +43,8 @@ fun InicioSesionScreen(navController: NavController? = null) {
 
     val context = LocalContext.current
     LaunchedEffect(true) {
-        viewModel.eventChannel.collect {
-            when (it) {
-                is InicioSesionScreenViewModel.Event.CreaCuentaNav -> {
-                    navController?.navigate(Screen.Auth.CreaCuentaScreen)
-                }
-                is InicioSesionScreenViewModel.Event.AplicacionNav -> {
-                    navController?.navigate(Screen.App) {
-                        popUpTo(Screen.Auth){ inclusive = true }
-                    }
-                }
-                is InicioSesionScreenViewModel.Event.Toast -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                }
-                is InicioSesionScreenViewModel.Event.ForgotPasswordNav -> {
-                    navController?.navigate(Screen.Auth.ForgotPasswordScreen)
-                }
-            }
+        viewModel.navigator.channel.collect {
+            viewModel.navigator.consumeAction(it, navController, context)
         }
     }
 

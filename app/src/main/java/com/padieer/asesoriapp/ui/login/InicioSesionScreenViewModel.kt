@@ -9,13 +9,13 @@ import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.nav.Navigator
 import com.padieer.asesoriapp.domain.validators.ValidateContrasenaUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
-import kotlinx.coroutines.channels.Channel
+import com.padieer.asesoriapp.ui.nav.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,8 +34,7 @@ class InicioSesionScreenViewModel(
     private val _uiState = MutableStateFlow(InicioSesionUIState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventChannel = Channel<Event>()
-    val eventChannel = _eventChannel.receiveAsFlow()
+    val navigator = Navigator()
 
     fun onEvent(event: InicioSesionEvent) {
         when (event) {
@@ -49,11 +48,11 @@ class InicioSesionScreenViewModel(
                 // Valida datos e inicia sesión
                 this.login()
             }
-            is InicioSesionEvent.CreaCuentaScreenClick -> {
-                viewModelScope.launch { _eventChannel.send(Event.CreaCuentaNav) }
+            is InicioSesionEvent.CreaCuentaScreenClick -> viewModelScope.launch {
+                navigator.emit(Navigator.Action.GoTo(Screen.Auth.CreaCuentaScreen))
             }
-            is InicioSesionEvent.ForgotPasswordClick -> {
-                viewModelScope.launch { _eventChannel.send(Event.ForgotPasswordNav) }
+            is InicioSesionEvent.ForgotPasswordClick -> viewModelScope.launch {
+                navigator.emit(Navigator.Action.GoTo(Screen.Auth.ForgotPasswordScreen))
             }
         }
     }
@@ -87,31 +86,28 @@ class InicioSesionScreenViewModel(
                     DataError.Network.BAD_PARAMS -> "Los parámetros son incorrectos"
                     else -> "Ocurrió un error y no sabemos que pasó :("
                 }
-                viewModelScope.launch { _eventChannel.send(Event.Toast(message)) }
+                viewModelScope.launch {
+                    navigator.emit(Navigator.Action.Toast(message))
+                }
                 return@launch
             }
 
             val token = (result as Result.Success).data
             when (val estudianteRes = estudianteRepository.getEstudianteByToken(token)) {
-                is Result.Success -> {
-                    viewModelScope.launch { _eventChannel.send(Event.AplicacionNav) }
+                is Result.Success -> viewModelScope.launch {
+                    navigator.emit(Navigator.Action.GoToInclusive(
+                        screen = Screen.App,
+                        upTo = Screen.Auth
+                    ))
                 }
                 is Result.Error -> {
                     val message = estudianteRes.toString()
-                    viewModelScope.launch { _eventChannel.send(Event.Toast(message)) }
+                    viewModelScope.launch {
+                        navigator.emit(Navigator.Action.Toast(message))
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * Eventos que debería recibir la pantalla
-     */
-    sealed class Event {
-        data object CreaCuentaNav: Event()
-        data object AplicacionNav: Event()
-        data object ForgotPasswordNav: Event()
-        data class Toast(val message: String): Event()
     }
 
     companion object {

@@ -41,4 +41,8 @@ class LoginRepositoryImpl(
             else -> { Result.Error(DataError.Local.NOT_FOUND) }
         }
     }
+
+    override suspend fun logOut(): Result<Unit, DataError.Local> {
+        return localPreferencesSource.deletePreferences()
+    }
 }

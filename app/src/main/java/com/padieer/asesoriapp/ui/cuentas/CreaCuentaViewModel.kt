@@ -10,6 +10,7 @@ import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.nav.Navigator
 import com.padieer.asesoriapp.domain.validators.ValidateApellidoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateCarreraUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateContraRepiteUseCase
@@ -19,7 +20,9 @@ import com.padieer.asesoriapp.domain.validators.ValidateNumTelefonoUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
+import com.padieer.asesoriapp.ui.nav.Screen
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -68,8 +71,7 @@ class CreaCuentaViewModel(
     private val _formErrorState = MutableStateFlow(FormDataErrors())
     val formErrorState = _formErrorState.asStateFlow()
 
-    private val _eventChannel = Channel<Event>()
-    val navigationEvents = _eventChannel.receiveAsFlow()
+    val navigator = Navigator()
 
     init {
         getInitialData()
@@ -146,16 +148,18 @@ class CreaCuentaViewModel(
         )
 
         when (result) {
-            is Result.Success -> {
-                viewModelScope.launch { _eventChannel.send(Event.Success) }
+            is Result.Success -> viewModelScope.launch {
+                navigator.emit(Navigator.Action.Toast("Usuario Creado"))
+                delay(3000L)
+                navigator.emit(Navigator.Action.GoToInclusive(Screen.Auth, Screen.Auth))
             }
             is Result.Error -> {
                 when (result.error) {
                     DataError.Network.BAD_PARAMS -> viewModelScope.launch {
-                        _eventChannel.send(Event.Toast("Hubo un error al validar los datos"))
+                        navigator.emit(Navigator.Action.Toast("Hubo un error al validar los datos"))
                     }
                     else -> viewModelScope.launch {
-                        _eventChannel.send((Event.Toast("Hubo un error y no sabemos que es :(")))
+                        navigator.emit(Navigator.Action.Toast("Hubo un error y no sabemos que es :("))
                     }
                 }
             }
@@ -194,16 +198,11 @@ class CreaCuentaViewModel(
             is CreaCuentaEvent.Submit -> {
                 viewModelScope.launch { submit() }
             }
-            is CreaCuentaEvent.InicioSesionClick -> {
-                viewModelScope.launch { _eventChannel.send(Event.InicioSesionNav) }
+            is CreaCuentaEvent.InicioSesionClick -> viewModelScope.launch {
+                navigator.emit(Navigator.Action.GoToInclusive(Screen.Auth, Screen.Auth))
             }
-        }
-    }
 
-    sealed class Event {
-        data object InicioSesionNav: Event()
-        data class Toast(val message: String): Event()
-        data object Success: Event()
+        }
     }
 
     companion object {
