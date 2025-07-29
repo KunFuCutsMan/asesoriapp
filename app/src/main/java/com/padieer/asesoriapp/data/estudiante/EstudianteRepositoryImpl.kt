@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.data.estudiante
 
+import android.util.Log
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
@@ -43,7 +44,11 @@ class EstudianteRepositoryImpl(
     override suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError> {
         val localTokenRes = preferencesSource.fetchToken()
         if (localTokenRes is Result.Success && localTokenRes.data == token) {
-            return preferencesSource.fetchCurrentEstudiante()
+            val estudianteRes = preferencesSource.fetchCurrentEstudiante()
+            if (estudianteRes is Result.Error) {
+                preferencesSource.deletePreferences() // probablemente sea mejor que lo eliminemos
+            }
+            else return estudianteRes
         }
 
         val remoteEstudianteRes = remoteEstudianteSource.fetchByToken(token)

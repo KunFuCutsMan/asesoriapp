@@ -1,16 +1,17 @@
 package com.padieer.asesoriapp.data.estudiante.sources
 
+import android.util.Log
 import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -62,14 +63,17 @@ class RemoteEstudianteSource(
                 port = 8000
             }
             contentType(ContentType.Application.Json)
-            headers { append(HttpHeaders.Authorization, "Bearer $token") }
+            bearerAuth(token)
         }
 
+        Log.i("RemoteEstudianteSource", "Token recibido con $token")
+        Log.i("RemoteEstudianteSource", response.bodyAsText())
         return when (response.status.value) {
             200 -> {
                 val estudiante: EstudianteModel = response.body()
                 Result.Success(estudiante)
             }
+            401 -> Result.Error(DataError.Network.FORBIDDEN)
             404 -> Result.Error(DataError.Network.NOT_FOUND)
             else -> Result.Error(DataError.Network.UNKWOWN)
         }

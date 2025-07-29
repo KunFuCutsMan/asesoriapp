@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
+import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.DataError
@@ -26,7 +27,8 @@ data class InicioSesionUIState(
 )
 
 class InicioSesionScreenViewModel(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val estudianteRepository: EstudianteRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InicioSesionUIState())
@@ -80,16 +82,22 @@ class InicioSesionScreenViewModel(
                 contrasena = uiState.value.contrasena,
             )
 
-            when (result) {
+            if (result is Result.Error) {
+                val message = when(result.error) {
+                    DataError.Network.BAD_PARAMS -> "Los parámetros son incorrectos"
+                    else -> "Ocurrió un error y no sabemos que pasó :("
+                }
+                viewModelScope.launch { _eventChannel.send(Event.Toast(message)) }
+                return@launch
+            }
+
+            val token = (result as Result.Success).data
+            when (val estudianteRes = estudianteRepository.getEstudianteByToken(token)) {
                 is Result.Success -> {
-                    // Manda a la app
                     viewModelScope.launch { _eventChannel.send(Event.AplicacionNav) }
                 }
                 is Result.Error -> {
-                    val message = when(result.error) {
-                        DataError.Network.BAD_PARAMS -> "Los parámetros son incorrectos"
-                        else -> "Ocurrió un error y no sabemos que pasó :("
-                    }
+                    val message = estudianteRes.toString()
                     viewModelScope.launch { _eventChannel.send(Event.Toast(message)) }
                 }
             }
@@ -109,7 +117,8 @@ class InicioSesionScreenViewModel(
     companion object {
         fun Factory() = viewModelFactory {
             InicioSesionScreenViewModel(
-                loginRepository = App.appModule.loginRepository
+                loginRepository = App.appModule.loginRepository,
+                estudianteRepository = App.appModule.estudianteRepository
             )
         }
     }
