@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -34,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.padieer.asesoriapp.App
+import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.nav.graph.AppGraph
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
@@ -66,8 +69,7 @@ fun ApplicationNavigationDrawer() {
                         is NavigationItem.Item -> {
                             NavItem(
                                 item = item,
-                                index = index,
-                                selectedItemIndex = selectedItemIndex,
+                                isSelected = index == selectedItemIndex,
                                 onClick = {
                                     navController.navigate(item.route)
                                     selectedItemIndex = index
@@ -79,6 +81,13 @@ fun ApplicationNavigationDrawer() {
                             NavSection(
                                 item = item,
                                 index = index,
+                            )
+                        }
+                        is NavigationItem.LogOutItem -> {
+                            Spacer(Modifier.weight(1f))
+                            NavLogOut(
+                                modifier = Modifier.padding(vertical = 28.dp),
+                                onClick = { viewModel.onEvent(AppEvent.LogOutClick) }
                             )
                         }
                     }
@@ -118,15 +127,15 @@ fun ApplicationNavigationDrawer() {
 }
 
 @Composable
-fun NavItem(modifier: Modifier = Modifier, item: NavigationItem.Item, index: Int, selectedItemIndex: Int, onClick : () -> Unit = {}) {
+fun NavItem(modifier: Modifier = Modifier, item: NavigationItem.Item, isSelected: Boolean, onClick : () -> Unit = {}) {
     NavigationDrawerItem(
         modifier = modifier.padding( horizontal = 16.dp ),
         label = { Text(item.title) },
-        selected = index == selectedItemIndex,
+        selected = isSelected,
         onClick = onClick,
         icon = {
             Icon(
-                imageVector = if (index == selectedItemIndex) {
+                imageVector = if (isSelected) {
                     item.selectedIcon
                 } else item.unselectedIcon,
                 contentDescription = item.title
@@ -149,9 +158,21 @@ fun NavSection(modifier: Modifier = Modifier, item: NavigationItem.Section, inde
     }
 }
 
+@Composable
+fun NavLogOut(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+    NavigationDrawerItem(
+        modifier = modifier.padding(horizontal = 16.dp),
+        label = { Text("Cerrar Sesión", color = MaterialTheme.colorScheme.error) },
+        icon = { Icon(imageVector = Icons.Outlined.Close, contentDescription = "Cerrar Sesión", tint = MaterialTheme.colorScheme.error) },
+        selected = false,
+        onClick = onClick,
+    )
+}
+
 @Preview
 @Composable
 fun ApplicationScaffoldPreview() {
+    App.appModule = FakeAppModule()
     AsesoriAppTheme {
         ApplicationNavigationDrawer()
     }

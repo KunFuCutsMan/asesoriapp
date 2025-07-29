@@ -32,10 +32,12 @@ sealed class NavigationItem {
         val badgeCount: Int? = null,
         val route: AppScreen
     ) : NavigationItem()
+
+    data object LogOutItem: NavigationItem()
 }
 
 fun obtenAccionesDelEstudiante(rol: RolEstudiante): List<NavigationItem> {
-    var acciones = arrayListOf<NavigationItem>()
+    val acciones = arrayListOf<NavigationItem>()
 
     acciones.addAll(arrayOf(
         NavigationItem.Section("Usuario"),
@@ -104,6 +106,8 @@ fun obtenAccionesDelEstudiante(rol: RolEstudiante): List<NavigationItem> {
                 route = AppScreen.Asesor.EstadisticasAsesorScreen
             )
         ))
+
+    acciones.add(NavigationItem.LogOutItem)
 
     return acciones.toList()
 }

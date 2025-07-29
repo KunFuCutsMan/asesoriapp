@@ -42,6 +42,12 @@ class AppViewModel(
         }
     }
 
+    fun onEvent(event: AppEvent) {
+        when (event) {
+            AppEvent.LogOutClick -> {}
+        }
+    }
+
     companion object {
         fun Factory() = viewModelFactory {
             AppViewModel(
