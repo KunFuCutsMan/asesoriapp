@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,24 +50,30 @@ fun InicioSesionScreen(navController: NavController? = null) {
         }
     }
 
-    InicioSesionScren(
-        viewModel = viewModel,
-    )
+    Scaffold { padding ->
+        InicioSesionScren(
+            viewModel = viewModel,
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding)
+        )
+    }
 }
 
 @Composable
 fun InicioSesionScren(
     viewModel: InicioSesionScreenViewModel,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 32.dp)
+            .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
         LogoPadieer(Modifier.size(240.dp))

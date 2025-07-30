@@ -16,13 +16,16 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 
 class AppModuleImpl(private val appContext: Context): AppModule {
-    private val URL = "http://localhost/"
+    private val URL = "localhost"
     private val client = HttpClient(Android) {
         defaultRequest {
             host = URL
@@ -33,6 +36,11 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         }
         install(ResponseObserver) {
             onResponse { Log.d("KTOR-R-LOG: ", "$it") }
+        }
+        install(Logging) {
+            logger = object: Logger {
+                override fun log(message: String) { Log.v("KTOR-LOG: ", message) }
+            }
         }
     }
 

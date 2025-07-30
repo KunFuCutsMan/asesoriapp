@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -52,22 +54,30 @@ fun CreaCuentaScreen(navController: NavController? = null) {
         }
     }
 
-    CreaCuentaScreen(viewModel)
+    Scaffold { padding ->
+        CreaCuentaScreen(
+            viewModel = viewModel,
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding)
+        )
+    }
 }
 
 @Composable
 fun CreaCuentaScreen(
-    viewModel: CreaCuentaViewModel
+    modifier: Modifier = Modifier,
+    viewModel: CreaCuentaViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.isLoading) {
-        FullScreenLoading()
+        FullScreenLoading(modifier)
         return
     }
 
     if (uiState.loadingError != null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center,)
+        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center,)
         { ErrorText(uiState.loadingError!!) }
         return
     }
@@ -75,10 +85,10 @@ fun CreaCuentaScreen(
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(32.dp)
+            .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
         LogoPadieerSinLetras(Modifier.size(180.dp))
