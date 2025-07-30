@@ -2,7 +2,7 @@ package com.padieer.asesoriapp.crypto
 
 import android.util.Base64
 import androidx.datastore.core.Serializer
-import com.padieer.asesoriapp.data.estudiante.EstudianteModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable

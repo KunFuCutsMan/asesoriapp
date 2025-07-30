@@ -1,7 +1,7 @@
 package com.padieer.asesoriapp.data.token
 
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.data.estudiante.EstudianteModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 

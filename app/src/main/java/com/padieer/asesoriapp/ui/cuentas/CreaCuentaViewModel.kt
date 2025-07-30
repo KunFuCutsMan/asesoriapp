@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.data.carrera.CarreraModel
+import com.padieer.asesoriapp.domain.model.CarreraModel
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.viewModelFactory

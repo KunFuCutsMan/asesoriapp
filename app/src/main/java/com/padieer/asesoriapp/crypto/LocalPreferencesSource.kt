@@ -3,7 +3,7 @@ package com.padieer.asesoriapp.crypto
 import android.content.Context
 import androidx.datastore.core.IOException
 import androidx.datastore.dataStore
-import com.padieer.asesoriapp.data.estudiante.EstudianteModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import kotlinx.coroutines.flow.first

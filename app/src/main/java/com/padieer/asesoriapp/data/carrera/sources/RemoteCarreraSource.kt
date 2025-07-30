@@ -1,6 +1,6 @@
 package com.padieer.asesoriapp.data.carrera.sources
 
-import com.padieer.asesoriapp.data.carrera.CarreraModel
+import com.padieer.asesoriapp.domain.model.CarreraModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient

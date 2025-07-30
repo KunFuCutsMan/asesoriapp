@@ -1,8 +1,7 @@
 package com.padieer.asesoriapp.data.token
 
-import android.util.Log
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
-import com.padieer.asesoriapp.data.estudiante.EstudianteModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import com.padieer.asesoriapp.domain.error.DataError

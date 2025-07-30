@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.carrera
 import com.padieer.asesoriapp.data.carrera.sources.FakeCarreraSource
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.CarreraModel
 
 class FakeCarreraRepository(
     private val source: FakeCarreraSource = FakeCarreraSource()

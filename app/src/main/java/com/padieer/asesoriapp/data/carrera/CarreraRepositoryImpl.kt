@@ -1,10 +1,10 @@
 package com.padieer.asesoriapp.data.carrera
 
-import android.util.Log
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.CarreraModel
 
 class CarreraRepositoryImpl(
     private val remoteCarreraSource: RemoteCarreraSource,

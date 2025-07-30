@@ -2,6 +2,7 @@ package com.padieer.asesoriapp.data.estudiante
 
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class FakeEstudianteRepository: EstudianteRepository {
     override suspend fun insertEstudiante(
@@ -18,7 +19,8 @@ class FakeEstudianteRepository: EstudianteRepository {
     }
 
     override suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError> {
-        return Result.Success(EstudianteModel(
+        return Result.Success(
+            EstudianteModel(
             id = 1,
             numeroControl = "20000001",
             nombre = "Juan",
@@ -28,6 +30,7 @@ class FakeEstudianteRepository: EstudianteRepository {
             semestre = 6,
             carreraID = 1,
             asesor = null
-        ))
+        )
+        )
     }
 }

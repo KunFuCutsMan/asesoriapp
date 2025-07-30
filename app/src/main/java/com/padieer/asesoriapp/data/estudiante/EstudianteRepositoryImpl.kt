@@ -1,11 +1,11 @@
 package com.padieer.asesoriapp.data.estudiante
 
-import android.util.Log
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class EstudianteRepositoryImpl(
     private val remoteEstudianteSource: RemoteEstudianteSource,
