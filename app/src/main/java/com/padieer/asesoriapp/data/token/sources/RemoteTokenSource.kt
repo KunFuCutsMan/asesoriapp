@@ -16,13 +16,12 @@ import kotlinx.serialization.Serializable
 
 class RemoteTokenSource(
     private val client: HttpClient,
-    private val initialURL: String,
 ) {
 
     suspend fun fetchToken(numControl: String, contrasena: String): Result<String, DataError.Network> {
         try {
 
-        val response = client.post(urlString = initialURL) {
+        val response = client.post {
             url {
                 appendPathSegments("api", "v1", "sanctum", "token")
                 port = 8000

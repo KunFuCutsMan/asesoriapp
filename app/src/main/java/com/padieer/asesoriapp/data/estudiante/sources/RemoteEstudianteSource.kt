@@ -1,6 +1,5 @@
 package com.padieer.asesoriapp.data.estudiante.sources
 
-import android.util.Log
 import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
@@ -12,7 +11,6 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
@@ -22,11 +20,10 @@ import kotlinx.serialization.Serializable
 
 class RemoteEstudianteSource(
     private val client: HttpClient,
-    private val initialURL: String,
 ) {
 
     suspend fun insert(estudiante: InsertableEstudiante): Result<Unit, DataError.Network> {
-        val response = client.post(urlString = initialURL) {
+        val response = client.post {
             url {
                 appendPathSegments("api", "v1", "estudiante")
                 port = 8000
@@ -60,7 +57,7 @@ class RemoteEstudianteSource(
 
     suspend fun fetchByToken(token: String): Result<EstudianteModel, DataError.Network> {
         try {
-        val response = client.get(initialURL) {
+        val response = client.get {
             url {
                 appendPathSegments("api", "v1", "estudiante", "by-token")
                 port = 8000

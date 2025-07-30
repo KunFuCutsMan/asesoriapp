@@ -1,6 +1,7 @@
 package com.padieer.asesoriapp.di
 
 import android.content.Context
+import android.util.Log
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
@@ -14,13 +15,24 @@ import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.observer.ResponseObserver
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 
 class AppModuleImpl(private val appContext: Context): AppModule {
     private val URL = "http://10.0.2.2/"
     private val client = HttpClient(Android) {
+        defaultRequest {
+            host = URL
+            contentType(ContentType.Application.Json)
+        }
         install(ContentNegotiation) {
             json()
+        }
+        install(ResponseObserver) {
+            onResponse { Log.d("KTOR-R-LOG: ", "$it") }
         }
     }
 

@@ -20,7 +20,6 @@ import kotlinx.serialization.Serializable
 
 class RemotePasswordSource(
     private val client: HttpClient,
-    private val initialURL: String,
 ) {
     @Serializable
     private data class RequestCodeParams (
@@ -29,7 +28,7 @@ class RemotePasswordSource(
     )
 
     suspend fun requestCode(numControl: String, numTelefono: String): Result<Unit, DataError.Network> {
-        val response = client.post(urlString = initialURL) {
+        val response = client.post {
             url {
                 appendPathSegments("api", "v1", "password")
                 port = 8000
@@ -59,7 +58,7 @@ class RemotePasswordSource(
 
     suspend fun verifyCode(numControl: String, numTelefono: String, code: String): Result<PasswordToken, DataError.Network> {
         try {
-        val response = client.post(urlString = initialURL) {
+        val response = client.post {
             url {
                 appendPathSegments("api", "v1", "password", "verify")
                 port = 8000
@@ -104,7 +103,7 @@ class RemotePasswordSource(
     suspend fun resetPassword(code: String, password: String, passwordConf: String, token: PasswordToken): Result<Unit, DataError.Network> {
         try {
 
-        val response = client.patch(urlString = initialURL) {
+        val response = client.patch {
             url {
                 appendPathSegments("api", "v1", "password")
                 port = 8000
