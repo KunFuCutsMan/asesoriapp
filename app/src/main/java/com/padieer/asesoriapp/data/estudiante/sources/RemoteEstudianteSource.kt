@@ -1,11 +1,13 @@
 package com.padieer.asesoriapp.data.estudiante.sources
 
 import android.util.Log
+import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.data.estudiante.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -57,6 +59,7 @@ class RemoteEstudianteSource(
     )
 
     suspend fun fetchByToken(token: String): Result<EstudianteModel, DataError.Network> {
+        try {
         val response = client.get(initialURL) {
             url {
                 appendPathSegments("api", "v1", "estudiante", "by-token")
@@ -65,9 +68,6 @@ class RemoteEstudianteSource(
             contentType(ContentType.Application.Json)
             bearerAuth(token)
         }
-
-        Log.i("RemoteEstudianteSource", "Token recibido con $token")
-        Log.i("RemoteEstudianteSource", response.bodyAsText())
         return when (response.status.value) {
             200 -> {
                 val estudiante: EstudianteModel = response.body()
@@ -76,6 +76,14 @@ class RemoteEstudianteSource(
             401 -> Result.Error(DataError.Network.FORBIDDEN)
             404 -> Result.Error(DataError.Network.NOT_FOUND)
             else -> Result.Error(DataError.Network.UNKWOWN)
+        }
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.headers
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
@@ -13,6 +14,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.io.IOException
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -56,6 +58,7 @@ class RemotePasswordSource(
     )
 
     suspend fun verifyCode(numControl: String, numTelefono: String, code: String): Result<PasswordToken, DataError.Network> {
+        try {
         val response = client.post(urlString = initialURL) {
             url {
                 appendPathSegments("api", "v1", "password", "verify")
@@ -80,6 +83,14 @@ class RemotePasswordSource(
             404 -> Result.Error(DataError.Network.NOT_FOUND)
             else -> Result.Error(DataError.Network.UNKWOWN)
         }
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
+        }
     }
 
     @Serializable
@@ -91,6 +102,8 @@ class RemotePasswordSource(
     )
 
     suspend fun resetPassword(code: String, password: String, passwordConf: String, token: PasswordToken): Result<Unit, DataError.Network> {
+        try {
+
         val response = client.patch(urlString = initialURL) {
             url {
                 appendPathSegments("api", "v1", "password")
@@ -115,6 +128,14 @@ class RemotePasswordSource(
             401 -> Result.Error(DataError.Network.FORBIDDEN)
             404 -> Result.Error(DataError.Network.NOT_FOUND)
             else -> Result.Error(DataError.Network.UNKWOWN)
+        }
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
         }
 
 

@@ -4,12 +4,14 @@ import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 
 class RemoteTokenSource(
@@ -18,6 +20,8 @@ class RemoteTokenSource(
 ) {
 
     suspend fun fetchToken(numControl: String, contrasena: String): Result<String, DataError.Network> {
+        try {
+
         val response = client.post(urlString = initialURL) {
             url {
                 appendPathSegments("api", "v1", "sanctum", "token")
@@ -38,6 +42,14 @@ class RemoteTokenSource(
         return when (response.status.value) {
             302, 400, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
             else -> Result.Error(DataError.Network.UNKWOWN)
+        }
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
         }
     }
 
