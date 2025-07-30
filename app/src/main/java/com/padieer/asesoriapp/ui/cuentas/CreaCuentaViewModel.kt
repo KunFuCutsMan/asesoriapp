@@ -21,17 +21,16 @@ import com.padieer.asesoriapp.domain.validators.ValidateNumeroControlUseCase
 import com.padieer.asesoriapp.domain.validators.ValidateSemestreUseCase
 import com.padieer.asesoriapp.domain.validators.messageOrNull
 import com.padieer.asesoriapp.ui.nav.Screen
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class CreaCuentaUIState(
     val isLoading: Boolean = false,
-    val carrerasList: List<Carrera> = listOf(Carrera(""))
+    val carrerasList: List<Carrera> = listOf(Carrera("")),
+    val loadingError: String? = null
 )
 
 data class FormData(
@@ -74,19 +73,26 @@ class CreaCuentaViewModel(
     val navigator = Navigator()
 
     init {
-        getInitialData()
-    }
-
-    private fun getInitialData() {
         _uiState.update { it.copy( isLoading = true ) }
-
         viewModelScope.launch {
-            val carreras = carreraRepository.getCarreras()
-            _uiState.update { state ->
-                state.copy(
-                    carrerasList = carreras.map { it.toUIModel() },
-                    isLoading = false
-                )
+            when (val carreras = carreraRepository.getCarreras()) {
+                is Result.Success -> {
+                    _uiState.update { state -> state.copy(
+                        carrerasList = carreras.data.map { it.toUIModel() },
+                        isLoading = false
+                    ) }
+                }
+                is Result.Error -> {
+                    _uiState.update { it.copy(
+                        isLoading = false,
+                        loadingError = carreras.error.toString()
+                    ) }
+
+                    viewModelScope.launch {
+                        delay(3000L)
+                        navigator.emit(Navigator.Action.Up)
+                    }
+                }
             }
 
         }

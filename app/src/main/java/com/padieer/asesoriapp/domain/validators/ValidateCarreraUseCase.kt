@@ -14,9 +14,14 @@ class ValidateCarreraUseCase(private val carrera: String, private val carreraRep
             return Result.Error(ValidationError.CarreraError.NOT_ALPHA)
 
         // ¿Existe la carrera?
-        carreraRepository.getCarreras().firstOrNull { it.nombre == carrera }
-            ?: return Result.Error(ValidationError.CarreraError.NOT_FOUND)
+        return when (val res = carreraRepository.getCarreras()) {
+            is Result.Success -> {
+                res.data.firstOrNull { it.nombre == carrera }
+                    ?: return Result.Error(ValidationError.CarreraError.NOT_FOUND)
 
-        return Result.Success(Unit)
+                Result.Success(Unit)
+            }
+            else -> Result.Error(ValidationError.CarreraError.NOT_FOUND)
+        }
     }
 }

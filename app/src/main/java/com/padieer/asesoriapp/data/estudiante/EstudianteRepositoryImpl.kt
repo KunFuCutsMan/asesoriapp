@@ -22,7 +22,11 @@ class EstudianteRepositoryImpl(
         contrasena: String,
         carrera: String
     ): Result<Unit, DataError.Network> {
-        val carreraID = carreraRepository.getCarreras().first { it.nombre == carrera }.id
+        val carreras = carreraRepository.getCarreras()
+        if (carreras is Result.Error)
+            return Result.Error(DataError.Network.UNKWOWN)
+
+        val carreraID = (carreras as Result.Success).data.first { it.nombre == carrera }.id
 
         val result = remoteEstudianteSource.insert(
             RemoteEstudianteSource.InsertableEstudiante(

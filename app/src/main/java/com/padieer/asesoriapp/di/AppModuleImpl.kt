@@ -22,7 +22,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 
 class AppModuleImpl(private val appContext: Context): AppModule {
-    private val URL = "http://10.0.2.2/"
+    private val URL = "http://localhost/"
     private val client = HttpClient(Android) {
         defaultRequest {
             host = URL
@@ -41,31 +41,19 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     }
 
     private val remoteCarreraSource by lazy {
-        RemoteCarreraSource(
-            client = client,
-            initialURL = URL
-        )
+        RemoteCarreraSource(client = client)
     }
 
     private val remoteEstudianteSource by lazy {
-        RemoteEstudianteSource(
-            client = client,
-            initialURL = URL,
-        )
+        RemoteEstudianteSource(client = client)
     }
 
     private val remoteTokenSource by lazy {
-        RemoteTokenSource(
-            client = client,
-            initialURL = URL
-        )
+        RemoteTokenSource(client = client)
     }
 
     private val remotePasswordSource by lazy {
-        RemotePasswordSource(
-            client = client,
-            initialURL = URL
-        )
+        RemotePasswordSource(client = client)
     }
 
     private val localPreferencesSource by lazy {
