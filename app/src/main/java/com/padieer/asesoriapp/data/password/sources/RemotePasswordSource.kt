@@ -109,7 +109,7 @@ class RemotePasswordSource(
                 port = 8000
             }
             headers {
-                append(HttpHeaders.Authorization, "Bearer $token")
+                append(HttpHeaders.Authorization, "Bearer ${token.token}")
             }
             contentType(ContentType.Application.Json)
             setBody(ResetPasswordParams(
