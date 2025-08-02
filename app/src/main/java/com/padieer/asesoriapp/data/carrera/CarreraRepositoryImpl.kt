@@ -23,4 +23,10 @@ class CarreraRepositoryImpl(
             else -> { res }
         }
     }
+
+    override fun getCarreraByID(id: Int): Result<CarreraModel, DataError.Local> {
+        val carrera = cacheCarreraSource.carreras?.find { it.id == id }
+        return if (carrera != null) Result.Success(carrera)
+        else Result.Error(DataError.Local.NOT_FOUND)
+    }
 }

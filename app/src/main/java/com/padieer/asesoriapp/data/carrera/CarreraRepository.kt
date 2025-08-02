@@ -6,4 +6,5 @@ import com.padieer.asesoriapp.domain.model.CarreraModel
 
 interface CarreraRepository {
     suspend fun getCarreras(): Result<List<CarreraModel>, DataError>
+    fun getCarreraByID(id: Int): Result<CarreraModel, DataError.Local>
 }

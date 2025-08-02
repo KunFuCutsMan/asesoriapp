@@ -11,4 +11,10 @@ class FakeCarreraRepository(
     override suspend fun getCarreras(): Result<List<CarreraModel>, DataError> {
         return Result.Success(source.fetchCarreras().getOrNull()!!)
     }
+
+    override fun getCarreraByID(id: Int): Result<CarreraModel, DataError.Local> {
+        val carrera = source.fetchCarreras().getOrNull()?.find { it.id == id }
+        return if (carrera != null) Result.Success(carrera)
+        else Result.Error(DataError.Local.NOT_FOUND)
+    }
 }
