@@ -132,10 +132,10 @@ fun OutlinedDropdown(
 }
 
 @Composable
-fun ErrorText(text: String) {
-    Text(text, modifier = Modifier.fillMaxWidth(),
+fun ErrorText(text: String, modifier: Modifier = Modifier, textAlign: TextAlign = TextAlign.Start) {
+    Text(text, modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.error,
-        textAlign = TextAlign.Start,
+        textAlign = textAlign,
         style = MaterialTheme.typography.labelMedium
     )
 }
