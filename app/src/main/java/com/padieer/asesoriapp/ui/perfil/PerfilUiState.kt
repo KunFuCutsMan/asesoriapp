@@ -1,5 +1,8 @@
 package com.padieer.asesoriapp.ui.perfil
 
+import com.padieer.asesoriapp.ui.common.Carrera
+import com.padieer.asesoriapp.ui.common.Estudiante
+
 sealed class PerfilUiState {
 
     data object Loading: PerfilUiState()

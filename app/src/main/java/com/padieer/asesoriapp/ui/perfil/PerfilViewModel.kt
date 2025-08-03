@@ -6,6 +6,7 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
+import com.padieer.asesoriapp.ui.common.toUIModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

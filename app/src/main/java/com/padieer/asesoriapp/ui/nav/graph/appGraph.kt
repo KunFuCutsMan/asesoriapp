@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.padieer.asesoriapp.ui.nav.AppScreen
+import com.padieer.asesoriapp.ui.perfil.PerfilScreen
 
 @Composable
 fun AppGraph(navController: NavHostController) {
@@ -14,7 +15,7 @@ fun AppGraph(navController: NavHostController) {
             Text("Pantalla de Usuario")
         }
         composable<AppScreen.Usuario.PerfilScreen> {
-            Text("Pantalla de Perfil")
+            PerfilScreen()
         }
 
         composable<AppScreen.Asesoria.PedirAsesoriaScreen> {
@@ -41,13 +42,3 @@ fun AppGraph(navController: NavHostController) {
         }
     }
 }
-
-/*
-NavHost(
-        navController = navController,
-        route = Screen.App,
-        startDestination = AppScreen.Usuario.HomeScreen,
-    ) {
-
-    }
- */
