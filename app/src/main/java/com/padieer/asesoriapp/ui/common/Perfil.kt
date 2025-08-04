@@ -113,6 +113,8 @@ fun Perfil(
             )
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+
+                Spacer(Modifier.weight(1f, fill = true))
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = estudiante.nombre,
@@ -126,8 +128,9 @@ fun Perfil(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(Modifier.weight(1f, fill = true))
-                Text(text = "$carrera, $semestre", style = MaterialTheme.typography.headlineSmall)
+                Spacer(Modifier.weight(2f, fill = true))
+                Text(text = carrera, style = MaterialTheme.typography.headlineSmall)
+                Text(text = "$semestre Semestre", style = MaterialTheme.typography.headlineSmall)
             }
         }
 
@@ -216,7 +219,7 @@ private fun PerfilPreview() {
         numeroTelefono = "1800000040",
         numeroControl = "20001987",
         semestre = 7,
-        asesor = null,
+        asesor = Asesor(1),
         admin = null
     )
     val carrera = Carrera(1, "Administración")
