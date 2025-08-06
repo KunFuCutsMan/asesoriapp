@@ -11,6 +11,7 @@ data class EstudianteModel (
     val apellidoMaterno: String,
     val numeroTelefono: String,
     val semestre: Int,
-    val carreraID: Int,
-    val asesor: AsesorModel?
+    val carrera: CarreraModel,
+    val especialidad: EspecialidadModel? = null,
+    val asesor: AsesorModel? = null
 )

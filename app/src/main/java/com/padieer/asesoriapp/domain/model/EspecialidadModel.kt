@@ -3,8 +3,8 @@ package com.padieer.asesoriapp.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AsesorModel (
+data class EspecialidadModel(
     val id: Int,
-    val estudianteID: Int,
-    val admin: AdminModel? = null
+    val nombre: String,
+    val carreraID: Int,
 )

@@ -4,6 +4,7 @@ import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.DataResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -67,8 +68,8 @@ class RemoteEstudianteSource(
         }
         return when (response.status.value) {
             200 -> {
-                val estudiante: EstudianteModel = response.body()
-                Result.Success(estudiante)
+                val body: DataResponse<EstudianteModel> = response.body()
+                Result.Success(body.data)
             }
             401 -> Result.Error(DataError.Network.FORBIDDEN)
             404 -> Result.Error(DataError.Network.NOT_FOUND)

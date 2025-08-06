@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.carrera.sources
 import com.padieer.asesoriapp.domain.model.CarreraModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.DataResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -30,11 +31,11 @@ class RemoteCarreraSource(
                 }
             }
 
-            val listas: List<CarreraModel> = response.body()
-            if (listas.isEmpty())
+            val body: DataResponse<List<CarreraModel>> = response.body()
+            if (body.data.isEmpty())
                 return Result.Error(DataError.Network.NOT_FOUND)
 
-            return Result.Success(listas)
+            return Result.Success(body.data)
         }
         catch (e: Exception) {
             return when (e) {

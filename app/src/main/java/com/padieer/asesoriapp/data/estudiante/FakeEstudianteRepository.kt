@@ -2,6 +2,7 @@ package com.padieer.asesoriapp.data.estudiante
 
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.CarreraModel
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class FakeEstudianteRepository: EstudianteRepository {
@@ -28,8 +29,14 @@ class FakeEstudianteRepository: EstudianteRepository {
             apellidoMaterno = "Camanei",
             numeroTelefono = "1800002402",
             semestre = 6,
-            carreraID = 1,
-            asesor = null
+            carrera = CarreraModel(
+                    id = 1,
+                    nombre = "Administración",
+                    codigo = "",
+                    especialidades = null
+            ),
+            especialidad = null,
+            asesor = null,
         )
         )
     }

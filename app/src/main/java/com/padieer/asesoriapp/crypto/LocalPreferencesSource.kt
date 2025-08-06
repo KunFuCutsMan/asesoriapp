@@ -48,8 +48,13 @@ class LocalPreferencesSource(
     }
 
     suspend fun fetchCurrentEstudiante(): Result<EstudianteModel, DataError.Local> {
-        val estudiante = context.dataStore.data.first().estudiante
-        return if (estudiante != null) Result.Success(estudiante) else Result.Error(DataError.Local.NOT_FOUND)
+        try {
+            val estudiante = context.dataStore.data.first().estudiante
+            return if (estudiante != null) Result.Success(estudiante) else Result.Error(DataError.Local.NOT_FOUND)
+        }
+        catch (_: Error) {
+            return Result.Error(DataError.Local.UNKWOWN)
+        }
     }
 
     suspend fun saveEstudiante(estudianteModel: EstudianteModel): Result<Unit, DataError.Local> {
