@@ -11,7 +11,6 @@ import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class GetLoggedInUserDataUseCase(
     private val loginRepository: LoginRepository,
-    private val carreraRepository: CarreraRepository,
 ) {
 
     data class EstudianteData(
@@ -24,17 +23,11 @@ class GetLoggedInUserDataUseCase(
     suspend operator fun invoke(): Result<EstudianteData, DataError> {
         val estudianteRes = loginRepository.getLoggedInUser()
         if (estudianteRes is Result.Error) return Result.Error(estudianteRes.error)
-
         val estudiante = (estudianteRes as Result.Success).data
-
-        val carreraRes = carreraRepository.getCarreraByID(estudiante.id)
-        if (carreraRes is Result.Error) return Result.Error(carreraRes.error)
-
-        val carrera = (carreraRes as Result.Success).data
 
         return Result.Success(EstudianteData(
             estudiante = estudiante,
-            carrera = carrera,
+            carrera = estudiante.carrera,
             asesor = estudiante.asesor,
             admin = estudiante.asesor?.admin,
         ))

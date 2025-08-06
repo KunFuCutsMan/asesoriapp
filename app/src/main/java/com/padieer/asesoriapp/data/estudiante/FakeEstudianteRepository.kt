@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.estudiante
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.CarreraModel
+import com.padieer.asesoriapp.domain.model.EspecialidadModel
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class FakeEstudianteRepository: EstudianteRepository {
@@ -32,10 +33,25 @@ class FakeEstudianteRepository: EstudianteRepository {
             carrera = CarreraModel(
                     id = 1,
                     nombre = "Administración",
-                    codigo = "",
-                    especialidades = null
+                    codigo = "A",
+                    especialidades = listOf(
+                        EspecialidadModel(
+                            id = 1,
+                            carreraID = 1,
+                            nombre = "Gestión de Negocios",
+                        ),
+                        EspecialidadModel(
+                            id = 2,
+                            carreraID = 1,
+                            nombre = "Mercadotecnia y Negocios Internacionales",
+                        ),
+                    )
             ),
-            especialidad = null,
+            especialidad = EspecialidadModel(
+                id = 1,
+                carreraID = 1,
+                nombre = "Gestión de Negocios",
+            ),
             asesor = null,
         )
         )

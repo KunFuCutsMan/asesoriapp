@@ -1,6 +1,7 @@
 package com.padieer.asesoriapp.ui.perfil
 
 import com.padieer.asesoriapp.ui.common.Carrera
+import com.padieer.asesoriapp.ui.common.Especialidad
 import com.padieer.asesoriapp.ui.common.Estudiante
 
 sealed class PerfilUiState {
@@ -9,6 +10,10 @@ sealed class PerfilUiState {
 
     data class Error(val error: String): PerfilUiState()
 
-    data class EstudiantePerfil(val estudiante: Estudiante, val carrera: Carrera): PerfilUiState()
+    data class EstudiantePerfil(
+        val estudiante: Estudiante,
+        val carrera: Carrera,
+        val especialidad: Especialidad?
+        ): PerfilUiState()
 
 }

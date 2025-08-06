@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,11 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.padieer.asesoriapp.domain.model.CarreraModel
+import com.padieer.asesoriapp.domain.model.EspecialidadModel
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 data class Estudiante(
-    val id: Int,
     val nombre: String,
     val apePaterno: String,
     val apeMaterno: String,
@@ -49,7 +49,10 @@ data class Estudiante(
 )
 
 data class Carrera(
-    val id: Int,
+    val nombre: String,
+)
+
+data class Especialidad(
     val nombre: String,
 )
 
@@ -62,12 +65,10 @@ data class Admin(
 )
 
 fun CarreraModel.toUIModel() = Carrera(
-    id = this.id,
-    nombre = this.nombre
+    nombre = this.nombre,
 )
 
 fun EstudianteModel.toUIModel() = Estudiante(
-    id = this.id,
     nombre = this.nombre,
     apePaterno = this.apellidoPaterno,
     apeMaterno = this.apellidoMaterno,
@@ -78,21 +79,20 @@ fun EstudianteModel.toUIModel() = Estudiante(
     admin = this.asesor?.admin?.let { Admin( id = it.id ) }
 )
 
+fun EspecialidadModel.toUIModel() = Especialidad(
+    nombre = this.nombre
+)
 
 @Composable
 fun Perfil(
     modifier: Modifier = Modifier,
     estudiante: Estudiante,
     carrera: Carrera,
+    especialidad: Especialidad? = null,
     onTelefonoClick: () -> Unit,
-    isEditable: Boolean = false,
-    onEditarClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.background(MaterialTheme.colorScheme.background, CardDefaults.shape),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -112,7 +112,9 @@ fun Perfil(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
 
                 Spacer(Modifier.weight(1f, fill = true))
                 Text(
@@ -129,8 +131,10 @@ fun Perfil(
                 )
 
                 Spacer(Modifier.weight(2f, fill = true))
-                Text(text = carrera, style = MaterialTheme.typography.headlineSmall)
-                Text(text = "$semestre Semestre", style = MaterialTheme.typography.headlineSmall)
+                Text(text = carrera, style = MaterialTheme.typography.titleLarge)
+                Text(text = "$semestre Semestre", style = MaterialTheme.typography.titleLarge)
+                if (especialidad != null)
+                    Text(text = especialidad.nombre, style = MaterialTheme.typography.titleMedium)
             }
         }
 
@@ -169,13 +173,6 @@ fun Perfil(
                 )
             }
         }
-
-        if (isEditable) {
-            Spacer(Modifier.weight(1f, true))
-            TextButton(onClick = onEditarClick) {
-                Text("Editar Datos", style = MaterialTheme.typography.labelLarge)
-            }
-        }
     }
 }
 
@@ -188,7 +185,8 @@ fun RolTag(modifier: Modifier = Modifier, text: String, surfaceColor: Color) {
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            text = text
+            text = text,
+            style = MaterialTheme.typography.labelSmall
         )
     }
 }
@@ -212,7 +210,6 @@ fun Int.toOrdinal(): String {
 @Composable
 private fun PerfilPreview() {
     val estudiante = Estudiante(
-        id = 1,
         nombre = "Juan",
         apePaterno = "Ladrón de Guevara",
         apeMaterno = "Lopeida",
@@ -222,22 +219,16 @@ private fun PerfilPreview() {
         asesor = Asesor(1),
         admin = null
     )
-    val carrera = Carrera(1, "Administración")
+    val carrera = Carrera("Administración")
+
+    val especialidad = Especialidad("Gestión de Negocios")
 
     AsesoriAppTheme {
-        Scaffold(
-            topBar = { TopAppBar(title = { Text("Pantalla de Perfil") }) }
-        ) { paddingValues ->
-            Perfil(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .consumeWindowInsets(paddingValues),
-                estudiante, carrera,
-                isEditable = true,
-                onEditarClick = {},
-                onTelefonoClick = {}
-            )
-        }
+        Perfil(
+            modifier = Modifier,
+            estudiante, carrera, especialidad,
+            onTelefonoClick = {}
+        )
     }
 }
 

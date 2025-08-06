@@ -33,6 +33,7 @@ class PerfilViewModel(
                 _uiState.update { PerfilUiState.EstudiantePerfil(
                     estudiante = estudiante.toUIModel(),
                     carrera = carrera.toUIModel(),
+                    especialidad = estudiante.especialidad?.toUIModel()
                 ) }
             }
         }
@@ -43,7 +44,6 @@ class PerfilViewModel(
             PerfilViewModel(
                 userDataUseCase = GetLoggedInUserDataUseCase(
                     loginRepository = App.appModule.loginRepository,
-                    carreraRepository = App.appModule.carreraRepository
                 )
             )
         }
