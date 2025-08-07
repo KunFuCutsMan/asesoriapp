@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.padieer.asesoriapp.ui.disponibilidad.DisponibilidadAsesorScreen
 import com.padieer.asesoriapp.ui.nav.AppScreen
 import com.padieer.asesoriapp.ui.perfil.PerfilScreen
 
@@ -32,7 +33,7 @@ fun AppGraph(navController: NavHostController) {
             Text("Pantalla que lista las asesorias del asesor pendiente")
         }
         composable<AppScreen.Asesor.DisponibilidadAsesorScreen> {
-            Text("Pantalla que permite al asesor modificar su disponibilidad")
+            DisponibilidadAsesorScreen()
         }
         composable<AppScreen.Asesor.HistorialAsesorScreen> {
             Text("Pantalla que muestra el historial de asesorias del asesor")
