@@ -6,4 +6,6 @@ sealed class DisponibilidadEvent {
     data class HoraMiercolesClick(val index: Int): DisponibilidadEvent()
     data class HoraJuevesClick(val index: Int): DisponibilidadEvent()
     data class HoraViernesClick(val index: Int): DisponibilidadEvent()
+
+    data object EditaDisponibilidadClick: DisponibilidadEvent()
 }

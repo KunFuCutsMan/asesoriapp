@@ -3,11 +3,13 @@ package com.padieer.asesoriapp.ui.disponibilidad
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -51,10 +53,15 @@ fun DisponibilidadAsesorScreen() {
                 onHoraMiercolesClick = { viewModel.onEvent(DisponibilidadEvent.HoraMiercolesClick(it)) },
                 onHoraJuevesClick = { viewModel.onEvent(DisponibilidadEvent.HoraJuevesClick(it)) },
                 onHoraViernesClick = { viewModel.onEvent(DisponibilidadEvent.HoraViernesClick(it)) },
+                onEditarDisponibilidadClick = { viewModel.onEvent(DisponibilidadEvent.EditaDisponibilidadClick) },
             )
         }
     }
 }
+
+val instrucciones = """
+    Presiona cada casilla con las horas en las que te encuentras ocupado por alguna clase, se te asignarán asesorias en las horas en las que estés libre.
+""".trimIndent()
 
 @Composable
 fun DisponibilidadDeAsesor(
@@ -64,7 +71,8 @@ fun DisponibilidadDeAsesor(
     onHoraMartesClick: (Int) -> Unit,
     onHoraMiercolesClick: (Int) -> Unit,
     onHoraJuevesClick: (Int) -> Unit,
-    onHoraViernesClick: (Int) -> Unit
+    onHoraViernesClick: (Int) -> Unit,
+    onEditarDisponibilidadClick: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -73,12 +81,17 @@ fun DisponibilidadDeAsesor(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
+        Text(instrucciones, modifier = Modifier.padding(horizontal = 16.dp))
+
         HorarioDia(dia = "Lunes", horario = state.lunes, onHoraClick = onHoraLunesClick)
         HorarioDia(dia = "Martes", horario = state.martes, onHoraClick = onHoraMartesClick)
         HorarioDia(dia = "Miercoles", horario = state.miercoles, onHoraClick = onHoraMiercolesClick)
         HorarioDia(dia = "Jueves", horario = state.jueves, onHoraClick = onHoraJuevesClick)
         HorarioDia(dia = "Viernes", horario = state.viernes, onHoraClick = onHoraViernesClick)
 
+        Spacer(Modifier.weight(1f, true))
+
+        Button(onClick = onEditarDisponibilidadClick) { Text("Editar Disponibilidad") }
     }
 }
 

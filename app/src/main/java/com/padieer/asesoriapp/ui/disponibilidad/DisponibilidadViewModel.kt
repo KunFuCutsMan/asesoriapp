@@ -1,6 +1,5 @@
 package com.padieer.asesoriapp.ui.disponibilidad
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.data.viewModelFactory
@@ -22,6 +21,10 @@ class DisponibilidadViewModel: ViewModel() {
             jueves = generaHoras(),
             viernes = generaHoras(),
         ) }
+    }
+
+    private fun editaHorarioClick() {
+
     }
 
     private fun toggleHoraLunes(index: Int) {
@@ -80,6 +83,9 @@ class DisponibilidadViewModel: ViewModel() {
             }
             is DisponibilidadEvent.HoraViernesClick -> viewModelScope.launch{
                 toggleHoraViernes(event.index)
+            }
+            DisponibilidadEvent.EditaDisponibilidadClick -> viewModelScope.launch {
+                editaHorarioClick()
             }
         }
     }
