@@ -1,5 +1,7 @@
 package com.padieer.asesoriapp.di
 
+import com.padieer.asesoriapp.data.asignatura.AsignaturaRepository
+import com.padieer.asesoriapp.data.asignatura.FakeAsignaturaRepository
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
 import com.padieer.asesoriapp.data.carrera.FakeCarreraRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
@@ -16,5 +18,6 @@ class FakeAppModule(
     override val estudianteRepository: EstudianteRepository = FakeEstudianteRepository(),
     override val loginRepository: LoginRepository = FakeLoginRepository(),
     override val passwordRepository: PasswordRepository = FakePasswordRepository(),
-    override val horarioRepository: HorarioRepository = FakeHorarioRepository()
+    override val horarioRepository: HorarioRepository = FakeHorarioRepository(),
+    override val asignaturaRepository: AsignaturaRepository = FakeAsignaturaRepository()
 ) : AppModule
