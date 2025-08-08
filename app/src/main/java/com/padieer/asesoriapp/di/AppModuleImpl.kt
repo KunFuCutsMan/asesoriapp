@@ -2,25 +2,25 @@ package com.padieer.asesoriapp.di
 
 import android.content.Context
 import android.util.Log
+import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepositoryImpl
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
+import com.padieer.asesoriapp.data.horario.HorarioRepositoryImpl
+import com.padieer.asesoriapp.data.horario.sources.LocalHorarioSource
+import com.padieer.asesoriapp.data.horario.sources.RemoteHorarioSource
 import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
-import com.padieer.asesoriapp.crypto.LocalPreferencesSource
-import com.padieer.asesoriapp.data.horario.FakeHorarioRepository
-import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -32,6 +32,9 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         defaultRequest {
             host = URL
             contentType(ContentType.Application.Json)
+            url {
+                port = 8000
+            }
         }
         install(ContentNegotiation) {
             json()
@@ -70,6 +73,14 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         LocalPreferencesSource(context = appContext)
     }
 
+    private val remoteHorarioSource by lazy {
+        RemoteHorarioSource(client)
+    }
+
+    private val localHorarioSource by lazy {
+        LocalHorarioSource()
+    }
+
     override val carreraRepository by lazy {
         CarreraRepositoryImpl(
             remoteCarreraSource = remoteCarreraSource,
@@ -99,6 +110,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     }
 
     override val horarioRepository by lazy {
-        FakeHorarioRepository()
+        HorarioRepositoryImpl(
+            remoteHorarioSource = remoteHorarioSource,
+            preferencesSource = localPreferencesSource,
+            localHorarioSource = localHorarioSource,
+        )
     }
 }
