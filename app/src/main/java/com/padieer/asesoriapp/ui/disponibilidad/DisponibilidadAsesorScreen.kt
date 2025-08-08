@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.padieer.asesoriapp.App
+import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
@@ -99,6 +101,7 @@ fun DisponibilidadDeAsesor(
 @Preview
 @Composable
 private fun DisponibilidadAsesorScreenPreview() {
+    App.appModule = FakeAppModule()
     AsesoriAppTheme {
         Scaffold(
             topBar = {

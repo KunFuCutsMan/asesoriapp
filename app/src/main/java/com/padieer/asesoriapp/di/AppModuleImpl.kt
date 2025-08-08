@@ -11,6 +11,8 @@ import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
+import com.padieer.asesoriapp.data.horario.FakeHorarioRepository
+import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -94,5 +96,9 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         PasswordRepositoryImpl(
             passwordSource = remotePasswordSource
         )
+    }
+
+    override val horarioRepository by lazy {
+        FakeHorarioRepository()
     }
 }

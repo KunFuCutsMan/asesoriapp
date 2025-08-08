@@ -2,25 +2,75 @@ package com.padieer.asesoriapp.ui.disponibilidad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.padieer.asesoriapp.App
+import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.data.viewModelFactory
+import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
+import com.padieer.asesoriapp.domain.model.HorarioModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DisponibilidadViewModel: ViewModel() {
+class DisponibilidadViewModel(
+    private val horarioRepository: HorarioRepository,
+    private val getUserDataUseCase: GetLoggedInUserDataUseCase
+): ViewModel() {
 
     private val _uiState = MutableStateFlow<DisponibilidadUIState>(DisponibilidadUIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            loadData()
+        }
+    }
+
+    suspend fun loadData(): Unit {
+        val estudianteRes = getUserDataUseCase()
+        if (estudianteRes is Result.Error) {
+            _uiState.update { DisponibilidadUIState.Error(estudianteRes.error.toString()) }
+            return
+        }
+
+        val (_, _, asesor) = (estudianteRes as Result.Success).data
+        if (asesor == null) {
+            _uiState.update { DisponibilidadUIState.Error("No eres un asesor que haces aqui") }
+            return
+        }
+
+        val horariosResult = horarioRepository.fetchHorarios(asesor.id)
+        when (horariosResult) {
+            is Result.Error -> {
+                _uiState.update { DisponibilidadUIState.Error(horariosResult.error.toString()) }
+            }
+            is Result.Success -> {
+                parseHorariosToState(horariosResult.data)
+            }
+        }
+    }
+
+    private fun parseHorariosToState(horarios: List<HorarioModel>) {
+        val horarios = (1..5).map { diaSemanaID ->
+            val horariosOcupados = horarios.filter { it.diaSemana.id == diaSemanaID && !it.disponible }
+            return@map generaHoras(horariosOcupados)
+        }
+
         _uiState.update { DisponibilidadUIState.Disponibilidad(
-            lunes = generaHoras(),
-            martes = generaHoras(),
-            miercoles = generaHoras(),
-            jueves = generaHoras(),
-            viernes = generaHoras(),
+            lunes = horarios[0],
+            martes = horarios[1],
+            miercoles = horarios[2],
+            jueves = horarios[3],
+            viernes = horarios[4]
         ) }
+    }
+
+    private fun generaHoras(horariosOcupados: List<HorarioModel>): List<Hora> {
+        return (7..20).map { hora ->
+            val horario = horariosOcupados.firstOrNull { horario -> horario.horaInicio.hour == hora }
+            return@map horario?.toHora() ?: Hora(hora, false)
+        }
     }
 
     private fun editaHorarioClick() {
@@ -92,9 +142,17 @@ class DisponibilidadViewModel: ViewModel() {
 
     companion object {
         fun Factory() = viewModelFactory {
-            DisponibilidadViewModel()
+            DisponibilidadViewModel(
+                horarioRepository = App.appModule.horarioRepository,
+                getUserDataUseCase = GetLoggedInUserDataUseCase(
+                    loginRepository = App.appModule.loginRepository
+                )
+            )
         }
-
-        fun generaHoras() = (7..20).map { Hora(it, false) }
     }
 }
+
+private fun HorarioModel.toHora() = Hora(
+    hora = this.horaInicio.hour,
+    ocupado = !this.disponible
+)

@@ -66,6 +66,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktor_version}")
     implementation("io.ktor:ktor-client-logging:${ktor_version}")
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.datetime)
 
     implementation(libs.kotlinx.serialization.json)
 
