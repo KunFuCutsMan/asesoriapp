@@ -56,8 +56,10 @@ class EstudianteRepositoryImpl(
         }
 
         val remoteEstudianteRes = remoteEstudianteSource.fetchByToken(token)
-        if (remoteEstudianteRes is Result.Success)
+        if (remoteEstudianteRes is Result.Success) {
+            preferencesSource.saveToken(token)
             preferencesSource.saveEstudiante(remoteEstudianteRes.data)
+        }
 
         return remoteEstudianteRes
     }
