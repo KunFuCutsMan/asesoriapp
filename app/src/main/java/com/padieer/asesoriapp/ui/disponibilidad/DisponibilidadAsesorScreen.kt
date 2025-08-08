@@ -3,7 +3,6 @@ package com.padieer.asesoriapp.ui.disponibilidad
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,8 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
@@ -79,7 +77,8 @@ fun DisponibilidadDeAsesor(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
@@ -91,7 +90,10 @@ fun DisponibilidadDeAsesor(
         HorarioDia(dia = "Jueves", horario = state.jueves, onHoraClick = onHoraJuevesClick)
         HorarioDia(dia = "Viernes", horario = state.viernes, onHoraClick = onHoraViernesClick)
 
-        Spacer(Modifier.weight(1f, true))
+        if (state.loading)
+            LinearProgressIndicator()
+
+        state.error?.let { ErrorText(it, textAlign = TextAlign.Center) }
 
         Button(onClick = onEditarDisponibilidadClick) { Text("Editar Disponibilidad") }
     }
@@ -101,16 +103,42 @@ fun DisponibilidadDeAsesor(
 @Preview
 @Composable
 private fun DisponibilidadAsesorScreenPreview() {
-    App.appModule = FakeAppModule()
     AsesoriAppTheme {
         Scaffold(
             topBar = {
                 TopAppBar( title = { Text("Pantalla de Disponibilidad de Asesor") } )
             }
         ) { paddingValues ->
-            Surface(Modifier.fillMaxSize().padding(paddingValues).consumeWindowInsets(paddingValues)) {
-                DisponibilidadAsesorScreen()
+            Surface(Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)) {
+                DisponibilidadDeAsesor(
+                    state = DisponibilidadUIState.Disponibilidad(
+                        lunes = horasVacias(),
+                        martes = horasVacias(),
+                        miercoles = horasVacias(),
+                        jueves = horasVacias(),
+                        viernes = horasVacias(),
+                        error = "Hubo un error"
+                    ),
+                    onHoraLunesClick = {},
+                    onHoraJuevesClick = {},
+                    onHoraMartesClick = {},
+                    onHoraViernesClick = {},
+                    onHoraMiercolesClick = {},
+                    onEditarDisponibilidadClick = {},
+                )
             }
         }
+    }
+}
+
+private fun horasVacias(): List<Hora> {
+    return (7..20).map { hora ->
+        return@map Hora(
+            hora = hora,
+            ocupado = hora % 4 == 0
+        )
     }
 }

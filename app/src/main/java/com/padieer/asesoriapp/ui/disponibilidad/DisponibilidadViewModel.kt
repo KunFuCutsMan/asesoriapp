@@ -31,7 +31,7 @@ class DisponibilidadViewModel(
         }
     }
 
-    suspend fun loadData(): Unit {
+    suspend fun loadData() {
         val estudianteRes = getUserDataUseCase()
         if (estudianteRes is Result.Error) {
             _uiState.update { DisponibilidadUIState.Error(estudianteRes.error.toString()) }
@@ -84,6 +84,8 @@ class DisponibilidadViewModel(
 
         val state = _uiState.value as DisponibilidadUIState.Disponibilidad
 
+        _uiState.update { state.copy(loading = true, error = null) }
+
         val horariosModificados = emptyList<HorarioRepository.HorarioParams>()
             .plus(state.lunes.map { it.toHorarioParams(1) })
             .plus(state.martes.map { it.toHorarioParams(2) })
@@ -101,7 +103,7 @@ class DisponibilidadViewModel(
                 parseHorariosToState(result.data)
             }
             is Result.Error -> viewModelScope.launch {
-                _uiState.update { DisponibilidadUIState.Error(result.error.toString()) }
+                _uiState.update { state.copy(loading = false, error = result.error.toString()) }
             }
         }
     }
