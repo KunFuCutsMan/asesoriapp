@@ -3,8 +3,9 @@ package com.padieer.asesoriapp.di
 import android.content.Context
 import android.util.Log
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
-import com.padieer.asesoriapp.data.asignatura.AsignaturaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepositoryImpl
+import com.padieer.asesoriapp.data.asignatura.sources.LocalAsignaturaSource
+import com.padieer.asesoriapp.data.asignatura.sources.RemoteAsignaturaSource
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
@@ -59,6 +60,14 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         RemoteCarreraSource(client = client)
     }
 
+    private val remoteAsignaturaSource by lazy {
+        RemoteAsignaturaSource(client)
+    }
+
+    private val localAsignaturaSource by lazy {
+        LocalAsignaturaSource()
+    }
+
     private val remoteEstudianteSource by lazy {
         RemoteEstudianteSource(client = client)
     }
@@ -91,7 +100,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     }
 
     override val asignaturaRepository by lazy {
-        AsignaturaRepositoryImpl()
+        AsignaturaRepositoryImpl(
+            remoteAsignaturaSource = remoteAsignaturaSource,
+            localAsignaturaSource = localAsignaturaSource,
+        )
     }
     override val estudianteRepository by lazy {
         EstudianteRepositoryImpl(
