@@ -15,8 +15,6 @@ class FakeHorarioRepository: HorarioRepository {
             disponible = false,
             diaSemana = DiaSemana(1, "Lunes"),
             asesor = AsesorModel(1, 1, null),
-            createdAt = null,
-            updatedAt = null,
         ),
         HorarioModel(
             id = 2,
@@ -24,8 +22,6 @@ class FakeHorarioRepository: HorarioRepository {
             disponible = false,
             diaSemana = DiaSemana(1, "Lunes"),
             asesor = AsesorModel(1, 1, null),
-            createdAt = null,
-            updatedAt = null,
         ),
         HorarioModel(
             id = 1,
@@ -33,8 +29,6 @@ class FakeHorarioRepository: HorarioRepository {
             disponible = false,
             diaSemana = DiaSemana(2, "Martes"),
             asesor = AsesorModel(1, 1, null),
-            createdAt = null,
-            updatedAt = null,
         ),
     )
 
@@ -53,8 +47,6 @@ class FakeHorarioRepository: HorarioRepository {
                     nombre = horarioParam.diaSemanaID.toDiaSemana()
                 ),
                 asesor = AsesorModel(1, 1, null),
-                createdAt = null,
-                updatedAt = null
             )
         }
 

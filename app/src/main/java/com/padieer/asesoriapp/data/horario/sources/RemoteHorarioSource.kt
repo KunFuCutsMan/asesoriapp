@@ -70,6 +70,7 @@ class RemoteHorarioSource(
             }
 
             return when (result.status.value) {
+                302, 400, 422, -> Result.Error(DataError.Network.BAD_PARAMS)
                 403 -> Result.Error(DataError.Network.FORBIDDEN)
                 else -> Result.Error(DataError.Network.UNKWOWN)
             }

@@ -7,11 +7,13 @@ import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
+import com.padieer.asesoriapp.domain.model.AsesorModel
 import com.padieer.asesoriapp.domain.model.HorarioModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalTime
 
 class DisponibilidadViewModel(
     private val horarioRepository: HorarioRepository,
@@ -20,6 +22,8 @@ class DisponibilidadViewModel(
 
     private val _uiState = MutableStateFlow<DisponibilidadUIState>(DisponibilidadUIState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private var asesor: AsesorModel? = null
 
     init {
         viewModelScope.launch {
@@ -39,6 +43,7 @@ class DisponibilidadViewModel(
             _uiState.update { DisponibilidadUIState.Error("No eres un asesor que haces aqui") }
             return
         }
+        this.asesor = asesor
 
         val horariosResult = horarioRepository.fetchHorarios(asesor.id)
         when (horariosResult) {
@@ -73,8 +78,32 @@ class DisponibilidadViewModel(
         }
     }
 
-    private fun editaHorarioClick() {
+    private suspend fun editaHorarioClick() {
+        if (asesor == null)
+            return
 
+        val state = _uiState.value as DisponibilidadUIState.Disponibilidad
+
+        val horariosModificados = emptyList<HorarioRepository.HorarioParams>()
+            .plus(state.lunes.map { it.toHorarioParams(1) })
+            .plus(state.martes.map { it.toHorarioParams(2) })
+            .plus(state.miercoles.map { it.toHorarioParams(3) })
+            .plus(state.jueves.map { it.toHorarioParams(4) })
+            .plus(state.viernes.map { it.toHorarioParams(5) })
+
+        val result = horarioRepository.updateHorarios(
+            asesorID = asesor!!.id,
+            horarios = horariosModificados
+        )
+
+        when (result) {
+            is Result.Success -> viewModelScope.launch {
+                parseHorariosToState(result.data)
+            }
+            is Result.Error -> viewModelScope.launch {
+                _uiState.update { DisponibilidadUIState.Error(result.error.toString()) }
+            }
+        }
     }
 
     private fun toggleHoraLunes(index: Int) {
@@ -155,4 +184,10 @@ class DisponibilidadViewModel(
 private fun HorarioModel.toHora() = Hora(
     hora = this.horaInicio.hour,
     ocupado = !this.disponible
+)
+
+private fun Hora.toHorarioParams(diaSemanaID: Int) = HorarioRepository.HorarioParams(
+    horaInicio = LocalTime(this.hora, 0, 0, 0),
+    disponible = !this.ocupado,
+    diaSemanaID = diaSemanaID,
 )
