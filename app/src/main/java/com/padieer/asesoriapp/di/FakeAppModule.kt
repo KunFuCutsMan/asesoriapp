@@ -12,6 +12,7 @@ import com.padieer.asesoriapp.data.password.FakePasswordRepository
 import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.token.FakeLoginRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
+import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
 
 class FakeAppModule(
     override val carreraRepository: CarreraRepository = FakeCarreraRepository(),
@@ -19,5 +20,6 @@ class FakeAppModule(
     override val loginRepository: LoginRepository = FakeLoginRepository(),
     override val passwordRepository: PasswordRepository = FakePasswordRepository(),
     override val horarioRepository: HorarioRepository = FakeHorarioRepository(),
-    override val asignaturaRepository: AsignaturaRepository = FakeAsignaturaRepository()
+    override val asignaturaRepository: AsignaturaRepository = FakeAsignaturaRepository(),
+    override val callPhoneUseCase: CallPhoneUseCase = CallPhoneUseCase(null)
 ) : AppModule

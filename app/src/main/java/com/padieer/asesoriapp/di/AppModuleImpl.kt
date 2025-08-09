@@ -18,6 +18,7 @@ import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
+import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -50,6 +51,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
                 override fun log(message: String) { Log.v("KTOR-LOG: ", message) }
             }
         }
+    }
+
+    override val callPhoneUseCase by lazy {
+        CallPhoneUseCase(appContext)
     }
 
     private val cacheCarreraSource by lazy {

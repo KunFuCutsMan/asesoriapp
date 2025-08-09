@@ -89,7 +89,8 @@ fun Perfil(
     estudiante: Estudiante,
     carrera: Carrera,
     especialidad: Especialidad? = null,
-    onTelefonoClick: () -> Unit,
+    isCallable: Boolean = false,
+    onTelefonoClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background, CardDefaults.shape),
@@ -166,12 +167,13 @@ fun Perfil(
             Text("Número de Telefono: $noTelefono")
 
             Spacer(Modifier.weight(1f))
-            FilledTonalIconButton(onClick = onTelefonoClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Call,
-                    contentDescription = "Llamar estudiante"
-                )
-            }
+            if (isCallable)
+                FilledTonalIconButton(onClick = onTelefonoClick) {
+                    Icon(
+                        imageVector = Icons.Outlined.Call,
+                        contentDescription = "Llamar estudiante"
+                    )
+                }
         }
     }
 }
@@ -227,7 +229,8 @@ private fun PerfilPreview() {
         Perfil(
             modifier = Modifier,
             estudiante, carrera, especialidad,
-            onTelefonoClick = {}
+            onTelefonoClick = {},
+            isCallable = true,
         )
     }
 }
