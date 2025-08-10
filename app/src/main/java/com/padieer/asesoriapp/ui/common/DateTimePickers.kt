@@ -29,6 +29,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -36,23 +37,28 @@ import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toJavaLocalTime
 import java.time.LocalDate as JavaLocalDate
 import java.time.LocalTime as JavaLocalTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
 fun ModalDatePickerField(
     modifier: Modifier = Modifier,
+    value: LocalDate?,
     label: String,
-    allowedDateValidator: (JavaLocalDate) -> Boolean = {true},
+    allowedDateValidator: AllowedDateValidator = AllowedDateValidator.Default,
     onValueChange: (LocalDate) -> Unit
 ) {
     val dialogState = rememberMaterialDialogState()
-    var chosenDate by remember { mutableStateOf<JavaLocalDate?>(null) }
+    val dateFormatter = LocalDate.Format {
+        day(); char('/'); monthNumber(); char('/'); year()
+    }
 
     OutlinedTextField(
-        value = chosenDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) ?: "",
+        value = value?.run { dateFormatter.format(this) } ?: "",
         placeholder = {Text("--/--/----")},
         readOnly = true,
         label = { Text(label) },
@@ -60,7 +66,7 @@ fun ModalDatePickerField(
         trailingIcon = { Icon(Icons.Outlined.DateRange, "") },
         modifier = modifier
             .fillMaxWidth()
-            .pointerInput(chosenDate) {
+            .pointerInput(value) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
                     waitForUpOrCancellation(pass = PointerEventPass.Initial)?.let {
@@ -81,17 +87,21 @@ fun ModalDatePickerField(
         val nextYear = now.plus(1, ChronoUnit.YEARS)
         datepicker(
             title = label,
-            yearRange = IntRange(
-                start = now.year,
-                endInclusive = nextYear.year),
-            allowedDateValidator = allowedDateValidator,
-            onDateChange = {
-                chosenDate = it
-                onValueChange(LocalDate(year = it.year, month = it.monthValue, day = it.dayOfMonth))
-            }
+            initialDate = value?.toJavaLocalDate() ?: JavaLocalDate.now(),
+            yearRange = IntRange(now.year, nextYear.year),
+            allowedDateValidator = { allowedDateValidator.isAllowed(it.toKotlinLocalDate()) },
+            onDateChange = { onValueChange(it.toKotlinLocalDate()) }
         )
     }
 
+}
+
+private fun JavaLocalDate.toKotlinLocalDate(): LocalDate {
+    return LocalDate(
+        year = this.year,
+        month = this.monthValue,
+        day = this.dayOfMonth,
+    )
 }
 
 @Composable
@@ -99,13 +109,14 @@ fun ModalTimePickerField(
     modifier: Modifier = Modifier,
     label: String,
     timeRange: ClosedRange<JavaLocalTime> = JavaLocalTime.MIN..JavaLocalTime.MAX,
+    value: LocalTime?,
     onValueChange: (LocalTime) -> Unit
 ) {
     val dialogState = rememberMaterialDialogState()
-    var chosenTime by remember { mutableStateOf<JavaLocalTime?>(null) }
+    val timeFormatter = LocalTime.Format { hour(); char(':'); minute() }
 
     OutlinedTextField(
-        value = chosenTime?.format(DateTimeFormatter.ofPattern("kk:mm")) ?: "",
+        value = value?.run { timeFormatter.format(this) } ?: "",
         placeholder = {Text("--:--")},
         label = {Text(label)},
         readOnly = true,
@@ -113,7 +124,7 @@ fun ModalTimePickerField(
         trailingIcon = { Icon(Icons.Outlined.DateRange, "") },
         modifier = modifier
             .fillMaxWidth()
-            .pointerInput(chosenTime) {
+            .pointerInput(value) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
                     waitForUpOrCancellation(pass = PointerEventPass.Initial)?.let {
@@ -132,11 +143,11 @@ fun ModalTimePickerField(
     ) {
         timepicker(
             title = label,
+            initialTime = value?.toJavaLocalTime() ?: JavaLocalTime.now(),
             is24HourClock = true,
             waitForPositiveButton = true,
             timeRange = timeRange,
             onTimeChange = {
-                chosenTime = it
                 onValueChange(LocalTime(
                     hour = it.hour,
                     minute = it.minute,
@@ -152,7 +163,11 @@ fun ModalTimePickerField(
 private fun ModalDatePickerFieldPreview() {
     AsesoriAppTheme {
         Surface {
-            ModalDatePickerField(label = "Fecha") {}
+            ModalDatePickerField(
+                label = "Fecha",
+                value = null,
+                onValueChange = {},
+            )
         }
     }
 }
@@ -162,7 +177,11 @@ private fun ModalDatePickerFieldPreview() {
 private fun ModalTimePickerFieldPreview() {
     AsesoriAppTheme {
         Surface {
-            ModalTimePickerField(label = "Hora") {}
+            ModalTimePickerField(
+                label = "Hora",
+                value = null,
+                onValueChange = {}
+            )
         }
     }
 }
@@ -180,13 +199,28 @@ private fun ModalDatePickerPreview() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             var date by remember { mutableStateOf<LocalDate?>(null) }
-            ModalDatePickerField(label = "Fecha de Inicio") { date = it }
+            ModalDatePickerField(
+                label = "Fecha de Inicio",
+                value = date,
+                onValueChange = { date = it },
+                allowedDateValidator = AllowedDateValidator.All(
+                    AllowedDateValidator.AfterOrEqualToday,
+                    AllowedDateValidator.WeekDaysOnly,
+                ),
+            )
+
             Spacer(Modifier.height(30.dp))
             Text("Fecha: $date")
 
             Spacer(Modifier.height(100.dp))
+
             var time by remember { mutableStateOf<LocalTime?>(null) }
-            ModalTimePickerField(label = "Hora") { time = it }
+            ModalTimePickerField(
+                label = "Hora",
+                value = time,
+                onValueChange = { time = it },
+            )
+
             Spacer(Modifier.height(30.dp))
             Text("Hora: $time")
         }
