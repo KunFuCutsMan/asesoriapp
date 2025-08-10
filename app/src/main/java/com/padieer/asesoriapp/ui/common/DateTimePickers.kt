@@ -32,10 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.datetime.LocalDate
-import java.time.DayOfWeek
+import kotlinx.datetime.LocalTime
 import java.time.LocalDate as JavaLocalDate
+import java.time.LocalTime as JavaLocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -43,8 +45,9 @@ import java.time.temporal.ChronoUnit
 fun ModalDatePickerField(
     modifier: Modifier = Modifier,
     label: String,
-    onValueChange: (LocalDate) -> Unit) {
-
+    allowedDateValidator: (JavaLocalDate) -> Boolean = {true},
+    onValueChange: (LocalDate) -> Unit
+) {
     val dialogState = rememberMaterialDialogState()
     var chosenDate by remember { mutableStateOf<JavaLocalDate?>(null) }
 
@@ -81,9 +84,7 @@ fun ModalDatePickerField(
             yearRange = IntRange(
                 start = now.year,
                 endInclusive = nextYear.year),
-            allowedDateValidator = {
-                it.dayOfWeek != DayOfWeek.SATURDAY || it.dayOfWeek != DayOfWeek.SUNDAY
-            },
+            allowedDateValidator = allowedDateValidator,
             onDateChange = {
                 chosenDate = it
                 onValueChange(LocalDate(year = it.year, month = it.monthValue, day = it.dayOfMonth))
@@ -93,15 +94,75 @@ fun ModalDatePickerField(
 
 }
 
+@Composable
+fun ModalTimePickerField(
+    modifier: Modifier = Modifier,
+    label: String,
+    timeRange: ClosedRange<JavaLocalTime> = JavaLocalTime.MIN..JavaLocalTime.MAX,
+    onValueChange: (LocalTime) -> Unit
+) {
+    val dialogState = rememberMaterialDialogState()
+    var chosenTime by remember { mutableStateOf<JavaLocalTime?>(null) }
+
+    OutlinedTextField(
+        value = chosenTime?.format(DateTimeFormatter.ofPattern("kk:mm")) ?: "",
+        placeholder = {Text("--:--")},
+        label = {Text(label)},
+        readOnly = true,
+        onValueChange = {},
+        trailingIcon = { Icon(Icons.Outlined.DateRange, "") },
+        modifier = modifier
+            .fillMaxWidth()
+            .pointerInput(chosenTime) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    waitForUpOrCancellation(pass = PointerEventPass.Initial)?.let {
+                        dialogState.show()
+                    }
+                }
+            },
+    )
+
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton("OK")
+            negativeButton("Cancelar")
+        }
+    ) {
+        timepicker(
+            title = label,
+            is24HourClock = true,
+            waitForPositiveButton = true,
+            timeRange = timeRange,
+            onTimeChange = {
+                chosenTime = it
+                onValueChange(LocalTime(
+                    hour = it.hour,
+                    minute = it.minute,
+                    second = it.second,
+                ))
+            }
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun ModalDatePickerFieldPreview() {
     AsesoriAppTheme {
         Surface {
-            ModalDatePickerField(
-                label = "Fecha",
-                onValueChange = {}
-            )
+            ModalDatePickerField(label = "Fecha") {}
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ModalTimePickerFieldPreview() {
+    AsesoriAppTheme {
+        Surface {
+            ModalTimePickerField(label = "Hora") {}
         }
     }
 }
@@ -122,6 +183,12 @@ private fun ModalDatePickerPreview() {
             ModalDatePickerField(label = "Fecha de Inicio") { date = it }
             Spacer(Modifier.height(30.dp))
             Text("Fecha: $date")
+
+            Spacer(Modifier.height(100.dp))
+            var time by remember { mutableStateOf<LocalTime?>(null) }
+            ModalTimePickerField(label = "Hora") { time = it }
+            Spacer(Modifier.height(30.dp))
+            Text("Hora: $time")
         }
     }
 }
