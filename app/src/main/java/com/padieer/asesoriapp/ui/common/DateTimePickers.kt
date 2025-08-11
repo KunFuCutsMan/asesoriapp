@@ -30,6 +30,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
+import com.padieer.asesoriapp.domain.datetime.HourLocalTimeProgression
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -172,15 +173,22 @@ private fun ModalDatePickerFieldPreview() {
     }
 }
 
+operator fun LocalTime.rangeTo(other: LocalTime) = HourLocalTimeProgression(this, other, 1)
+
 @Preview
 @Composable
 private fun ModalTimePickerFieldPreview() {
+
+    val timeStart = LocalTime(7, 0, 0)
+    val timeEnd = LocalTime(20, 0, 0)
+
     AsesoriAppTheme {
         Surface {
             ModalTimePickerField(
                 label = "Hora",
                 value = null,
-                onValueChange = {}
+                onValueChange = {},
+                timeRange = timeStart..timeEnd,
             )
         }
     }
@@ -189,6 +197,9 @@ private fun ModalTimePickerFieldPreview() {
 @Preview
 @Composable
 private fun ModalDatePickerPreview() {
+    val timeStart = LocalTime(7, 0, 0)
+    val timeEnd = LocalTime(20, 0, 0)
+
     AsesoriAppTheme {
         Column(
             modifier = Modifier
@@ -218,6 +229,7 @@ private fun ModalDatePickerPreview() {
             ModalTimePickerField(
                 label = "Hora",
                 value = time,
+                timeRange = timeStart..timeEnd,
                 onValueChange = { time = it },
             )
 
