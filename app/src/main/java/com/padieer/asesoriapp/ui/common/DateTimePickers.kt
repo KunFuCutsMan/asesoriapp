@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -25,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -113,6 +115,7 @@ fun ModalDatePickerField(
         ) {
             DatePicker(
                 state = datePickerState,
+                showModeToggle = false,
                 colors = DatePickerDefaults.colors().copy(
                     disabledYearContentColor = disabledColor,
                     disabledDayContentColor = disabledColor,
@@ -131,6 +134,7 @@ fun ModalTimePickerField(
     onValueChange: (LocalTime) -> Unit,
 ) {
     val timeFormatter = LocalTime.Format { hour(); char(':'); minute() }
+    val clockDialColor = if (isDarkTheme()) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceDim
     var dialogState by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(
         initialHour = value?.hour ?: 0,
@@ -142,6 +146,7 @@ fun ModalTimePickerField(
         onValueChange = {},
         readOnly = true,
         label = { Text(label) },
+        placeholder = { Text("--:--") },
         trailingIcon = {
             Icon(Icons.Outlined.DateRange, "")
         },
@@ -161,27 +166,33 @@ fun ModalTimePickerField(
         Dialog(
             onDismissRequest = { dialogState = false },
         ) {
-            TimePicker(
-                state = timePickerState,
-            )
+            Card {
+                TimePicker(
+                    state = timePickerState,
+                    colors = TimePickerDefaults.colors().copy(
+                        clockDialColor = clockDialColor,
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp),
+                )
 
-            Row {
-                Spacer(Modifier.weight(1f))
-
-                TextButton(
-                    onClick = { dialogState = false }
-                ) { Text("Cancelar") }
-
-                TextButton(
-                    onClick = {
-                        onValueChange(LocalTime(
+                Row(Modifier.padding(bottom = 16.dp)) {
+                    Spacer(Modifier.weight(1f))
+                    TextButton(
+                        onClick = { dialogState = false }
+                    ) { Text("Cancelar") }
+                    TextButton(
+                        onClick = {
+                            onValueChange(LocalTime(
                                 hour = timePickerState.hour,
                                 minute = timePickerState.minute,
                                 second = 0
-                        ))
-                        dialogState = false
-                    }
-                ) { Text("OK") }
+                            ))
+                            dialogState = false
+                        }
+                    ) { Text("OK") }
+                }
             }
         }
     }
