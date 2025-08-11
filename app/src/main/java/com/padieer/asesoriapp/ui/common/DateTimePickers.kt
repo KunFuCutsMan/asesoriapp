@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +14,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,34 +38,36 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
-import com.padieer.asesoriapp.domain.datetime.HourLocalTimeProgression
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.padieer.asesoriapp.ui.theme.isDarkTheme
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.char
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toJavaLocalTime
-import java.time.LocalDate as JavaLocalDate
-import java.time.LocalTime as JavaLocalTime
-import java.time.temporal.ChronoUnit
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun ModalDatePickerField(
     modifier: Modifier = Modifier,
     value: LocalDate?,
     label: String,
-    allowedDateValidator: AllowedDateValidator = AllowedDateValidator.Default,
+    selectableDates: AllowedDateValidator = AllowedDateValidator.Default,
     onValueChange: (LocalDate) -> Unit
 ) {
-    val dialogState = rememberMaterialDialogState()
+    val datePickerState = rememberDatePickerState(
+        selectableDates = selectableDates
+    )
+    var dialogState by remember { mutableStateOf(false) }
     val dateFormatter = LocalDate.Format {
         day(); char('/'); monthNumber(); char('/'); year()
     }
+
+    val disabledColor = if (isDarkTheme()) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceDim
 
     OutlinedTextField(
         value = value?.run { dateFormatter.format(this) } ?: "",
@@ -67,128 +78,144 @@ fun ModalDatePickerField(
         trailingIcon = { Icon(Icons.Outlined.DateRange, "") },
         modifier = modifier
             .fillMaxWidth()
-            .pointerInput(value) {
+            .pointerInput(datePickerState) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
-                    waitForUpOrCancellation(pass = PointerEventPass.Initial)?.let {
-                        dialogState.show()
+                    waitForUpOrCancellation(pass = PointerEventPass.Initial).let {
+                        dialogState = true
                     }
                 }
             }
     )
 
-    MaterialDialog(
-        dialogState = dialogState,
-        buttons = {
-            positiveButton("OK")
-            negativeButton("Cancelar")
+    if (dialogState) {
+        DatePickerDialog(
+            onDismissRequest = { dialogState = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val timestamp = datePickerState.selectedDateMillis
+                        timestamp?.let {
+                            val dateInstant = Instant.fromEpochMilliseconds(timestamp)
+                            dateInstant.toLocalDateTime(TimeZone.UTC)
+                            onValueChange(dateInstant.toLocalDateTime(TimeZone.UTC).date)
+                        }
+
+                        dialogState = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton( onClick = { dialogState = false } ) { Text("Cancelar") }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors().copy(
+                    disabledYearContentColor = disabledColor,
+                    disabledDayContentColor = disabledColor,
+                )
+            )
         }
-    ) {
-        val now = JavaLocalDate.now()
-        val nextYear = now.plus(1, ChronoUnit.YEARS)
-        datepicker(
-            title = label,
-            initialDate = value?.toJavaLocalDate() ?: JavaLocalDate.now(),
-            yearRange = IntRange(now.year, nextYear.year),
-            allowedDateValidator = { allowedDateValidator.isAllowed(it.toKotlinLocalDate()) },
-            onDateChange = { onValueChange(it.toKotlinLocalDate()) }
-        )
     }
-
 }
 
-private fun JavaLocalDate.toKotlinLocalDate(): LocalDate {
-    return LocalDate(
-        year = this.year,
-        month = this.monthValue,
-        day = this.dayOfMonth,
-    )
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalTimePickerField(
     modifier: Modifier = Modifier,
     label: String,
-    timeRange: ClosedRange<JavaLocalTime> = JavaLocalTime.MIN..JavaLocalTime.MAX,
     value: LocalTime?,
-    onValueChange: (LocalTime) -> Unit
+    onValueChange: (LocalTime) -> Unit,
 ) {
-    val dialogState = rememberMaterialDialogState()
     val timeFormatter = LocalTime.Format { hour(); char(':'); minute() }
+    var dialogState by remember { mutableStateOf(false) }
+    val timePickerState = rememberTimePickerState(
+        initialHour = value?.hour ?: 0,
+        initialMinute = value?.hour ?: 0,
+    )
 
     OutlinedTextField(
         value = value?.run { timeFormatter.format(this) } ?: "",
-        placeholder = {Text("--:--")},
-        label = {Text(label)},
-        readOnly = true,
         onValueChange = {},
-        trailingIcon = { Icon(Icons.Outlined.DateRange, "") },
+        readOnly = true,
+        label = { Text(label) },
+        trailingIcon = {
+            Icon(Icons.Outlined.DateRange, "")
+        },
         modifier = modifier
             .fillMaxWidth()
-            .pointerInput(value) {
+            .pointerInput(timePickerState) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
                     waitForUpOrCancellation(pass = PointerEventPass.Initial)?.let {
-                        dialogState.show()
+                        dialogState = true
                     }
                 }
             },
     )
 
-    MaterialDialog(
-        dialogState = dialogState,
-        buttons = {
-            positiveButton("OK")
-            negativeButton("Cancelar")
-        }
-    ) {
-        timepicker(
-            title = label,
-            initialTime = value?.toJavaLocalTime() ?: JavaLocalTime.now(),
-            is24HourClock = true,
-            waitForPositiveButton = true,
-            timeRange = timeRange,
-            onTimeChange = {
-                onValueChange(LocalTime(
-                    hour = it.hour,
-                    minute = it.minute,
-                    second = it.second,
-                ))
+    if (dialogState) {
+        Dialog(
+            onDismissRequest = { dialogState = false },
+        ) {
+            TimePicker(
+                state = timePickerState,
+            )
+
+            Row {
+                Spacer(Modifier.weight(1f))
+
+                TextButton(
+                    onClick = { dialogState = false }
+                ) { Text("Cancelar") }
+
+                TextButton(
+                    onClick = {
+                        onValueChange(LocalTime(
+                                hour = timePickerState.hour,
+                                minute = timePickerState.minute,
+                                second = 0
+                        ))
+                        dialogState = false
+                    }
+                ) { Text("OK") }
             }
-        )
+        }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun ModalDatePickerFieldPreview() {
     AsesoriAppTheme {
         Surface {
             ModalDatePickerField(
-                label = "Fecha",
                 value = null,
+                label = "",
                 onValueChange = {},
+                selectableDates = AllowedDateValidator.All(
+                    AllowedDateValidator.WeekDaysOnly,
+                    AllowedDateValidator.AfterOrEqualToday,
+                )
             )
         }
     }
 }
 
-operator fun LocalTime.rangeTo(other: LocalTime) = HourLocalTimeProgression(this, other, 1)
-
 @Preview
 @Composable
 private fun ModalTimePickerFieldPreview() {
-
-    val timeStart = LocalTime(7, 0, 0)
-    val timeEnd = LocalTime(20, 0, 0)
 
     AsesoriAppTheme {
         Surface {
             ModalTimePickerField(
                 label = "Hora",
                 value = null,
-                onValueChange = {},
-                timeRange = timeStart..timeEnd,
+                onValueChange = {}
             )
         }
     }
@@ -197,8 +224,6 @@ private fun ModalTimePickerFieldPreview() {
 @Preview
 @Composable
 private fun ModalDatePickerPreview() {
-    val timeStart = LocalTime(7, 0, 0)
-    val timeEnd = LocalTime(20, 0, 0)
 
     AsesoriAppTheme {
         Column(
@@ -209,14 +234,16 @@ private fun ModalDatePickerPreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             var date by remember { mutableStateOf<LocalDate?>(null) }
             ModalDatePickerField(
                 label = "Fecha de Inicio",
                 value = date,
                 onValueChange = { date = it },
-                allowedDateValidator = AllowedDateValidator.All(
+                selectableDates = AllowedDateValidator.All(
                     AllowedDateValidator.AfterOrEqualToday,
                     AllowedDateValidator.WeekDaysOnly,
+                    AllowedDateValidator.UntilNextMonth,
                 ),
             )
 
@@ -229,8 +256,7 @@ private fun ModalDatePickerPreview() {
             ModalTimePickerField(
                 label = "Hora",
                 value = time,
-                timeRange = timeStart..timeEnd,
-                onValueChange = { time = it },
+                onValueChange = {time = it},
             )
 
             Spacer(Modifier.height(30.dp))

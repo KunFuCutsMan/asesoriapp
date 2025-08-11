@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.text.style.TextAlign
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -240,6 +242,12 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
+private val _isDarkTheme = MutableStateFlow(false)
+
+fun isDarkTheme(): Boolean {
+    return _isDarkTheme.value
+}
+
 @Composable
 fun AsesoriAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -257,6 +265,8 @@ fun AsesoriAppTheme(
         else -> lightScheme
     }
 
+    _isDarkTheme.update { darkTheme }
+
     MaterialTheme(
         colorScheme = colorScheme,
 
@@ -270,15 +280,9 @@ fun AsesoriAppTheme(
             titleSmall = Typography.titleSmall.copy(
                 color = colorScheme.primary,
             ),
-            bodyLarge = Typography.bodyLarge.copy(
-                color = colorScheme.onBackground,
-            ),
-            bodyMedium = Typography.bodyMedium.copy(
-                color = colorScheme.onBackground,
-            ),
-            bodySmall = Typography.bodySmall.copy(
-                color = colorScheme.onBackground
-            ),
+            bodyLarge = Typography.bodyLarge,
+            bodyMedium = Typography.bodyMedium,
+            bodySmall = Typography.bodySmall,
             labelLarge = Typography.labelLarge,
             labelMedium = Typography.labelMedium,
             labelSmall = Typography.labelSmall,

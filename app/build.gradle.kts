@@ -67,7 +67,6 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:${ktor_version}")
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.datetime)
-    implementation(libs.datetime)
 
     implementation(libs.kotlinx.serialization.json)
 
