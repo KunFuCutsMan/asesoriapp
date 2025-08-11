@@ -14,8 +14,8 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -91,21 +91,20 @@ fun OutlinedTextFieldConMaximo(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutlinedDropdown(
-        modifier: Modifier = Modifier,
-        data: List<String>,
-        onValueChange: (String) -> Unit,
-        label: @Composable () -> Unit = {}) {
+    modifier: Modifier = Modifier,
+    data: List<String>,
+    onValueChange: (Int) -> Unit,
+    label: @Composable () -> Unit,
+) {
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedValue by remember { mutableStateOf(data[0]) }
-
-    LaunchedEffect(true) { onValueChange(data[0]) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
     ) {
         OutlinedTextField(
-            selectedValue,
+            value = data[selectedIndex],
             onValueChange = {},
             readOnly = true,
             label = label,
@@ -113,17 +112,18 @@ fun OutlinedDropdown(
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             modifier = modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true)
         )
+
         ExposedDropdownMenu(
             expanded = isExpanded,
-            onDismissRequest = { isExpanded = false }
+            onDismissRequest = { isExpanded = false },
         ) {
-            data.forEach {
+            data.forEachIndexed { index, string ->
                 DropdownMenuItem(
-                    text = { Text(it) },
+                    text = { Text(string) },
                     onClick = {
-                        selectedValue = it
+                        selectedIndex = index
                         isExpanded = false
-                        onValueChange(selectedValue)
+                        onValueChange(selectedIndex)
                     }
                 )
             }

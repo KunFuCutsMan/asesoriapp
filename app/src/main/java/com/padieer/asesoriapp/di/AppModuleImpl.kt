@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.di
 import android.content.Context
 import android.util.Log
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
+import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepositoryImpl
 import com.padieer.asesoriapp.data.asignatura.sources.LocalAsignaturaSource
 import com.padieer.asesoriapp.data.asignatura.sources.RemoteAsignaturaSource
@@ -113,7 +114,6 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     override val estudianteRepository by lazy {
         EstudianteRepositoryImpl(
             remoteEstudianteSource = remoteEstudianteSource,
-            carreraRepository = carreraRepository,
             preferencesSource = localPreferencesSource
         )
     }
@@ -139,4 +139,6 @@ class AppModuleImpl(private val appContext: Context): AppModule {
             localHorarioSource = localHorarioSource,
         )
     }
+    override val asesoriaRepository: AsesoriaRepository
+        get() = TODO("Not yet implemented")
 }

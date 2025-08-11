@@ -14,7 +14,7 @@ interface EstudianteRepository {
         numeroTelefono: String,
         semestre: Int,
         contrasena: String,
-        carrera: String,
+        carreraID: Int,
     ): Result<Unit, DataError.Network>
 
     suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError>

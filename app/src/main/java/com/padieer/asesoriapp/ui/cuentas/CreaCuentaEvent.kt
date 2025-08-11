@@ -8,7 +8,7 @@ sealed class CreaCuentaEvent {
     data class NumControlChanged(val numControl: String): CreaCuentaEvent()
     data class NumTelefonoChanged(val telefono: String): CreaCuentaEvent()
     data class SemestreChanged(val semestre: Int): CreaCuentaEvent()
-    data class CarreraChanged(val carrera: String): CreaCuentaEvent()
+    data class CarreraChanged(val carreraIndex: Int): CreaCuentaEvent()
     data class ContrasenaChanged(val contra: String): CreaCuentaEvent()
     data class ContrasenaRepiteChanged(val contra: String): CreaCuentaEvent()
 

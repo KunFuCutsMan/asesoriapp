@@ -16,7 +16,7 @@ class FakeEstudianteRepository: EstudianteRepository {
         numeroTelefono: String,
         semestre: Int,
         contrasena: String,
-        carrera: String
+        carreraID: Int
     ): Result<Unit, DataError.Network> {
         return Result.Success(Unit)
     }

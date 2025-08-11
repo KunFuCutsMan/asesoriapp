@@ -10,7 +10,6 @@ import com.padieer.asesoriapp.domain.model.EstudianteModel
 class EstudianteRepositoryImpl(
     private val remoteEstudianteSource: RemoteEstudianteSource,
     private val preferencesSource: LocalPreferencesSource,
-    private val carreraRepository: CarreraRepository
 ): EstudianteRepository {
     override suspend fun insertEstudiante(
         nombre: String,
@@ -20,14 +19,8 @@ class EstudianteRepositoryImpl(
         numeroTelefono: String,
         semestre: Int,
         contrasena: String,
-        carrera: String
+        carreraID: Int
     ): Result<Unit, DataError.Network> {
-        val carreras = carreraRepository.getCarreras()
-        if (carreras is Result.Error)
-            return Result.Error(DataError.Network.UNKWOWN)
-
-        val carreraID = (carreras as Result.Success).data.first { it.nombre == carrera }.id
-
         val result = remoteEstudianteSource.insert(
             RemoteEstudianteSource.InsertableEstudiante(
                 nombre = nombre,

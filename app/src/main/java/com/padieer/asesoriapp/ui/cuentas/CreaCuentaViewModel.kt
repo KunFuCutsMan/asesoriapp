@@ -40,7 +40,7 @@ data class FormData(
     val numControl: String = "",
     val numTelefono: String = "",
     val numSemestre: Int = 1,
-    val carrera: String = "",
+    val carrera: Int = 1,
     val contrasena: String = "",
     val contrasenaRepite: String = "",
 )
@@ -149,7 +149,7 @@ class CreaCuentaViewModel(
             numeroControl = formDataState.value.numControl,
             numeroTelefono = formDataState.value.numTelefono,
             semestre = formDataState.value.numSemestre,
-            carrera = formDataState.value.carrera,
+            carreraID = formDataState.value.carrera,
             contrasena = formDataState.value.contrasena,
         )
 
@@ -199,7 +199,7 @@ class CreaCuentaViewModel(
                 _formDataState.update { it.copy( numSemestre = event.semestre ) }
             }
             is CreaCuentaEvent.CarreraChanged -> {
-                _formDataState.update { it.copy( carrera = event.carrera ) }
+                _formDataState.update { it.copy( carrera = event.carreraIndex ) }
             }
             is CreaCuentaEvent.Submit -> {
                 viewModelScope.launch { submit() }
