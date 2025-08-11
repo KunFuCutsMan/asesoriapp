@@ -8,8 +8,7 @@ sealed class PedirAsesoriaUIState {
     data object Loading: PedirAsesoriaUIState()
 
     data class PedirAsesoria(
-        val carreraID: Int,
-        val asignaturaID: Int,
+        val asignaturas: List<String>,
         val horaInicio: LocalTime,
         val horaFinal: LocalTime,
         val dia: LocalDate,
