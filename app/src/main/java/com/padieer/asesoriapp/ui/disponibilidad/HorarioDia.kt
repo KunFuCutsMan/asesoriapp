@@ -20,9 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.padieer.asesoriapp.ui.common.toHoraFormat
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 
 data class Hora(
@@ -30,13 +30,9 @@ data class Hora(
     val ocupado: Boolean,
 )
 
-fun Int.toHoraFormat(): String {
-    val hora = if (this < 10) "0$this" else "$this"
-    return "$hora:00"
-}
 
 @Composable
-fun HorarioDia(
+private fun HorarioDia(
     modifier: Modifier = Modifier,
     dia: String, horario: List<Hora>,
     onHoraClick: (Int) -> Unit,
