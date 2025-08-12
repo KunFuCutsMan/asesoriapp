@@ -32,7 +32,7 @@ data class Hora(
 
 
 @Composable
-private fun HorarioDia(
+fun HorarioDia(
     modifier: Modifier = Modifier,
     dia: String, horario: List<Hora>,
     onHoraClick: (Int) -> Unit,

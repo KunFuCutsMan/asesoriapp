@@ -8,3 +8,11 @@ data class AsignaturaModel(
     val nombre: String,
     val carreras: List<CarreraModel>
 )
+
+data class Asignatura(
+    val nombre: String
+)
+
+fun AsignaturaModel.toUIModel() = Asignatura(
+    nombre = this.nombre
+)

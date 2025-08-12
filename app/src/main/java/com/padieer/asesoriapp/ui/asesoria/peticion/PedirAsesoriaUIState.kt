@@ -1,14 +1,16 @@
 package com.padieer.asesoriapp.ui.asesoria.peticion
 
+import com.padieer.asesoriapp.domain.model.Asignatura
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 sealed class PedirAsesoriaUIState {
 
     data object Loading: PedirAsesoriaUIState()
+    data class Error(val error: String): PedirAsesoriaUIState()
 
     data class PedirAsesoria(
-        val asignaturas: List<String>,
+        val asignaturas: List<Asignatura>,
         val horaInicio: LocalTime,
         val horaFinal: LocalTime,
         val dia: LocalDate,

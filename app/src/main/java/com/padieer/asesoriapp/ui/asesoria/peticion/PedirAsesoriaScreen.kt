@@ -1,6 +1,5 @@
 package com.padieer.asesoriapp.ui.asesoria.peticion
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,14 +23,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
+import com.padieer.asesoriapp.domain.model.Asignatura
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.*
+import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.ModalDatePickerField
+import com.padieer.asesoriapp.ui.common.ModalHourTimePicker
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import kotlinx.datetime.LocalDate
@@ -49,9 +52,18 @@ fun PedirAsesoriaScreen() {
         is PedirAsesoriaUIState.PedirAsesoria -> {
             PedirAsesoria(
                 state = uiState as PedirAsesoriaUIState.PedirAsesoria,
-                onAsignaturaValueChange = {},
-                onSubmitClick = {},
+                onAsignaturaValueChange = { viewModel.onEvent(AsesoriaIndexChange(it))},
+                onFechaValueChange = {viewModel.onEvent(FechaChange(it))},
+                onHoraInicioValueChange = {viewModel.onEvent(HoraInicioChange(it))},
+                onHoraFinalValueChange = {viewModel.onEvent(HoraFinalChange(it))},
+                onSubmitClick = {viewModel.onEvent(Submit)},
             )
+        }
+        is PedirAsesoriaUIState.Error -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                val error = uiState as PedirAsesoriaUIState.Error
+                ErrorText(error.error, textAlign = TextAlign.Center)
+            }
         }
     }
 }
@@ -59,8 +71,11 @@ fun PedirAsesoriaScreen() {
 @Composable
 fun PedirAsesoria(
     modifier: Modifier = Modifier, state: PedirAsesoriaUIState.PedirAsesoria,
-    onAsignaturaValueChange: (Int) -> Unit,
-    onSubmitClick: () -> Unit,
+    onAsignaturaValueChange: (Int) -> Unit = {},
+    onFechaValueChange: (LocalDate) -> Unit = {},
+    onHoraInicioValueChange: (Int) -> Unit = {},
+    onHoraFinalValueChange: (Int) -> Unit = {},
+    onSubmitClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -74,7 +89,7 @@ fun PedirAsesoria(
 
         OutlinedDropdown(
             modifier = Modifier.fillMaxWidth(),
-            data = state.asignaturas,
+            data = state.asignaturas.map { it.nombre },
             label = { Text("Asesoría") },
             onValueChange = onAsignaturaValueChange
         )
@@ -89,20 +104,37 @@ fun PedirAsesoria(
                 modifier = Modifier.padding(16.dp),
             ) {
                 ModalDatePickerField(
-                    value = null,
-                    onValueChange = {},
+                    value = state.dia,
+                    onValueChange = onFechaValueChange,
                     label = "Fecha",
+                    selectableDates = AllowedDateValidator.All(
+                        AllowedDateValidator.WeekDaysOnly,
+                        AllowedDateValidator.AfterOrEqualToday,
+                        AllowedDateValidator.UntilNextMonth,
+                    )
                 )
 
                 Spacer(Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Column(Modifier.weight(1f)) {
-                        Text("De...")
-                        PlaceholderBox(20.dp)
+                        Text("Desde...")
+                        ModalHourTimePicker(
+                            label = "Hora",
+                            hourState = state.horaInicio.hour,
+                            from = 7,
+                            to = 20,
+                            onValueChange = onHoraInicioValueChange
+                        )
                     }
                     Column(Modifier.weight(1f)) {
                         Text("Hasta...")
-                        PlaceholderBox(20.dp)
+                        ModalHourTimePicker(
+                            label = "Hora",
+                            hourState = state.horaFinal.hour,
+                            from = 8,
+                            to = 21,
+                            onValueChange = onHoraFinalValueChange
+                        )
                     }
                 }
             }
@@ -116,11 +148,6 @@ fun PedirAsesoria(
     }
 }
 
-@Composable
-private fun PlaceholderBox(height: Dp) {
-    Box(Modifier.fillMaxWidth().height(height).background(color = Color.Red))
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
@@ -130,10 +157,10 @@ private fun PedirAsesoriaPreview() {
             topBar = { TopAppBar( title = { Text("Pantalla para pedir asesoria") } ) }
         ) { paddingValues ->
             val state = PedirAsesoriaUIState.PedirAsesoria(
-                asignaturas = List(5) { "Asignatura $it" },
+                asignaturas = List(5) { Asignatura("Asignatura $it") },
                 dia = LocalDate(1,1,1),
-                horaInicio = LocalTime(1,1,1),
-                horaFinal = LocalTime(1,1,1),
+                horaInicio = LocalTime(9,0,0),
+                horaFinal = LocalTime(10,0,0),
             )
 
             Surface(Modifier
@@ -141,11 +168,7 @@ private fun PedirAsesoriaPreview() {
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
             ) {
-                PedirAsesoria(
-                    state = state,
-                    onAsignaturaValueChange = {},
-                    onSubmitClick = {},
-                )
+                PedirAsesoria(state = state)
             }
 
         }
