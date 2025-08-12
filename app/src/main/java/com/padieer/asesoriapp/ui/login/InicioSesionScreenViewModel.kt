@@ -38,16 +38,13 @@ class InicioSesionScreenViewModel(
 
     fun onEvent(event: InicioSesionEvent) {
         when (event) {
-            is InicioSesionEvent.NumControlChanged -> {
+            is InicioSesionEvent.NumControlChanged -> viewModelScope.launch {
                 _uiState.update { it.copy(numeroControl = event.numControl) }
             }
-            is InicioSesionEvent.ContrasenaChanged -> {
+            is InicioSesionEvent.ContrasenaChanged -> viewModelScope.launch {
                 _uiState.update { it.copy(contrasena = event.contrasena) }
             }
-            is InicioSesionEvent.LoginClick -> {
-                // Valida datos e inicia sesión
-                this.login()
-            }
+            is InicioSesionEvent.LoginClick -> viewModelScope.launch { login() }
             is InicioSesionEvent.CreaCuentaScreenClick -> viewModelScope.launch {
                 navigator.emit(Navigator.Action.GoTo(Screen.Auth.CreaCuentaScreen))
             }

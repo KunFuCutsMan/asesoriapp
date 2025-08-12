@@ -59,7 +59,7 @@ class AppViewModel(
 
     fun onEvent(event: AppEvent) {
         when (event) {
-            AppEvent.LogOutClick -> { viewModelScope.launch { logOut() } }
+            AppEvent.LogOutClick -> viewModelScope.launch { logOut() }
         }
     }
 

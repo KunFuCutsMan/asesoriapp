@@ -139,9 +139,6 @@ class CreaCuentaViewModel(
             ) }
             return
         }
-
-        Log.i("[SUCCESS]", "Datos enviados: ${formDataState.value}")
-
         val result = estudianteRepository.insertEstudiante(
             nombre = formDataState.value.nombre,
             apellidoPaterno = formDataState.value.apePaterno,
@@ -174,36 +171,34 @@ class CreaCuentaViewModel(
 
     fun onEvent( event: CreaCuentaEvent ) {
         when (event) {
-            is CreaCuentaEvent.NombreChanged -> {
+            is CreaCuentaEvent.NombreChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( nombre = event.nombre ) }
             }
-            is CreaCuentaEvent.ApeMaternoChanged -> {
+            is CreaCuentaEvent.ApeMaternoChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( apeMaterno = event.apeMat ) }
             }
-            is CreaCuentaEvent.ApePaternoChanged -> {
+            is CreaCuentaEvent.ApePaternoChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( apePaterno = event.apePat ) }
             }
-            is CreaCuentaEvent.ContrasenaChanged -> {
+            is CreaCuentaEvent.ContrasenaChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( contrasena = event.contra ) }
             }
-            is CreaCuentaEvent.ContrasenaRepiteChanged -> {
+            is CreaCuentaEvent.ContrasenaRepiteChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( contrasenaRepite = event.contra ) }
             }
-            is CreaCuentaEvent.NumControlChanged -> {
+            is CreaCuentaEvent.NumControlChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( numControl = event.numControl ) }
             }
-            is CreaCuentaEvent.NumTelefonoChanged -> {
+            is CreaCuentaEvent.NumTelefonoChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( numTelefono = event.telefono ) }
             }
-            is CreaCuentaEvent.SemestreChanged -> {
+            is CreaCuentaEvent.SemestreChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( numSemestre = event.semestre ) }
             }
-            is CreaCuentaEvent.CarreraChanged -> {
+            is CreaCuentaEvent.CarreraChanged -> viewModelScope.launch {
                 _formDataState.update { it.copy( carrera = event.carreraIndex ) }
             }
-            is CreaCuentaEvent.Submit -> {
-                viewModelScope.launch { submit() }
-            }
+            is CreaCuentaEvent.Submit -> viewModelScope.launch { submit() }
             is CreaCuentaEvent.InicioSesionClick -> viewModelScope.launch {
                 navigator.emit(Navigator.Action.GoToInclusive(Screen.Auth, Screen.Auth))
             }

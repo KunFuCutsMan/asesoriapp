@@ -272,24 +272,24 @@ class ForgotPasswordViewModel(
     fun onEvent(event: UIEvent) {
         when (event) {
             // Eventos de EncuentraEstudiante
-            is UIEvent.NumeroControlChanged -> { _formDataState.update { it.copy(numControl = event.value) } }
-            is UIEvent.NumeroTelefonoChanged -> { _formDataState.update { it.copy(numTelefono = event.value) } }
-            is UIEvent.SubmitForm -> { submitForm() }
+            is UIEvent.NumeroControlChanged -> viewModelScope.launch { _formDataState.update { it.copy(numControl = event.value) } }
+            is UIEvent.NumeroTelefonoChanged -> viewModelScope.launch { _formDataState.update { it.copy(numTelefono = event.value) } }
+            is UIEvent.SubmitForm -> viewModelScope.launch { submitForm() }
 
             // Eventos de OTP
-            is UIEvent.OTPChangeFieldFocused -> { _otpState.update { it.copy( focusedIndex = event.index ) } }
-            is UIEvent.OTPNumberEntered -> { otpEnterNumber(event.number, event.index) }
-            UIEvent.OTPKeyboardBack -> { otpKeyboardBack() }
+            is UIEvent.OTPChangeFieldFocused -> viewModelScope.launch { _otpState.update { it.copy( focusedIndex = event.index ) } }
+            is UIEvent.OTPNumberEntered -> viewModelScope.launch { otpEnterNumber(event.number, event.index) }
+            UIEvent.OTPKeyboardBack -> viewModelScope.launch { otpKeyboardBack() }
 
             // Eventos de NewPassword
-            is UIEvent.NewPasswordChanged -> { _newPasswordFormState.update { it.copy( password = event.value ) } }
-            is UIEvent.NewPasswordConfChanged -> { _newPasswordFormState.update { it.copy( passwordConf = event.value ) } }
-            UIEvent.NewPasswordSubmit -> { newPasswordSubmit() }
+            is UIEvent.NewPasswordChanged -> viewModelScope.launch { _newPasswordFormState.update { it.copy( password = event.value ) } }
+            is UIEvent.NewPasswordConfChanged -> viewModelScope.launch { _newPasswordFormState.update { it.copy( passwordConf = event.value ) } }
+            UIEvent.NewPasswordSubmit -> viewModelScope.launch { newPasswordSubmit() }
 
             // Eventos de UI
-            UIEvent.FormUbicaEstudiante -> { _uiState.update { UIState.UbicaEstudianteForm } }
-            UIEvent.Loading -> { _uiState.update { UIState.Loading } }
-            UIEvent.OTPCodeForm -> { _uiState.update { UIState.OTPCodeForm } }
+            UIEvent.FormUbicaEstudiante -> viewModelScope.launch { _uiState.update { UIState.UbicaEstudianteForm } }
+            UIEvent.Loading -> viewModelScope.launch { _uiState.update { UIState.Loading } }
+            UIEvent.OTPCodeForm -> viewModelScope.launch { _uiState.update { UIState.OTPCodeForm } }
         }
     }
 
