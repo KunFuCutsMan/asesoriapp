@@ -30,12 +30,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
 import com.padieer.asesoriapp.domain.model.Asignatura
-import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.*
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.AsesoriaIndexChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.FechaChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraFinalChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraInicioChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.Submit
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.ModalDatePickerField
 import com.padieer.asesoriapp.ui.common.ModalHourTimePicker
 import com.padieer.asesoriapp.ui.common.OutlinedDropdown
+import com.padieer.asesoriapp.ui.common.ToolTipWithInfo
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -103,6 +108,18 @@ fun PedirAsesoria(
             Column(
                 modifier = Modifier.padding(16.dp),
             ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Horario", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.weight(1f))
+                    ToolTipWithInfo(
+                        title = "Horarios de asesorías",
+                        text = """
+                            Es probable que el horario de la asesoría cambie para que coincida con el horario de tu asesor.
+                            Escoge el horario que prefieras, y se te avisará si se requiere un cambio de horario.
+                        """.trimIndent()
+                    )
+                }
+
                 ModalDatePickerField(
                     value = state.dia,
                     onValueChange = onFechaValueChange,
