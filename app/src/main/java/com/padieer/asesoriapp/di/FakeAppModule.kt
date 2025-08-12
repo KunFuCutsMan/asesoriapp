@@ -1,6 +1,7 @@
 package com.padieer.asesoriapp.di
 
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
+import com.padieer.asesoriapp.data.asesoria.FakeAsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepository
 import com.padieer.asesoriapp.data.asignatura.FakeAsignaturaRepository
 import com.padieer.asesoriapp.data.carrera.CarreraRepository
@@ -22,8 +23,6 @@ class FakeAppModule(
     override val passwordRepository: PasswordRepository = FakePasswordRepository(),
     override val horarioRepository: HorarioRepository = FakeHorarioRepository(),
     override val asignaturaRepository: AsignaturaRepository = FakeAsignaturaRepository(),
-    override val callPhoneUseCase: CallPhoneUseCase = CallPhoneUseCase(null)
-) : AppModule {
-    override val asesoriaRepository: AsesoriaRepository
-        get() = TODO("Not yet implemented")
-}
+    override val callPhoneUseCase: CallPhoneUseCase = CallPhoneUseCase(null),
+    override val asesoriaRepository: AsesoriaRepository = FakeAsesoriaRepository()
+) : AppModule

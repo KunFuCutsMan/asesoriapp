@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
+import com.padieer.asesoriapp.data.asesoria.FakeAsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepositoryImpl
 import com.padieer.asesoriapp.data.asignatura.sources.LocalAsignaturaSource
 import com.padieer.asesoriapp.data.asignatura.sources.RemoteAsignaturaSource
@@ -139,6 +140,5 @@ class AppModuleImpl(private val appContext: Context): AppModule {
             localHorarioSource = localHorarioSource,
         )
     }
-    override val asesoriaRepository: AsesoriaRepository
-        get() = TODO("Not yet implemented")
+    override val asesoriaRepository: AsesoriaRepository = FakeAsesoriaRepository()
 }
