@@ -8,4 +8,5 @@ package com.padieer.asesoriapp.domain.search
  */
 interface Searchable {
     val displayName: String
+    val id: Int
 }

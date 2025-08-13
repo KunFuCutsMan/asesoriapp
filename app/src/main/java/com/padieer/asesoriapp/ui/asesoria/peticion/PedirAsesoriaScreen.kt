@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -39,7 +38,6 @@ import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.ModalDatePickerField
 import com.padieer.asesoriapp.ui.common.ModalHourTimePicker
-import com.padieer.asesoriapp.ui.common.OutlinedDropdown
 import com.padieer.asesoriapp.ui.common.ToolTipWithInfo
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import kotlinx.datetime.LocalDate
@@ -92,12 +90,13 @@ fun PedirAsesoria(
 
         Spacer(Modifier.weight(1f))
 
-        OutlinedDropdown(
-            modifier = Modifier.fillMaxWidth(),
-            data = state.asignaturas.map { it.nombre },
-            label = { Text("Asesoría") },
-            onValueChange = onAsignaturaValueChange
+        /*
+        OutlinedSearchField(
+            label = "Asignaturas",
+
+            onValueChange = {}
         )
+        */
 
         Card(
             colors = CardDefaults.cardColors().copy(

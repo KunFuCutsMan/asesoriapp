@@ -28,6 +28,7 @@ fun <T: Searchable> OutlinedSearchField(
     label: String,
     placeholder: String = "Buscar...",
     searchables: List<T> = emptyList(),
+    onSearch: (String) -> Unit = {},
     onValueChange: (T) -> Unit = {}) {
 
     var dialogState by remember { mutableStateOf(false) }
@@ -58,6 +59,7 @@ fun <T: Searchable> OutlinedSearchField(
             placeholder = placeholder,
             searchableItems = searchables,
             onDismiss = { dialogState = false },
+            onSearch = onSearch,
             onItemClick = {
                 selectedItemText = it.displayName
                 dialogState = false

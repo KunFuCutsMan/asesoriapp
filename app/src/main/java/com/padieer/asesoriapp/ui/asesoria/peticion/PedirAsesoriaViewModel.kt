@@ -88,12 +88,17 @@ class PedirAsesoriaViewModel(
         ) }
     }
 
+    private fun updateQuery(query: String) {
+
+    }
+
     fun onEvent(event: PedirAsesoriaEvent) {
         when (event) {
             is PedirAsesoriaEvent.AsesoriaIndexChange -> viewModelScope.launch {  }
             is PedirAsesoriaEvent.FechaChange -> viewModelScope.launch { updateFecha(event.fecha) }
             is PedirAsesoriaEvent.HoraInicioChange -> viewModelScope.launch { updateHorasInicio(event.hora) }
             is PedirAsesoriaEvent.HoraFinalChange -> viewModelScope.launch { updateHorasFinal(event.hora) }
+            is PedirAsesoriaEvent.AsignaturaSearch -> viewModelScope.launch {updateQuery(event.query)}
             PedirAsesoriaEvent.Submit -> viewModelScope.launch {  }
         }
     }
@@ -108,5 +113,7 @@ class PedirAsesoriaViewModel(
                 )
             )
         }
+
+        val SEARCH_DELAY = 500L
     }
 }

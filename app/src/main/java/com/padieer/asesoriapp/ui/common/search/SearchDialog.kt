@@ -38,6 +38,7 @@ internal fun <T: Searchable> SearchDialog(
     modifier: Modifier = Modifier,
     label: String,
     placeholder: String,
+    onSearch: (String) -> Unit,
     onDismiss: () -> Unit,
     onItemClick: (T) -> Unit,
     searchableItems: List<T>,
@@ -58,7 +59,7 @@ internal fun <T: Searchable> SearchDialog(
                 label = { Text(label) },
                 placeholder = { Text(placeholder) },
                 leadingIcon = { Icon(Icons.Outlined.Search, "") },
-                onValueChange = {},
+                onValueChange = onSearch,
             )
 
             HorizontalDivider()
@@ -67,7 +68,7 @@ internal fun <T: Searchable> SearchDialog(
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(searchableItems) { item ->
+                items(searchableItems, key = { it.id }) { item ->
                     ListItem(
                         modifier = Modifier.clickable { onItemClick(item) },
                         colors = ListItemDefaults.colors(
@@ -97,7 +98,8 @@ private fun SearchDialogPreview() {
                     placeholder = "Buscar...",
                     onDismiss = {},
                     onItemClick = {},
-                    searchableItems = List(20) { SearchableExample("Cosa $it") }
+                    onSearch = {},
+                    searchableItems = List(20) { SearchableExample("Cosa $it", id = it) }
                 )
             }
         }
@@ -105,5 +107,6 @@ private fun SearchDialogPreview() {
 }
 
 internal data class SearchableExample(
-    override val displayName: String
+    override val displayName: String,
+    override val id: Int
 ): Searchable
