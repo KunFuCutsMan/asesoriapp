@@ -8,3 +8,11 @@ data class AsesorModel (
     val estudianteID: Int,
     val admin: AdminModel? = null
 )
+
+data class Asesor(
+    val id: Int,
+)
+
+fun AsesorModel.toUIModel() = Asesor(
+    id = this.id
+)

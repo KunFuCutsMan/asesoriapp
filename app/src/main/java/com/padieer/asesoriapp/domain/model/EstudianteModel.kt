@@ -15,3 +15,25 @@ data class EstudianteModel (
     val especialidad: EspecialidadModel? = null,
     val asesor: AsesorModel? = null
 )
+
+data class Estudiante(
+    val nombre: String,
+    val apePaterno: String,
+    val apeMaterno: String,
+    val numeroTelefono: String,
+    val numeroControl: String,
+    val semestre: Int,
+    val asesor: Asesor?,
+    val admin: Admin?,
+)
+
+fun EstudianteModel.toUIModel() = Estudiante(
+    nombre = this.nombre,
+    apePaterno = this.apellidoPaterno,
+    apeMaterno = this.apellidoMaterno,
+    numeroTelefono = this.numeroTelefono,
+    numeroControl = this.numeroControl,
+    semestre = this.semestre,
+    asesor = this.asesor?.toUIModel(),
+    admin = this.asesor?.admin?.toUIModel(),
+)

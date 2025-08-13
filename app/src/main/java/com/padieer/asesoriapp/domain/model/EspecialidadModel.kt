@@ -8,3 +8,11 @@ data class EspecialidadModel(
     val nombre: String,
     val carreraID: Int,
 )
+
+data class Especialidad(
+    val nombre: String,
+)
+
+fun EspecialidadModel.toUIModel() = Especialidad(
+    nombre = this.nombre
+)

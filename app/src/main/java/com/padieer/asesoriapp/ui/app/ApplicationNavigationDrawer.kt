@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Close
@@ -64,6 +66,7 @@ fun ApplicationNavigationDrawer(rootNavController: NavController? = null) {
 fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
 
     val drawerState = rememberDrawerState( initialValue = DrawerValue.Closed )
+    val scrollState = rememberScrollState()
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(1) }
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -78,7 +81,7 @@ fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(modifier = Modifier.verticalScroll(scrollState)) {
                 Spacer(Modifier.height(28.dp))
                 obtenAccionesDelEstudiante(uiState.rolEstudiante).forEachIndexed { index, item ->
                     when (item) {

@@ -6,13 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material3.Card
@@ -21,10 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,56 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.padieer.asesoriapp.domain.model.CarreraModel
-import com.padieer.asesoriapp.domain.model.EspecialidadModel
-import com.padieer.asesoriapp.domain.model.EstudianteModel
+import com.padieer.asesoriapp.domain.model.Asesor
+import com.padieer.asesoriapp.domain.model.Carrera
+import com.padieer.asesoriapp.domain.model.Especialidad
+import com.padieer.asesoriapp.domain.model.Estudiante
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
-
-data class Estudiante(
-    val nombre: String,
-    val apePaterno: String,
-    val apeMaterno: String,
-    val numeroTelefono: String,
-    val numeroControl: String,
-    val semestre: Int,
-    val asesor: Asesor?,
-    val admin: Admin?,
-)
-
-data class Carrera(
-    val nombre: String,
-)
-
-data class Especialidad(
-    val nombre: String,
-)
-
-data class Asesor(
-    val id: Int,
-)
-
-data class Admin(
-    val id: Int
-)
-
-fun CarreraModel.toUIModel() = Carrera(
-    nombre = this.nombre,
-)
-
-fun EstudianteModel.toUIModel() = Estudiante(
-    nombre = this.nombre,
-    apePaterno = this.apellidoPaterno,
-    apeMaterno = this.apellidoMaterno,
-    numeroTelefono = this.numeroTelefono,
-    numeroControl = this.numeroControl,
-    semestre = this.semestre,
-    asesor = this.asesor?.let { Asesor(id = it.id) },
-    admin = this.asesor?.admin?.let { Admin( id = it.id ) }
-)
-
-fun EspecialidadModel.toUIModel() = Especialidad(
-    nombre = this.nombre
-)
 
 @Composable
 fun Perfil(

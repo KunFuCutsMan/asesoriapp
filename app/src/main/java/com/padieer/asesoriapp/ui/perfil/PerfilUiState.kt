@@ -1,8 +1,8 @@
 package com.padieer.asesoriapp.ui.perfil
 
-import com.padieer.asesoriapp.ui.common.Carrera
-import com.padieer.asesoriapp.ui.common.Especialidad
-import com.padieer.asesoriapp.ui.common.Estudiante
+import com.padieer.asesoriapp.domain.model.Carrera
+import com.padieer.asesoriapp.domain.model.Especialidad
+import com.padieer.asesoriapp.domain.model.Estudiante
 
 sealed class PerfilUiState {
 
