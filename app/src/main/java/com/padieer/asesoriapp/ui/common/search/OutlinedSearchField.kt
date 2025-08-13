@@ -25,6 +25,7 @@ import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 @Composable
 fun <T: Searchable> OutlinedSearchField(
     modifier: Modifier = Modifier,
+    query: String,
     label: String,
     placeholder: String = "Buscar...",
     searchables: List<T> = emptyList(),
@@ -55,6 +56,7 @@ fun <T: Searchable> OutlinedSearchField(
 
     if (dialogState) {
         SearchDialog(
+            query = query,
             label = label,
             placeholder = placeholder,
             searchableItems = searchables,
@@ -75,6 +77,7 @@ private fun OutlinedSearchFieldPreview() {
     AsesoriAppTheme {
         Surface {
             OutlinedSearchField(
+                query = "",
                 label = "Buscar algo",
                 searchables = emptyList<SearchableExample>(),
                 onValueChange = {},

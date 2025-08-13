@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.ui.app
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -81,7 +82,7 @@ fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.verticalScroll(scrollState)) {
+            ModalDrawerSheet(modifier = Modifier.fillMaxHeight().verticalScroll(scrollState)) {
                 Spacer(Modifier.height(28.dp))
                 obtenAccionesDelEstudiante(uiState.rolEstudiante).forEachIndexed { index, item ->
                     when (item) {
