@@ -4,6 +4,7 @@ import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.data.asesoria.sources.RemoteAsesoriaSource
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.model.AsesoriaModel
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
@@ -37,5 +38,9 @@ class AsesoriaRepositoryImpl(
             return Result.Error(asesoriaResult.error)
 
         return Result.Success(Unit)
+    }
+
+    override suspend fun fetchAsesoriasOfEstudiante(): Result<List<AsesoriaModel>, DataError> {
+        return Result.Error(DataError.Local.UNKWOWN)
     }
 }
