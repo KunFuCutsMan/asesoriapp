@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class CarreraModel (
     val id: Int,
     val nombre: String,
-    val codigo: String,
+    val codigo: String = "",
     val especialidades: List<EspecialidadModel>? = null
 )
 

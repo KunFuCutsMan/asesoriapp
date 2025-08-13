@@ -3,9 +3,6 @@ package com.padieer.asesoriapp.domain.validators
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.error.ValidationError
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class ValidateHoraInicioUseCase(
@@ -23,10 +20,6 @@ class ValidateHoraInicioUseCase(
 
         if (hora > HORA_MAXIMA)
             return Result.Error(ValidationError.HoraInicioError.TOO_LATE)
-
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        if (hora < now.time)
-            return Result.Error(ValidationError.HoraInicioError.TOO_EARLY)
 
         return Result.Success(Unit)
     }

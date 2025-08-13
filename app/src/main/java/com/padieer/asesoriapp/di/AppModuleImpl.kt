@@ -3,8 +3,8 @@ package com.padieer.asesoriapp.di
 import android.content.Context
 import android.util.Log
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
-import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
-import com.padieer.asesoriapp.data.asesoria.FakeAsesoriaRepository
+import com.padieer.asesoriapp.data.asesoria.AsesoriaRepositoryImpl
+import com.padieer.asesoriapp.data.asesoria.sources.RemoteAsesoriaSource
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepositoryImpl
 import com.padieer.asesoriapp.data.asignatura.AsignaturaSearcher
 import com.padieer.asesoriapp.data.asignatura.sources.LocalAsignaturaSource
@@ -21,9 +21,7 @@ import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
-import com.padieer.asesoriapp.domain.model.SearchableAsignatura
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
-import com.padieer.asesoriapp.domain.search.Searcher
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -102,6 +100,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         LocalHorarioSource()
     }
 
+    private val remoteAsesoriaSource by lazy {
+        RemoteAsesoriaSource(client)
+    }
+
     override val carreraRepository by lazy {
         CarreraRepositoryImpl(
             remoteCarreraSource = remoteCarreraSource,
@@ -143,7 +145,12 @@ class AppModuleImpl(private val appContext: Context): AppModule {
             localHorarioSource = localHorarioSource,
         )
     }
-    override val asesoriaRepository: AsesoriaRepository = FakeAsesoriaRepository()
+    override val asesoriaRepository by lazy {
+        AsesoriaRepositoryImpl(
+            remoteAsesoriaSource = remoteAsesoriaSource,
+            preferencesSource = localPreferencesSource
+        )
+    }
 
     override val asignaturaSearcher by lazy {
         AsignaturaSearcher(appContext)

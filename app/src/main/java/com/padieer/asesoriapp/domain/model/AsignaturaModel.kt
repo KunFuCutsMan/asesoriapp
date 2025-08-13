@@ -10,7 +10,7 @@ import java.util.UUID
 data class AsignaturaModel(
     val id: Int,
     val nombre: String,
-    val carreras: List<CarreraModel>
+    val carreras: List<CarreraModel>? = null
 )
 
 data class Asignatura(
