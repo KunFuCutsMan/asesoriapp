@@ -70,7 +70,7 @@ internal fun <T: Searchable> SearchDialog(
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(searchableItems) { item ->
+                items(searchableItems.distinctBy { it.key }, key = { it.key }) { item ->
                     ListItem(
                         modifier = Modifier.clickable { onItemClick(item) },
                         colors = ListItemDefaults.colors(
@@ -102,7 +102,7 @@ private fun SearchDialogPreview() {
                     onDismiss = {},
                     onItemClick = {},
                     onSearch = {},
-                    searchableItems = List(20) { SearchableExample("Cosa $it", id = it) }
+                    searchableItems = List(20) { SearchableExample("Cosa $it", key = "$it") }
                 )
             }
         }
@@ -111,5 +111,5 @@ private fun SearchDialogPreview() {
 
 internal data class SearchableExample(
     override val displayName: String,
-    override val id: Int
+    override val key: String
 ): Searchable

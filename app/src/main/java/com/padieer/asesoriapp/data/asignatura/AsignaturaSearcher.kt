@@ -47,7 +47,7 @@ class AsignaturaSearcher(
     override suspend fun query(query: String): List<SearchableAsignatura> {
         return withContext(Dispatchers.IO) {
             val searchSpec = SearchSpec.Builder()
-                .addFilterNamespaces(SearchableAsignatura.Namespace)
+                .addFilterNamespaces(SearchableAsignatura.NAMESPACE)
                 .setRankingStrategy(SearchSpec.RANKING_STRATEGY_USAGE_COUNT)
                 .build()
 

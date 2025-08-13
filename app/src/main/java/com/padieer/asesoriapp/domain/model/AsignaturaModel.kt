@@ -15,7 +15,8 @@ data class AsignaturaModel(
 
 data class Asignatura(
     val nombre: String,
-    override val id: Int,
+    val id: Int,
+    override val key: String,
 ): Searchable {
     override val displayName = this.nombre
 }
@@ -37,17 +38,18 @@ data class SearchableAsignatura(
     val nombre: String,
 ) {
     companion object {
-        const val Namespace = "asesorias"
+        const val NAMESPACE = "asesorias"
     }
 }
 
 fun AsignaturaModel.toUIModel() = Asignatura(
     nombre = this.nombre,
-    id = this.id
+    id = this.id,
+    key = this.nombre + this.id,
 )
 
 fun AsignaturaModel.toSearchable() = SearchableAsignatura(
-    namespace = SearchableAsignatura.Namespace,
+    namespace = SearchableAsignatura.NAMESPACE,
     modelID = this.id,
     nombre = this.nombre,
     id = UUID.randomUUID().toString(),
@@ -56,4 +58,5 @@ fun AsignaturaModel.toSearchable() = SearchableAsignatura(
 fun SearchableAsignatura.toUIModel() = Asignatura(
     nombre = this.nombre,
     id = this.modelID,
+    key = this.nombre + this.modelID
 )

@@ -178,7 +178,7 @@ private fun PedirAsesoriaPreview() {
             topBar = { TopAppBar( title = { Text("Pantalla para pedir asesoria") } ) }
         ) { paddingValues ->
             val state = PedirAsesoriaUIState.PedirAsesoria(
-                asignaturas = List(5) { Asignatura("Asignatura $it", it) },
+                asignaturas = List(5) { Asignatura("Asignatura $it", it, "$it") },
                 dia = LocalDate(1,1,1),
                 horaInicio = LocalTime(9,0,0),
                 horaFinal = LocalTime(10,0,0),
