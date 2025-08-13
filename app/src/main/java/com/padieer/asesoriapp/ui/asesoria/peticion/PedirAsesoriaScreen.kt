@@ -13,23 +13,27 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.padieer.asesoriapp.domain.datetime.AllowedDateValidator
 import com.padieer.asesoriapp.domain.model.Asignatura
-import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.AsesoriaIndexChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.AsignaturaChange
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.FechaChange
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraFinalChange
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraInicioChange
@@ -46,9 +50,16 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 @Composable
-fun PedirAsesoriaScreen() {
+fun PedirAsesoriaScreen(navController: NavController? = null) {
     val viewModel: PedirAsesoriaViewModel = viewModel( factory = PedirAsesoriaViewModel.factory() )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    LaunchedEffect(true) {
+        viewModel.navitator.channel.collect {
+            viewModel.navitator.consumeAction(it, navController, context)
+        }
+    }
 
     when (uiState) {
         PedirAsesoriaUIState.Loading -> {
@@ -57,7 +68,7 @@ fun PedirAsesoriaScreen() {
         is PedirAsesoriaUIState.PedirAsesoria -> {
             PedirAsesoria(
                 state = uiState as PedirAsesoriaUIState.PedirAsesoria,
-                onAsignaturaValueChange = { viewModel.onEvent(AsesoriaIndexChange(it))},
+                onAsignaturaValueChange = { viewModel.onEvent(AsignaturaChange(it))},
                 onFechaValueChange = {viewModel.onEvent(FechaChange(it))},
                 onHoraInicioValueChange = {viewModel.onEvent(HoraInicioChange(it))},
                 onHoraFinalValueChange = {viewModel.onEvent(HoraFinalChange(it))},
@@ -163,6 +174,15 @@ fun PedirAsesoria(
 
         Spacer(Modifier.weight(1f))
 
+        if (state.errors != null) {
+            ErrorText("No se pudo crear la asignatura:", textAlign = TextAlign.Center)
+
+            Column { state.errors.forEach { ErrorText(it, textAlign = TextAlign.Center) } }
+        }
+
+        if (state.isValidating)
+            LinearProgressIndicator()
+
         Button(onClick = onSubmitClick) {
             Text("Pedir Asesoría")
         }
@@ -182,6 +202,11 @@ private fun PedirAsesoriaPreview() {
                 dia = LocalDate(1,1,1),
                 horaInicio = LocalTime(9,0,0),
                 horaFinal = LocalTime(10,0,0),
+                isValidating = true,
+                errors = listOf(
+                    "Me pica un pulmón",
+                    "La asignatura escogida no existe"
+                )
             )
 
             Surface(Modifier

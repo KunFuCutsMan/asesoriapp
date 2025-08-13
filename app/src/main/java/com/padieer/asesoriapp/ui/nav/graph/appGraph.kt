@@ -21,7 +21,7 @@ fun AppGraph(navController: NavHostController) {
         }
 
         composable<AppScreen.Asesoria.PedirAsesoriaScreen> {
-            PedirAsesoriaScreen()
+            PedirAsesoriaScreen(navController)
         }
         composable<AppScreen.Asesoria.HistorialAsesoriasScreen> {
             Text("Pantalla para ver el historial de asesorias")

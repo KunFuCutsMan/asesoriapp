@@ -4,9 +4,6 @@ import kotlinx.serialization.Serializable
 
 sealed class Screen {
 
-    @Serializable
-    data object SplashScreen : Screen()
-
     /**
      * Grafo para la sección de Auth, que incluye las pantallas de inicio de sesión y creación
      * de cuentas
@@ -27,7 +24,7 @@ sealed class Screen {
     data object App : Screen()
 }
 
-sealed class AppScreen {
+sealed class AppScreen: Screen() {
     data object Usuario {
         /**
          * Pantalla inicial del usuario después que inicia sesión.

@@ -34,8 +34,6 @@ sealed interface ValidationError: Error {
     }
 
     enum class CarreraError: ValidationError {
-        NOT_EMPTY { override val message = "Carrera no debe de ser vacío" },
-        NOT_ALPHA { override val message = "Carrera debe contener letras" },
         NOT_FOUND { override val message = "Carrera no existe" },
     }
 
@@ -51,5 +49,23 @@ sealed interface ValidationError: Error {
     enum class ContrasenaRepiteError: ValidationError {
         NOT_EMPTY { override val message = "Repite tu contraseña" },
         NOT_EQUAL { override val message = "La contraseña no es la misma" },
+    }
+
+    enum class HoraInicioError: ValidationError {
+        HOURS_ONLY { override val message = "La hora inicial solo debe contener horas" },
+        TOO_EARLY { override val message = "La hora inicial es demasiado temprano" },
+        TOO_LATE { override val message = "La hora inicial es demasiado tarde" },
+    }
+
+    enum class HoraFinalError: ValidationError {
+        HOURS_ONLY { override val message = "La hora final solo debe contener horas" },
+        TOO_EARLY { override val message = "La hora inicial es demasiado temprano" },
+        TOO_LATE { override val message = "La hora inicial es demasiado tarde" },
+        BEFORE_INITIAL { override val message = "La hora final debe ser después de la inicial" }
+    }
+
+    enum class AsignaturaError: ValidationError {
+        NOT_VALID { override val message = "La asignatura escogida no es válida" },
+        NOT_FOUND { override val message = "No se encontró la asignatura escogida" },
     }
 }
