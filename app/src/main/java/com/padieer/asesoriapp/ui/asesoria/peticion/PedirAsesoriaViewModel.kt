@@ -5,10 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepository
+import com.padieer.asesoriapp.data.asignatura.AsignaturaSearcher
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
+import com.padieer.asesoriapp.domain.model.SearchableAsignatura
+import com.padieer.asesoriapp.domain.model.toSearchable
 import com.padieer.asesoriapp.domain.model.toUIModel
+import com.padieer.asesoriapp.domain.search.Searcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,11 +29,14 @@ import kotlin.time.ExperimentalTime
 class PedirAsesoriaViewModel(
     private val asesoriaRepository: AsesoriaRepository,
     private val asignaturaRepository: AsignaturaRepository,
+    private val asignaturaSearcher: Searcher<SearchableAsignatura>,
     private val getUserDataUseCase: GetLoggedInUserDataUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<PedirAsesoriaUIState>(PedirAsesoriaUIState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private var asignaturaQueryJob: Job? = null
 
     init {
         viewModelScope.launch { loadInitialData() }
@@ -49,6 +58,10 @@ class PedirAsesoriaViewModel(
         }
 
         val asignaturas = (asignaturasResult as Result.Success).data
+
+        // Inicializa el buscador
+        asignaturaSearcher.init()
+        asignaturaSearcher.put(asignaturas.map { it.toSearchable() })
 
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         _uiState.update { PedirAsesoriaUIState.PedirAsesoria(
@@ -89,7 +102,22 @@ class PedirAsesoriaViewModel(
     }
 
     private fun updateQuery(query: String) {
+        val state = _uiState.value as PedirAsesoriaUIState.PedirAsesoria
+        _uiState.update { state.copy(asignaturaQuery = query) }
 
+        asignaturaQueryJob?.cancel()
+        asignaturaQueryJob = viewModelScope.launch {
+            delay(SEARCH_DELAY) // Espera un momento bro
+
+            val asignaturas = asignaturaSearcher
+                .query(query)
+                .map { it.toUIModel() }
+
+            val queriedState = _uiState.value as PedirAsesoriaUIState.PedirAsesoria
+            _uiState.update { queriedState.copy(
+                asignaturas = asignaturas
+            )}
+        }
     }
 
     fun onEvent(event: PedirAsesoriaEvent) {
@@ -110,7 +138,8 @@ class PedirAsesoriaViewModel(
                 asignaturaRepository = App.appModule.asignaturaRepository,
                 getUserDataUseCase = GetLoggedInUserDataUseCase(
                     loginRepository = App.appModule.loginRepository
-                )
+                ),
+                asignaturaSearcher = App.appModule.asignaturaSearcher
             )
         }
 

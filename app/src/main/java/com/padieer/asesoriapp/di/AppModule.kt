@@ -7,7 +7,9 @@ import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
+import com.padieer.asesoriapp.domain.model.SearchableAsignatura
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
+import com.padieer.asesoriapp.domain.search.Searcher
 
 interface AppModule {
     val callPhoneUseCase: CallPhoneUseCase
@@ -19,4 +21,6 @@ interface AppModule {
     val horarioRepository: HorarioRepository
 
     val asesoriaRepository: AsesoriaRepository
+
+    val asignaturaSearcher: Searcher<SearchableAsignatura>
 }

@@ -39,6 +39,7 @@ import com.padieer.asesoriapp.ui.common.FullScreenLoading
 import com.padieer.asesoriapp.ui.common.ModalDatePickerField
 import com.padieer.asesoriapp.ui.common.ModalHourTimePicker
 import com.padieer.asesoriapp.ui.common.ToolTipWithInfo
+import com.padieer.asesoriapp.ui.common.search.OutlinedSearchField
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -90,13 +91,12 @@ fun PedirAsesoria(
 
         Spacer(Modifier.weight(1f))
 
-        /*
+
         OutlinedSearchField(
             label = "Asignaturas",
-
-            onValueChange = {}
+            searchables = state.asignaturas,
+            onValueChange = { onAsignaturaValueChange(it.id) }
         )
-        */
 
         Card(
             colors = CardDefaults.cardColors().copy(
@@ -173,7 +173,7 @@ private fun PedirAsesoriaPreview() {
             topBar = { TopAppBar( title = { Text("Pantalla para pedir asesoria") } ) }
         ) { paddingValues ->
             val state = PedirAsesoriaUIState.PedirAsesoria(
-                asignaturas = List(5) { Asignatura("Asignatura $it") },
+                asignaturas = List(5) { Asignatura("Asignatura $it", it) },
                 dia = LocalDate(1,1,1),
                 horaInicio = LocalTime(9,0,0),
                 horaFinal = LocalTime(10,0,0),

@@ -11,6 +11,7 @@ sealed class PedirAsesoriaUIState {
 
     data class PedirAsesoria(
         val asignaturas: List<Asignatura>,
+        val asignaturaQuery: String = "",
         val horaInicio: LocalTime,
         val horaFinal: LocalTime,
         val dia: LocalDate,

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
+    kotlin("kapt")
 }
 
 android {
@@ -69,6 +70,9 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.compose.wheel.picker)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.appsearch)
+    kapt(libs.androidx.appsearch.compiler)
+    implementation(libs.androidx.appsearch.local.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

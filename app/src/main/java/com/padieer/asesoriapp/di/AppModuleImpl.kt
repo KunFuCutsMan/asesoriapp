@@ -6,6 +6,7 @@ import com.padieer.asesoriapp.crypto.LocalPreferencesSource
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.asesoria.FakeAsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepositoryImpl
+import com.padieer.asesoriapp.data.asignatura.AsignaturaSearcher
 import com.padieer.asesoriapp.data.asignatura.sources.LocalAsignaturaSource
 import com.padieer.asesoriapp.data.asignatura.sources.RemoteAsignaturaSource
 import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
@@ -20,7 +21,9 @@ import com.padieer.asesoriapp.data.password.PasswordRepositoryImpl
 import com.padieer.asesoriapp.data.password.sources.RemotePasswordSource
 import com.padieer.asesoriapp.data.token.LoginRepositoryImpl
 import com.padieer.asesoriapp.data.token.sources.RemoteTokenSource
+import com.padieer.asesoriapp.domain.model.SearchableAsignatura
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
+import com.padieer.asesoriapp.domain.search.Searcher
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -141,4 +144,8 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         )
     }
     override val asesoriaRepository: AsesoriaRepository = FakeAsesoriaRepository()
+
+    override val asignaturaSearcher by lazy {
+        AsignaturaSearcher(appContext)
+    }
 }
