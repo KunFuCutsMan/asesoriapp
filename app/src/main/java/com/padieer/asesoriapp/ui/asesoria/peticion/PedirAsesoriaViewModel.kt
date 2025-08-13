@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.asignatura.AsignaturaRepository
-import com.padieer.asesoriapp.data.asignatura.AsignaturaSearcher
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
@@ -65,10 +64,14 @@ class PedirAsesoriaViewModel(
         asignaturaSearcher.put(asignaturas.map { it.toSearchable() })
 
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        var nowHour = now.hour
+        if (nowHour < 7) nowHour = 7
+        if (nowHour > 20) nowHour = 20
+
         _uiState.update { PedirAsesoriaUIState.PedirAsesoria(
             asignaturas = asignaturas.map { it.toUIModel() },
-            horaInicio = LocalTime(now.hour, 0, 0),
-            horaFinal = LocalTime(now.hour + 1, 0, 0),
+            horaInicio = LocalTime(nowHour, 0, 0),
+            horaFinal = LocalTime(nowHour + 1, 0, 0),
             dia = now.date
         ) }
     }
@@ -78,8 +81,12 @@ class PedirAsesoriaViewModel(
         _uiState.update { state.copy(dia = fecha) }
     }
 
-    private fun updateHorasInicio(horaInicio: Int) {
+    private fun updateHorasInicio(hora: Int) {
         val state = _uiState.value as PedirAsesoriaUIState.PedirAsesoria
+
+        var horaInicio = hora
+        if (horaInicio < 7) horaInicio = 7
+        if (horaInicio > 20) horaInicio = 20
 
         val nuevaHoraInicial = LocalTime(horaInicio, 0, 0)
         val nuevaHoraFinal = if( nuevaHoraInicial < state.horaInicio ) state.horaFinal else LocalTime(horaInicio + 1, 0,0)
@@ -90,12 +97,16 @@ class PedirAsesoriaViewModel(
         ) }
     }
 
-    private fun updateHorasFinal(horaFinal: Int) {
+    private fun updateHorasFinal(hora: Int) {
         val state = _uiState.value as PedirAsesoriaUIState.PedirAsesoria
 
+        var horaFinal = hora
+        if (horaFinal < 8) horaFinal = 8
+        if (horaFinal > 21) horaFinal = 21
+
         val horaInicial = state.horaInicio
-        val horaFinal = LocalTime(horaFinal, 0, 0)
-        val nuevaHoraFinal = if( horaFinal > horaInicial ) horaFinal else state.horaFinal
+        val horarioFinal = LocalTime(horaFinal, 0, 0)
+        val nuevaHoraFinal = if( horarioFinal > horaInicial ) horarioFinal else state.horaFinal
 
         _uiState.update { state.copy(
             horaFinal = nuevaHoraFinal,
