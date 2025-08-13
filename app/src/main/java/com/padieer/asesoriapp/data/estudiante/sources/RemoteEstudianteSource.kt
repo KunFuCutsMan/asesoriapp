@@ -4,6 +4,7 @@ import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import com.padieer.asesoriapp.domain.model.DataResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -36,10 +37,7 @@ class RemoteEstudianteSource(
         if (response.status.isSuccess())
             return Result.Success(Unit)
 
-        return when(response.status.value) {
-            302 -> Result.Error(DataError.Network.BAD_PARAMS)
-            else -> Result.Error(DataError.Network.UNKWOWN)
-        }
+        return mapDataNetworkError(response.status.value)
     }
 
     @Serializable
@@ -71,9 +69,7 @@ class RemoteEstudianteSource(
                 val body: DataResponse<EstudianteModel> = response.body()
                 Result.Success(body.data)
             }
-            401 -> Result.Error(DataError.Network.FORBIDDEN)
-            404 -> Result.Error(DataError.Network.NOT_FOUND)
-            else -> Result.Error(DataError.Network.UNKWOWN)
+            else -> mapDataNetworkError(response.status.value)
         }
         }
         catch (e: Exception) {

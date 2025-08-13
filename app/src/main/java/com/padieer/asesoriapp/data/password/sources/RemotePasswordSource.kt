@@ -2,6 +2,7 @@ package com.padieer.asesoriapp.data.password.sources
 
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -43,10 +44,7 @@ class RemotePasswordSource(
         if (response.status.isSuccess())
             return Result.Success(Unit)
 
-        return when (response.status.value) {
-            302, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
-            else -> Result.Error(DataError.Network.UNKWOWN)
-        }
+        return mapDataNetworkError(response.status.value)
     }
 
     @Serializable
@@ -76,12 +74,7 @@ class RemotePasswordSource(
             return Result.Success(token)
         }
 
-        return when (response.status.value) {
-            302, 400, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
-            401 -> Result.Error(DataError.Network.FORBIDDEN)
-            404 -> Result.Error(DataError.Network.NOT_FOUND)
-            else -> Result.Error(DataError.Network.UNKWOWN)
-        }
+        return mapDataNetworkError(response.status.value)
         }
         catch (e: Exception) {
             return when (e) {
@@ -122,12 +115,7 @@ class RemotePasswordSource(
         if (response.status.isSuccess())
             return Result.Success(Unit)
 
-        return when (response.status.value) {
-            302, 400, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
-            401 -> Result.Error(DataError.Network.FORBIDDEN)
-            404 -> Result.Error(DataError.Network.NOT_FOUND)
-            else -> Result.Error(DataError.Network.UNKWOWN)
-        }
+        return mapDataNetworkError(response.status.value)
         }
         catch (e: Exception) {
             return when (e) {

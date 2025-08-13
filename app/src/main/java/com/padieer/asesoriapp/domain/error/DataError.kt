@@ -5,6 +5,7 @@ sealed interface DataError: Error {
         TIMEOUT,
         NO_CONNECTION,
         BAD_PARAMS,
+        UNAUTHENTICATED,
         NOT_FOUND,
         FORBIDDEN,
         UNKWOWN

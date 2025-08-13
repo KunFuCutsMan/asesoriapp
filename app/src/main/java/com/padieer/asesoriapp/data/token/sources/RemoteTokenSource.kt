@@ -2,6 +2,7 @@ package com.padieer.asesoriapp.data.token.sources
 
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -38,10 +39,7 @@ class RemoteTokenSource(
             return Result.Success(token.token)
         }
 
-        return when (response.status.value) {
-            302, 400, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
-            else -> Result.Error(DataError.Network.UNKWOWN)
-        }
+        return mapDataNetworkError(response.status.value)
         }
         catch (e: Exception) {
             return when (e) {

@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.carrera.sources
 import com.padieer.asesoriapp.domain.model.CarreraModel
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import com.padieer.asesoriapp.domain.model.DataResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -24,18 +25,15 @@ class RemoteCarreraSource(
                 }
             }
 
-            if (!response.status.isSuccess()) {
-                return when (response.status.value) {
+            if (response.status.isSuccess()) {
+                val body: DataResponse<List<CarreraModel>> = response.body()
+                if (body.data.isEmpty())
+                    return Result.Error(DataError.Network.NOT_FOUND)
 
-                    else -> Result.Error(DataError.Network.UNKWOWN)
-                }
+                return Result.Success(body.data)
             }
 
-            val body: DataResponse<List<CarreraModel>> = response.body()
-            if (body.data.isEmpty())
-                return Result.Error(DataError.Network.NOT_FOUND)
-
-            return Result.Success(body.data)
+            return mapDataNetworkError(response.status.value)
         }
         catch (e: Exception) {
             return when (e) {

@@ -4,6 +4,7 @@ import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.data.horario.HorarioRepository
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import com.padieer.asesoriapp.domain.model.DataResponse
 import com.padieer.asesoriapp.domain.model.HorarioModel
 import io.ktor.client.HttpClient
@@ -34,12 +35,7 @@ class RemoteHorarioSource(
                 return Result.Success(body.data)
             }
 
-            return when (result.status.value) {
-                400 -> Result.Error(DataError.Network.BAD_PARAMS)
-                403 -> Result.Error(DataError.Network.FORBIDDEN)
-                404 -> Result.Error(DataError.Network.NOT_FOUND)
-                else -> Result.Error(DataError.Network.UNKWOWN)
-            }
+            return mapDataNetworkError(result.status.value)
         }
         catch (e: Exception) {
             return when (e) {

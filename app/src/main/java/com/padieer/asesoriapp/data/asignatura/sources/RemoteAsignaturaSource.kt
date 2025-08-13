@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.asignatura.sources
 import androidx.datastore.core.IOException
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.error.mapDataNetworkError
 import com.padieer.asesoriapp.domain.model.AsignaturaModel
 import com.padieer.asesoriapp.domain.model.DataResponse
 import io.ktor.client.HttpClient
@@ -32,11 +33,7 @@ class RemoteAsignaturaSource(
                 return Result.Success(body.data)
             }
 
-            return when (response.status.value) {
-                302, 400, 422 -> Result.Error(DataError.Network.BAD_PARAMS)
-                404 -> Result.Error(DataError.Network.NOT_FOUND)
-                else -> Result.Error(DataError.Network.UNKWOWN)
-            }
+            return mapDataNetworkError(response.status.value)
         }
         catch (e: Exception) {
             return when (e) {
