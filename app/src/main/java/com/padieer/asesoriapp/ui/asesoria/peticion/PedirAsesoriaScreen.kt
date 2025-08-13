@@ -33,6 +33,7 @@ import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.AsesoriaIn
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.FechaChange
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraFinalChange
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.HoraInicioChange
+import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.AsignaturaSearch
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaEvent.Submit
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
@@ -60,6 +61,7 @@ fun PedirAsesoriaScreen() {
                 onFechaValueChange = {viewModel.onEvent(FechaChange(it))},
                 onHoraInicioValueChange = {viewModel.onEvent(HoraInicioChange(it))},
                 onHoraFinalValueChange = {viewModel.onEvent(HoraFinalChange(it))},
+                onSearch = {viewModel.onEvent(AsignaturaSearch(it))},
                 onSubmitClick = {viewModel.onEvent(Submit)},
             )
         }
@@ -79,6 +81,7 @@ fun PedirAsesoria(
     onFechaValueChange: (LocalDate) -> Unit = {},
     onHoraInicioValueChange: (Int) -> Unit = {},
     onHoraFinalValueChange: (Int) -> Unit = {},
+    onSearch: (String) -> Unit = {},
     onSubmitClick: () -> Unit = {},
 ) {
     Column(
@@ -93,8 +96,10 @@ fun PedirAsesoria(
 
 
         OutlinedSearchField(
+            query = state.asignaturaQuery,
             label = "Asignaturas",
             searchables = state.asignaturas,
+            onSearch = onSearch,
             onValueChange = { onAsignaturaValueChange(it.id) }
         )
 

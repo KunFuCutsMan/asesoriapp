@@ -14,7 +14,7 @@ class AsignaturaRepositoryImpl(
         if (!localAsignaturaSource.empty()) {
             carreraID?.let {
                 val asignaturas = localAsignaturaSource.all()
-                    .filter { asignatura -> asignatura.carreras.any { it.id == carreraID } }
+                    .filter { asignatura ->  asignatura.carreras.any { it.id == carreraID } }
                 return Result.Success(asignaturas)
             }
             return Result.Success(localAsignaturaSource.all())

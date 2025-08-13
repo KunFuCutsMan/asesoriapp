@@ -36,6 +36,7 @@ import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 @Composable
 internal fun <T: Searchable> SearchDialog(
     modifier: Modifier = Modifier,
+    query: String,
     label: String,
     placeholder: String,
     onSearch: (String) -> Unit,
@@ -55,7 +56,8 @@ internal fun <T: Searchable> SearchDialog(
         ) {
             TextField(
                 modifier = modifier.fillMaxWidth(),
-                value = "",
+                value = query,
+                singleLine = true,
                 label = { Text(label) },
                 placeholder = { Text(placeholder) },
                 leadingIcon = { Icon(Icons.Outlined.Search, "") },
@@ -68,7 +70,7 @@ internal fun <T: Searchable> SearchDialog(
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(searchableItems, key = { it.id }) { item ->
+                items(searchableItems) { item ->
                     ListItem(
                         modifier = Modifier.clickable { onItemClick(item) },
                         colors = ListItemDefaults.colors(
@@ -95,6 +97,7 @@ private fun SearchDialogPreview() {
                 .consumeWindowInsets(paddingValues)) {
                 SearchDialog(
                     label = "Busca algo",
+                    query = "",
                     placeholder = "Buscar...",
                     onDismiss = {},
                     onItemClick = {},

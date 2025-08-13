@@ -1,5 +1,6 @@
 package com.padieer.asesoriapp.ui.asesoria.peticion
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
@@ -122,7 +123,7 @@ class PedirAsesoriaViewModel(
 
     fun onEvent(event: PedirAsesoriaEvent) {
         when (event) {
-            is PedirAsesoriaEvent.AsesoriaIndexChange -> viewModelScope.launch {  }
+            is PedirAsesoriaEvent.AsesoriaIndexChange -> viewModelScope.launch { Log.i("PedirAsesoriaViewModel", "Escogiste: $event") }
             is PedirAsesoriaEvent.FechaChange -> viewModelScope.launch { updateFecha(event.fecha) }
             is PedirAsesoriaEvent.HoraInicioChange -> viewModelScope.launch { updateHorasInicio(event.hora) }
             is PedirAsesoriaEvent.HoraFinalChange -> viewModelScope.launch { updateHorasFinal(event.hora) }
@@ -143,6 +144,6 @@ class PedirAsesoriaViewModel(
             )
         }
 
-        val SEARCH_DELAY = 500L
+        const val SEARCH_DELAY = 1000L
     }
 }

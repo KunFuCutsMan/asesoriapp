@@ -12,7 +12,7 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // appModule = AppModuleImpl(this)
-        appModule = FakeAppModule()
+        appModule = AppModuleImpl(this)
+        // appModule = FakeAppModule()
     }
 }
