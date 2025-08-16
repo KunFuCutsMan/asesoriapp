@@ -59,6 +59,7 @@ fun FiltrosHistorial(
         Spacer(Modifier.weight(0.01f))
         Box(contentAlignment = Alignment.BottomStart) {
             FilterChip(
+                modifier = Modifier.animateContentSize(),
                 selected = false,
                 label = { Text(tiempoSeleccionado) },
                 onClick = { tiempoChipOpen = !tiempoChipOpen },
@@ -99,13 +100,14 @@ fun FiltrosHistorial(
                 selected = filtros.estadosFilter == EstadoFilter.EN_PROCESO,
                 label = { Text("En proceso") },
                 onClick = { onEstadoFilterChange(EstadoFilter.EN_PROCESO) }
-            )
-            FilterChip(
+        )
+        FilterChip(
                 selected = filtros.estadosFilter == EstadoFilter.COMPLETADA,
                 label = { Text("Completadas") },
                 onClick = { onEstadoFilterChange(EstadoFilter.COMPLETADA) }
-            )
-        }
+        )
+        Spacer(Modifier.weight(0.01f))
+    }
 }
 
 @Preview

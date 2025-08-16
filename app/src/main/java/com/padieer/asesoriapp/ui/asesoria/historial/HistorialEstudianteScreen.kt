@@ -71,14 +71,20 @@ fun HistorialEstudianteScreen(navController: NavController?) {
         is HistorialUIState.Asesorias -> {
             HistorialEstudiante(
                 asesorias = uiState as HistorialUIState.Asesorias,
-                onAsesorProfileClick = { viewModel.onEvent(HistorialUIEvent.ProfileClick(it)) }
+                onAsesorProfileClick = { viewModel.onEvent(HistorialUIEvent.ProfileClick(it)) },
+                onEstadoFilterChange = { viewModel.onEvent(HistorialUIEvent.EstadoFilterChange(it)) },
+                onTiempoFilterChange = { viewModel.onEvent(HistorialUIEvent.TiempoFilterChange(it)) }
             )
         }
     }
 }
 
 @Composable
-private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias, onAsesorProfileClick: (Int) -> Unit) {
+private fun HistorialEstudiante(
+    asesorias: HistorialUIState.Asesorias,
+    onAsesorProfileClick: (Int) -> Unit,
+    onEstadoFilterChange: (EstadoFilter) -> Unit,
+    onTiempoFilterChange: (TiempoFilter) -> Unit) {
 
     if (asesorias is HistorialUIState.Asesorias.NoContent) {
         Text("No hay nada")
@@ -86,7 +92,11 @@ private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias, onAsesorP
     }
 
     Column {
-        FiltrosHistorial( filtros = asesorias, onEstadoFilterChange = {}, onTiempoFilterChange = {} )
+        FiltrosHistorial(
+            filtros = asesorias,
+            onEstadoFilterChange = onEstadoFilterChange,
+            onTiempoFilterChange = onTiempoFilterChange )
+
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),

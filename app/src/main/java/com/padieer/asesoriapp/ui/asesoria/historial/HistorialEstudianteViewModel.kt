@@ -60,10 +60,28 @@ class HistorialEstudianteViewModel(
         navigator.emit(Navigator.Action.Toast("Mostrando el perfil de estudiante $estudianteID"))
     }
 
+    private fun cambiaFiltroEstado(estado: EstadoFilter) {
+        val state = _uiState.value as HistorialUIState.Asesorias.AsesoriasEstudiante
+        val nuevoEstado = if (estado == state.estadosFilter) EstadoFilter.ALL else estado
+        _uiState.update { state.copy( estadosFilter = nuevoEstado ) }
+    }
+
+    private fun cambiaFiltroTiempo(tiempo: TiempoFilter) {
+        val state = _uiState.value as HistorialUIState.Asesorias.AsesoriasEstudiante
+        _uiState.update { state.copy( tiempoFilter = tiempo ) }
+    }
+
     fun onEvent(event: HistorialUIEvent) {
         when (event) {
             is HistorialUIEvent.ProfileClick -> viewModelScope.launch {
                 muestraPerfilDeEstudiante(event.estudianteID)
+            }
+
+            is HistorialUIEvent.EstadoFilterChange -> viewModelScope.launch {
+                cambiaFiltroEstado(event.estado)
+            }
+            is HistorialUIEvent.TiempoFilterChange -> viewModelScope.launch {
+                cambiaFiltroTiempo(event.tiempo)
             }
         }
     }
