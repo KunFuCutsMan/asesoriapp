@@ -86,7 +86,7 @@ private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias, onAsesorP
     }
 
     Column {
-        Text("Historial de estudiante")
+        FiltrosHistorial( filtros = asesorias, onEstadoFilterChange = {}, onTiempoFilterChange = {} )
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),

@@ -14,13 +14,34 @@ sealed interface HistorialUIState {
 
         val contenido: List<AsesoriaConAsesorData>
 
+        val estadosFilter: EstadoFilter
+
+        val tiempoFilter: TiempoFilter
+
         data class NoContent(
-            override val contenido: List<AsesoriaConAsesorData> = emptyList()
+            override val contenido: List<AsesoriaConAsesorData> = emptyList(),
+            override val tiempoFilter: TiempoFilter = TiempoFilter.ALL,
+            override val estadosFilter: EstadoFilter = EstadoFilter.ALL,
         ): Asesorias
 
 
         data class AsesoriasEstudiante(
-            override val contenido: List<AsesoriaConAsesorData>
+            override val contenido: List<AsesoriaConAsesorData>,
+            override val tiempoFilter: TiempoFilter = TiempoFilter.ALL,
+            override val estadosFilter: EstadoFilter = EstadoFilter.ALL,
         ): Asesorias
     }
+}
+
+enum class EstadoFilter {
+    ALL,
+    PENDIENTE,
+    EN_PROCESO,
+    COMPLETADA,
+}
+
+enum class TiempoFilter {
+    ALL,
+    PASADAS,
+    FUTURAS,
 }
