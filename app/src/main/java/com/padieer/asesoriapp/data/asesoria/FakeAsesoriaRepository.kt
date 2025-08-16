@@ -36,7 +36,7 @@ class FakeAsesoriaRepository: AsesoriaRepository {
         val estudiante = (estudianteRepo.getEstudianteByToken("") as Result.Success).data
 
         val lista = asignaturas.mapIndexed { index, model ->
-            val datetime = now.plus(Duration.parseIsoString("P${24*index}H") ).toLocalDateTime(TimeZone.currentSystemDefault())
+            val datetime = now.plus(Duration.parseIsoString("PT${24*(index+1)}H") ).toLocalDateTime(TimeZone.currentSystemDefault())
             val carrera = model.carreras!!.first()
             AsesoriaModel(
                 id = index,
@@ -45,7 +45,7 @@ class FakeAsesoriaRepository: AsesoriaRepository {
                 horaFinal = LocalTime( datetime.hour + 1, datetime.minute, datetime.second ),
                 carrera = carrera,
                 asignatura = model,
-                estado = EstadoAsesoria( 3 % index + 1, "Algun Estado" ),
+                estado = EstadoAsesoria( 3 % (index+1), "Algun Estado" ),
                 estudiante = estudiante,
                 asesor = null,
             )

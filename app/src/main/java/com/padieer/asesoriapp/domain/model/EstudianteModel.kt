@@ -13,7 +13,10 @@ data class EstudianteModel (
     val semestre: Int,
     val carrera: CarreraModel,
     val especialidad: EspecialidadModel? = null,
-    val asesor: AsesorModel? = null
+    val asesor: AsesorModel? = null,
+
+    val carreraID: Int? = null,
+    val especialidadID: Int? = null,
 )
 
 data class Estudiante(
