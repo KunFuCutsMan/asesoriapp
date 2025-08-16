@@ -18,4 +18,6 @@ interface EstudianteRepository {
     ): Result<Unit, DataError.Network>
 
     suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError>
+
+    suspend fun getEstudianteByID(estudianteID: Int): Result<EstudianteModel, DataError>
 }
