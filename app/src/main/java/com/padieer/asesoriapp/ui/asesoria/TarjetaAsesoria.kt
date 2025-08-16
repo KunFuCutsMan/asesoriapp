@@ -52,6 +52,7 @@ fun TarjetaAsesoria(
     modifier: Modifier = Modifier,
     asesoria: Asesoria,
     progreso: Int = 0,
+    expandedContent: @Composable (Modifier) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "")
@@ -136,41 +137,7 @@ fun TarjetaAsesoria(
 
         // Parte desplegable
         if (expanded) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Asesoría dada por: ${asesoria.asesor?.id ?: "Sin asignar"}",
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                Text(
-                    text = "Nombre del Asesorado: ${asesoria.estudiante.nombre}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                Text(
-                    text = "Materia Correspondiente: ${asesoria.asignatura.nombre}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                Text(
-                    text = "De la carrera de: ${asesoria.carrera.nombre}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                Text(
-                    text = "Estado de la asesoría: ${asesoria.estado}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
+            expandedContent.invoke(Modifier.fillMaxWidth().padding(16.dp))
         }
 
     }
@@ -178,7 +145,7 @@ fun TarjetaAsesoria(
 
 @Composable
 fun MarcasProgresos(modifier: Modifier = Modifier, progreso: Int = 0) {
-    val activeColor = if (isDarkTheme()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary
+    val activeColor = if (isDarkTheme()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.tertiary
     val unactiveColor = if (isDarkTheme()) MaterialTheme.colorScheme.surfaceBright else MaterialTheme.colorScheme.tertiaryContainer
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -230,7 +197,7 @@ fun PreviewTarjetaAsesoria() {
         ),
         asesor = Asesor(1)
     )
-    AsesoriAppTheme(false) {
+    AsesoriAppTheme(true) {
         Box(
             modifier = Modifier
                 .padding(16.dp)
@@ -242,7 +209,35 @@ fun PreviewTarjetaAsesoria() {
                 modifier = Modifier.padding(16.dp),
                 asesoria = asesoriaEjemplo,
                 progreso = 2
-            )
+            ) { mod ->
+                Column(mod)
+                {
+                    Text(
+                        text = "Asesoría dada por: ${asesoriaEjemplo.asesor?.id ?: "Sin asignar"}",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "Nombre del Asesorado: ${asesoriaEjemplo.estudiante.nombre}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = "Materia Correspondiente: ${asesoriaEjemplo.asignatura.nombre}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = "De la carrera de: ${asesoriaEjemplo.carrera.nombre}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = "Estado de la asesoría: ${asesoriaEjemplo.estado}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         }
     }
 }
