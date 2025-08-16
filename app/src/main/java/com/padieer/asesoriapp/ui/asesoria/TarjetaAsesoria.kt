@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,38 +36,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padieer.asesoriapp.domain.model.Asesor
+import com.padieer.asesoriapp.domain.model.Asesoria
+import com.padieer.asesoriapp.domain.model.Asignatura
+import com.padieer.asesoriapp.domain.model.Carrera
+import com.padieer.asesoriapp.domain.model.Estudiante
 import com.padieer.asesoriapp.ui.theme.AsesoriAppTheme
 import com.padieer.asesoriapp.ui.theme.isDarkTheme
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-
-// Modelos de ejemplo (Desconozco si lo vas a cambiar, pero utilice los datos de la misma forma que mandaste en wsp
-data class Estudiante(val nombre: String)
-data class Asesor(val nombre: String)
-data class Asignatura(val nombre: String)
-data class Carrera(val nombre: String)
-data class Asesoria(
-    val dia: LocalDate,
-    val horaInicio: LocalTime,
-    val horaFinal: LocalTime,
-    val carrera: Carrera,
-    val asignatura: Asignatura,
-    val estado: String,
-    val estudiante: Estudiante,
-    val asesor: Asesor?
-)
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.char
 
 @Composable
 fun TarjetaAsesoria(
     modifier: Modifier = Modifier,
-    asesoria: Asesoria
+    asesoria: Asesoria,
+    progreso: Int = 0,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "")
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val dateFormatter = LocalDate.Format { day(); char('/'); monthNumber(); char('/'); year() }
+    val timeFormatter = LocalTime.Format { hour(); char(':'); minute() }
 
     val fechaFormateada = dateFormatter.format(asesoria.dia)
     val horaInicioFormateada = timeFormatter.format(asesoria.horaInicio)
@@ -110,7 +101,8 @@ fun TarjetaAsesoria(
                     )
 
                     MarcasProgresos(
-                        modifier = Modifier.height(4.dp)
+                        modifier = Modifier.height(4.dp),
+                        progreso = progreso
                     )
                 }
 
@@ -147,9 +139,10 @@ fun TarjetaAsesoria(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Text(
-                    text = "Asesoría dada por: ${asesoria.asesor?.nombre ?: "Sin asignar"}",
+                    text = "Asesoría dada por: ${asesoria.asesor?.id ?: "Sin asignar"}",
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -184,7 +177,7 @@ fun TarjetaAsesoria(
 }
 
 @Composable
-fun MarcasProgresos(modifier: Modifier = Modifier) {
+fun MarcasProgresos(modifier: Modifier = Modifier, progreso: Int = 0) {
     val activeColor = if (isDarkTheme()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary
     val unactiveColor = if (isDarkTheme()) MaterialTheme.colorScheme.surfaceBright else MaterialTheme.colorScheme.tertiaryContainer
     Row(
@@ -192,15 +185,24 @@ fun MarcasProgresos(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
 
-        Box(Modifier.fillMaxHeight().weight(4f).background(activeColor))
+        Box(Modifier
+            .fillMaxHeight()
+            .weight(4f)
+            .background(if (progreso > 0) activeColor else unactiveColor))
 
         Spacer(Modifier.weight(1f))
 
-        Box(Modifier.fillMaxHeight().weight(4f).background(unactiveColor))
+        Box(Modifier
+            .fillMaxHeight()
+            .weight(4f)
+            .background(if (progreso > 1) activeColor else unactiveColor))
 
         Spacer(Modifier.weight(1f))
 
-        Box(Modifier.fillMaxHeight().weight(4f).background(unactiveColor))
+        Box(Modifier
+            .fillMaxHeight()
+            .weight(4f)
+            .background(if (progreso > 2) activeColor else unactiveColor))
     }
 }
 
@@ -209,26 +211,37 @@ fun MarcasProgresos(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewTarjetaAsesoria() {
     val asesoriaEjemplo = Asesoria(
-        dia = LocalDate.now(),
-        horaInicio = LocalTime.of(10, 0),
-        horaFinal = LocalTime.of(11, 0),
-        carrera = Carrera("Ingeniería en Sistemas"),
-        asignatura = Asignatura("\nEcuaciones Diferenciales"),
-        estado = "Activa",
-        estudiante = Estudiante("Luis Romero"),
-        asesor = Asesor("Raúl Alberto")
+        id = 1,
+        dia = LocalDate(2025, 8, 15),
+        horaInicio = LocalTime(10, 0, 0),
+        horaFinal = LocalTime(11, 0, 0),
+        carrera = Carrera("Administración"),
+        asignatura = Asignatura("Ecuaciones Diferenciales", 1, ""),
+        estado = "En proceso",
+        estudiante = Estudiante(
+            nombre = "Juan",
+            apePaterno = "Ladrón de Guevara",
+            apeMaterno = "Lopeida",
+            numeroTelefono = "1800000040",
+            numeroControl = "20001987",
+            semestre = 7,
+            asesor = Asesor(1),
+            admin = null
+        ),
+        asesor = Asesor(1)
     )
     AsesoriAppTheme(false) {
         Box(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
-                .height(500.dp),
+                .height(500.dp)
+                .aspectRatio(1f),
             contentAlignment = Alignment.Center
         ) {
             TarjetaAsesoria(
                 modifier = Modifier.padding(16.dp),
-                asesoria = asesoriaEjemplo
+                asesoria = asesoriaEjemplo,
+                progreso = 2
             )
         }
     }
