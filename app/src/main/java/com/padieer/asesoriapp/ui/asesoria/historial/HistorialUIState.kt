@@ -1,6 +1,6 @@
 package com.padieer.asesoriapp.ui.asesoria.historial
 
-import com.padieer.asesoriapp.domain.model.Asesoria
+import com.padieer.asesoriapp.domain.getters.AsesoriaConAsesorData
 
 sealed interface HistorialUIState {
 
@@ -12,15 +12,15 @@ sealed interface HistorialUIState {
 
     sealed interface Asesorias: HistorialUIState {
 
-        val contenido: List<Asesoria>
+        val contenido: List<AsesoriaConAsesorData>
 
         data class NoContent(
-            override val contenido: List<Asesoria> = emptyList()
+            override val contenido: List<AsesoriaConAsesorData> = emptyList()
         ): Asesorias
 
 
         data class AsesoriasEstudiante(
-            override val contenido: List<Asesoria>
+            override val contenido: List<AsesoriaConAsesorData>
         ): Asesorias
     }
 }

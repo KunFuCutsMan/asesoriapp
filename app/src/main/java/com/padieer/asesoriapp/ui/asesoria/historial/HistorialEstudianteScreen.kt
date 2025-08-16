@@ -66,7 +66,7 @@ fun HistorialEstudianteScreen(navController: NavController?) {
 private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias) {
 
     if (asesorias is HistorialUIState.Asesorias.NoContent) {
-
+        Text("No hay nada")
         return
     }
 
@@ -79,7 +79,7 @@ private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias) {
         ) {
             items(asesorias.contenido) { item ->
                 TarjetaAsesoria(
-                    asesoria = item
+                    asesoria = item.asesoria
                 ) {
                     Text("Algo mas")
                 }

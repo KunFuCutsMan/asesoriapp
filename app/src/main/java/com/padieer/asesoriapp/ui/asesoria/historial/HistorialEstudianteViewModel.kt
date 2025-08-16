@@ -6,8 +6,8 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.getters.GetAsesoriasConAsesoresDataUseCase
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
-import com.padieer.asesoriapp.domain.model.toUIModel
 import com.padieer.asesoriapp.domain.nav.Navigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class HistorialEstudianteViewModel(
     private val getLoggedInUserDataUseCase: GetLoggedInUserDataUseCase,
+    private val getAsesoriasConAsesoresDataUseCase: GetAsesoriasConAsesoresDataUseCase,
     private val asesoriaRepository: AsesoriaRepository
 ): ViewModel() {
 
@@ -43,15 +44,23 @@ class HistorialEstudianteViewModel(
             return
         }
 
-        val asesorias = (asesoriasResult as Result.Success).data
-        val contenido = asesorias.map { it.toUIModel() }
-        _uiState.update { HistorialUIState.Asesorias.AsesoriasEstudiante(contenido) }
+        val asesorias = getAsesoriasConAsesoresDataUseCase(estudiante.id)
+        if (asesorias.isEmpty()) {
+            _uiState.update { HistorialUIState.Asesorias.NoContent() }
+        }
+        else {
+            _uiState.update { HistorialUIState.Asesorias.AsesoriasEstudiante(asesorias) }
+        }
     }
 
     companion object {
         fun Factory() = viewModelFactory {
             HistorialEstudianteViewModel(
                 asesoriaRepository = App.appModule.asesoriaRepository,
+                getAsesoriasConAsesoresDataUseCase = GetAsesoriasConAsesoresDataUseCase(
+                    estudianteRepository = App.appModule.estudianteRepository,
+                    asesoriaRepository = App.appModule.asesoriaRepository,
+                ),
                 getLoggedInUserDataUseCase = GetLoggedInUserDataUseCase(
                     loginRepository = App.appModule.loginRepository
                 ),
