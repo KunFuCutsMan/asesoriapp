@@ -71,7 +71,7 @@ fun HistorialEstudianteScreen(navController: NavController?) {
         is HistorialUIState.Asesorias -> {
             HistorialEstudiante(
                 asesorias = uiState as HistorialUIState.Asesorias,
-                onAsesorProfileClick = {}
+                onAsesorProfileClick = { viewModel.onEvent(HistorialUIEvent.ProfileClick(it)) }
             )
         }
     }

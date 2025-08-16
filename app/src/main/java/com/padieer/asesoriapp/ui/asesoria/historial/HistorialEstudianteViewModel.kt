@@ -56,6 +56,18 @@ class HistorialEstudianteViewModel(
         }
     }
 
+    private suspend fun muestraPerfilDeEstudiante(estudianteID: Int) {
+        navigator.emit(Navigator.Action.Toast("Mostrando el perfil de estudiante $estudianteID"))
+    }
+
+    fun onEvent(event: HistorialUIEvent) {
+        when (event) {
+            is HistorialUIEvent.ProfileClick -> viewModelScope.launch {
+                muestraPerfilDeEstudiante(event.estudianteID)
+            }
+        }
+    }
+
     companion object {
         fun Factory() = viewModelFactory {
             HistorialEstudianteViewModel(
