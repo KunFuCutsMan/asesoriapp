@@ -10,6 +10,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.appendPathSegments
@@ -46,7 +48,7 @@ class RemoteAsesoriaSource(
 
             val response = client.post {
                 url {
-                    appendPathSegments("api", "v1", "asesoria")
+                    appendPathSegments("api", "v1", "asesorias")
                 }
                 bearerAuth(token)
                 setBody(PostParams(
@@ -60,6 +62,37 @@ class RemoteAsesoriaSource(
 
             if (response.status.isSuccess()) {
                 val body: DataResponse<AsesoriaModel> = response.body()
+                return Result.Success(body.data)
+            }
+
+            return mapDataNetworkError(response.status.value)
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
+        }
+    }
+
+    suspend fun fetch(
+        token: String,
+        estudianteID: Int? = null,
+        asesorID: Int? = null,
+    ): Result<List<AsesoriaModel>, DataError.Network> {
+        try {
+            val response = client.get {
+                url {
+                    appendPathSegments("api", "v1", "asesorias")
+                    estudianteID?.let { parameter("estudianteID", it) }
+                    asesorID?.let { parameter("asesorID", it) }
+                }
+                bearerAuth(token)
+            }
+
+            if (response.status.isSuccess()) {
+                val body: DataResponse<List<AsesoriaModel>> = response.body()
                 return Result.Success(body.data)
             }
 

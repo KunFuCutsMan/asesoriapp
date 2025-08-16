@@ -12,5 +12,7 @@ interface AsesoriaRepository {
         carreraID: Int, asignaturaID: Int, fecha: LocalDate, horaInicio: LocalTime, horaFinal: LocalTime
     ): Result<Unit, DataError.Network>
 
-    suspend fun fetchAsesoriasOfEstudiante(): Result<List<AsesoriaModel>, DataError>
+    suspend fun fetchAsesoriasOfEstudiante(estudianteID: Int): Result<List<AsesoriaModel>, DataError>
+
+    suspend fun fetchAsesoriasOfAsesor(asesorID: Int): Result<List<AsesoriaModel>, DataError>
 }

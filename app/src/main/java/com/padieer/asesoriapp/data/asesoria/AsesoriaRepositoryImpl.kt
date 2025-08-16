@@ -40,7 +40,35 @@ class AsesoriaRepositoryImpl(
         return Result.Success(Unit)
     }
 
-    override suspend fun fetchAsesoriasOfEstudiante(): Result<List<AsesoriaModel>, DataError> {
-        return Result.Error(DataError.Local.UNKWOWN)
+    override suspend fun fetchAsesoriasOfEstudiante(estudianteID: Int): Result<List<AsesoriaModel>, DataError> {
+        val tokenResult = preferencesSource.fetchToken()
+        if (tokenResult is Result.Error)
+            return Result.Error(DataError.Network.UNAUTHENTICATED)
+
+        val token = (tokenResult as Result.Success).data
+
+        val asesorias = remoteAsesoriaSource.fetch(token, estudianteID = estudianteID)
+
+        if (asesorias is Result.Success) {
+            return Result.Success(asesorias.data)
+        }
+
+        return asesorias
+    }
+
+    override suspend fun fetchAsesoriasOfAsesor(asesorID: Int): Result<List<AsesoriaModel>, DataError> {
+        val tokenResult = preferencesSource.fetchToken()
+        if (tokenResult is Result.Error)
+            return Result.Error(DataError.Network.UNAUTHENTICATED)
+
+        val token = (tokenResult as Result.Success).data
+
+        val asesorias = remoteAsesoriaSource.fetch(token, asesorID = asesorID)
+
+        if (asesorias is Result.Success) {
+            return Result.Success(asesorias.data)
+        }
+
+        return asesorias
     }
 }

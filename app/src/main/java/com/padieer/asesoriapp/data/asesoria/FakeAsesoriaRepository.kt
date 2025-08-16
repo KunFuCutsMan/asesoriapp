@@ -1,13 +1,11 @@
 package com.padieer.asesoriapp.data.asesoria
 
 import com.padieer.asesoriapp.data.asignatura.FakeAsignaturaRepository
-import com.padieer.asesoriapp.data.carrera.FakeCarreraRepository
 import com.padieer.asesoriapp.data.estudiante.FakeEstudianteRepository
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.AsesoriaModel
 import com.padieer.asesoriapp.domain.model.EstadoAsesoria
-import com.padieer.asesoriapp.domain.model.EstudianteModel
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -32,7 +30,7 @@ class FakeAsesoriaRepository: AsesoriaRepository {
     }
 
     @OptIn(ExperimentalTime::class)
-    override suspend fun fetchAsesoriasOfEstudiante(): Result<List<AsesoriaModel>, DataError> {
+    override suspend fun fetchAsesoriasOfEstudiante(estudianteID: Int): Result<List<AsesoriaModel>, DataError> {
         val now = Clock.System.now()
         val asignaturas = (asignaturaRepo.fetchAsignaturas(1) as Result.Success).data
         val estudiante = (estudianteRepo.getEstudianteByToken("") as Result.Success).data
@@ -54,5 +52,9 @@ class FakeAsesoriaRepository: AsesoriaRepository {
         }
 
         return Result.Success(lista)
+    }
+
+    override suspend fun fetchAsesoriasOfAsesor(asesorID: Int): Result<List<AsesoriaModel>, DataError> {
+        return this.fetchAsesoriasOfEstudiante(asesorID)
     }
 }
