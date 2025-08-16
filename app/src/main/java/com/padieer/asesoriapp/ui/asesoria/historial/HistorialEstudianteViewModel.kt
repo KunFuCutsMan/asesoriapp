@@ -6,6 +6,7 @@ import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
+import com.padieer.asesoriapp.domain.getters.AsesoriaConAsesorData
 import com.padieer.asesoriapp.domain.getters.GetAsesoriasConAsesoresDataUseCase
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
 import com.padieer.asesoriapp.domain.nav.Navigator
@@ -24,6 +25,8 @@ class HistorialEstudianteViewModel(
     val uiState = _uiState.asStateFlow()
 
     val navigator = Navigator()
+
+    var asesoriasDelEstudiante: List<AsesoriaConAsesorData> = emptyList()
 
     init {
         viewModelScope.launch { loadInitialData() }
@@ -44,12 +47,12 @@ class HistorialEstudianteViewModel(
             return
         }
 
-        val asesorias = getAsesoriasConAsesoresDataUseCase(estudiante.id)
-        if (asesorias.isEmpty()) {
+        asesoriasDelEstudiante = getAsesoriasConAsesoresDataUseCase(estudiante.id)
+        if (asesoriasDelEstudiante.isEmpty()) {
             _uiState.update { HistorialUIState.Asesorias.NoContent() }
         }
         else {
-            _uiState.update { HistorialUIState.Asesorias.AsesoriasEstudiante(asesorias) }
+            _uiState.update { HistorialUIState.Asesorias.AsesoriasEstudiante(asesoriasDelEstudiante) }
         }
     }
 

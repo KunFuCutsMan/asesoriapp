@@ -1,15 +1,25 @@
 package com.padieer.asesoriapp.ui.asesoria.historial
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +38,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
 import com.padieer.asesoriapp.di.FakeAppModule
+import com.padieer.asesoriapp.domain.model.Estudiante
+import com.padieer.asesoriapp.domain.model.toUIModel
 import com.padieer.asesoriapp.ui.asesoria.TarjetaAsesoria
 import com.padieer.asesoriapp.ui.common.ErrorText
 import com.padieer.asesoriapp.ui.common.FullScreenLoading
@@ -57,13 +69,16 @@ fun HistorialEstudianteScreen(navController: NavController?) {
         }
 
         is HistorialUIState.Asesorias -> {
-            HistorialEstudiante(asesorias = uiState as HistorialUIState.Asesorias)
+            HistorialEstudiante(
+                asesorias = uiState as HistorialUIState.Asesorias,
+                onAsesorProfileClick = {}
+            )
         }
     }
 }
 
 @Composable
-private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias) {
+private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias, onAsesorProfileClick: (Int) -> Unit) {
 
     if (asesorias is HistorialUIState.Asesorias.NoContent) {
         Text("No hay nada")
@@ -79,13 +94,53 @@ private fun HistorialEstudiante(asesorias: HistorialUIState.Asesorias) {
         ) {
             items(asesorias.contenido) { item ->
                 TarjetaAsesoria(
-                    asesoria = item.asesoria
-                ) {
-                    Text("Algo mas")
+                    asesoria = item.asesoria.toUIModel(),
+                    progreso = when (item.estadoAsesoria.id) {
+                        1 -> 1 // Pendiente
+                        2 -> 2 // En Progreso
+                        3 -> 3 // Terminada
+                        else -> 0
+                    }
+                ) { mod ->
+                    if (item.asesorData != null) {
+                        DatosDelAsesor(
+                            modifier = mod,
+                            asesorData = item.asesorData.toUIModel(),
+                            onProfileClick = { onAsesorProfileClick(item.asesorData.id) }
+                        )
+                    }
+                    else {
+                        Box(mod) {
+                            Text("Todavía no se ha asignado un asesor", textAlign = TextAlign.Center)
+                        }
+                    }
                 }
             }
         }
 
+    }
+}
+
+@Composable
+private fun DatosDelAsesor(modifier: Modifier = Modifier, asesorData: Estudiante, onProfileClick: () -> Unit) {
+    val nombreCompleto = "${asesorData.nombre} ${asesorData.apePaterno} ${asesorData.apeMaterno}"
+    Row(modifier, verticalAlignment = Alignment.Bottom) {
+        Column(Modifier.weight(1f)) {
+            Label("Asesor", nombreCompleto)
+            Label("No. Control", asesorData.numeroControl)
+            Label("Semestre", asesorData.semestre.toString())
+        }
+        IconButton(onClick = onProfileClick) {
+            Icon(Icons.Outlined.AccountCircle, "")
+        }
+    }
+}
+
+@Composable
+private fun Label(label: String, data: String) {
+    Row {
+        Text("$label: ", style = MaterialTheme.typography.labelLarge)
+        Text(data, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -98,8 +153,42 @@ private fun HistorialEstudianteScreenPreview() {
         Scaffold(
             topBar = { TopAppBar( title = { Text("Historial de Asesorias del estudiante") } ) }
         ) { paddingValues ->
-            Surface(Modifier.fillMaxSize().padding(paddingValues).consumeWindowInsets(paddingValues)) {
+            Surface(Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)) {
                 HistorialEstudianteScreen(null)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun DatosDelAsesorPreview() {
+    AsesoriAppTheme {
+        OutlinedCard {
+            Column {
+                Box(Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer))
+                DatosDelAsesor(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    asesorData = Estudiante(
+                        nombre = "Juan",
+                        apeMaterno = "Perez",
+                        apePaterno = "Camanei",
+                        numeroTelefono = "1800202020",
+                        numeroControl = "20001000",
+                        semestre = 7,
+                        asesor = null,
+                        admin = null,
+                    ),
+                    onProfileClick = {}
+                )
             }
         }
     }

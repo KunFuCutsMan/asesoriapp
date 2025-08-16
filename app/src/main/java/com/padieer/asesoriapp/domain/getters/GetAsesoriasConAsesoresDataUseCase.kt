@@ -4,6 +4,7 @@ import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.Asesoria
+import com.padieer.asesoriapp.domain.model.AsesoriaModel
 import com.padieer.asesoriapp.domain.model.EstadoAsesoria
 import com.padieer.asesoriapp.domain.model.Estudiante
 import com.padieer.asesoriapp.domain.model.EstudianteModel
@@ -36,8 +37,8 @@ class GetAsesoriasConAsesoresDataUseCase(
 
         return asesorias.mapIndexed { index, it ->
             AsesoriaConAsesorData(
-                asesoria = it.toUIModel(),
-                asesorData = asesores[index]?.toUIModel(),
+                asesoria = it,
+                asesorData = asesores[index],
                 estadoAsesoria = it.estado
             )
         }
@@ -45,7 +46,7 @@ class GetAsesoriasConAsesoresDataUseCase(
 }
 
 data class AsesoriaConAsesorData(
-    val asesoria: Asesoria,
-    val asesorData: Estudiante?,
+    val asesoria: AsesoriaModel,
+    val asesorData: EstudianteModel?,
     val estadoAsesoria: EstadoAsesoria
 )
