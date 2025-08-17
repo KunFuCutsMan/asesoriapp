@@ -47,6 +47,7 @@ fun FiltrosHistorial(
         TiempoFilter.ALL -> "Todas"
         TiempoFilter.PASADAS -> "Anteriores"
         TiempoFilter.FUTURAS -> "Futuras"
+        TiempoFilter.HOY -> "De hoy"
     }
 
     var tiempoChipOpen by remember { mutableStateOf(false) }
@@ -82,6 +83,10 @@ fun FiltrosHistorial(
                     onClick = { tiempoChipOpen = false; onTiempoFilterChange(TiempoFilter.ALL) }
                 )
                 DropdownMenuItem(
+                    text = { Text("Hoy") },
+                    onClick = { tiempoChipOpen = false; onTiempoFilterChange(TiempoFilter.HOY) }
+                )
+                DropdownMenuItem(
                     text = { Text("Futuras") },
                     onClick = { tiempoChipOpen = false; onTiempoFilterChange(TiempoFilter.FUTURAS) }
                 )
@@ -105,6 +110,11 @@ fun FiltrosHistorial(
                 selected = filtros.estadosFilter == EstadoFilter.COMPLETADA,
                 label = { Text("Completadas") },
                 onClick = { onEstadoFilterChange(EstadoFilter.COMPLETADA) }
+        )
+        FilterChip(
+            selected = filtros.estadosFilter == EstadoFilter.CANCELADA,
+            label = { Text("Canceladas") },
+            onClick = { onEstadoFilterChange(EstadoFilter.CANCELADA) }
         )
         Spacer(Modifier.weight(0.01f))
     }

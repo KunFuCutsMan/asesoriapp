@@ -38,10 +38,12 @@ enum class EstadoFilter {
     PENDIENTE,
     EN_PROCESO,
     COMPLETADA,
+    CANCELADA,
 }
 
 enum class TiempoFilter {
     ALL,
+    HOY,
     PASADAS,
     FUTURAS,
 }

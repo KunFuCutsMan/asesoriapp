@@ -86,47 +86,53 @@ private fun HistorialEstudiante(
     onEstadoFilterChange: (EstadoFilter) -> Unit,
     onTiempoFilterChange: (TiempoFilter) -> Unit) {
 
-    if (asesorias is HistorialUIState.Asesorias.NoContent) {
-        Text("No hay nada")
-        return
-    }
-
     Column {
         FiltrosHistorial(
             filtros = asesorias,
             onEstadoFilterChange = onEstadoFilterChange,
             onTiempoFilterChange = onTiempoFilterChange )
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(asesorias.contenido) { item ->
-                TarjetaAsesoria(
-                    asesoria = item.asesoria.toUIModel(),
-                    progreso = when (item.estadoAsesoria.id) {
-                        1 -> 1 // Pendiente
-                        2 -> 2 // En Progreso
-                        3 -> 3 // Terminada
-                        else -> 0
-                    }
-                ) { mod ->
-                    if (item.asesorData != null) {
-                        DatosDelAsesor(
-                            modifier = mod,
-                            asesorData = item.asesorData.toUIModel(),
-                            onProfileClick = { onAsesorProfileClick(item.asesorData.id) }
-                        )
-                    }
-                    else {
-                        Box(mod) {
-                            Text("Todavía no se ha asignado un asesor", textAlign = TextAlign.Center)
+        if (asesorias is HistorialUIState.Asesorias.NoContent) {
+            Box(
+                Modifier.fillMaxWidth().weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No hay nada")
+            }
+        }
+
+        if (asesorias is HistorialUIState.Asesorias.AsesoriasEstudiante)
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(asesorias.contenido) { item ->
+                    TarjetaAsesoria(
+                        asesoria = item.asesoria.toUIModel(),
+                        progreso = when (item.estadoAsesoria.id) {
+                            1 -> 1 // Pendiente
+                            2 -> 2 // En Progreso
+                            3 -> 3 // Terminada
+                            else -> 0
+                        }
+                    ) { mod ->
+                        if (item.asesorData != null) {
+                            DatosDelAsesor(
+                                modifier = mod,
+                                asesorData = item.asesorData.toUIModel(),
+                                onProfileClick = { onAsesorProfileClick(item.asesorData.id) }
+                            )
+                        }
+                        else {
+                            Box(mod) {
+                                Text("Todavía no se ha asignado un asesor", textAlign = TextAlign.Center)
+                            }
                         }
                     }
                 }
             }
-        }
+
 
     }
 }
