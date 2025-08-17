@@ -91,7 +91,10 @@ fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
                                 item = item,
                                 isSelected = index == selectedItemIndex,
                                 onClick = {
-                                    navController.navigate(item.route)
+                                    navController.currentDestination?.route?.endsWith(item.route::class.simpleName.toString())?.let {
+                                        // Solo navega si la ruta es diferente a la actual
+                                        if (!it) navController.navigate(item.route)
+                                    }
                                     selectedItemIndex = index
                                     scope.launch { drawerState.close() }
                                 }
@@ -112,6 +115,7 @@ fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
                         }
                     }
                 }
+                Spacer(Modifier.height(28.dp))
             }
         }
     ) {

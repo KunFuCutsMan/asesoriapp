@@ -9,6 +9,7 @@ import com.padieer.asesoriapp.domain.getters.AsesoriaConAsesorData
 import com.padieer.asesoriapp.domain.getters.GetAsesoriasConAsesoresDataUseCase
 import com.padieer.asesoriapp.domain.getters.GetLoggedInUserDataUseCase
 import com.padieer.asesoriapp.domain.nav.Navigator
+import com.padieer.asesoriapp.ui.nav.AppScreen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -94,7 +95,7 @@ class HistorialEstudianteViewModel(
     }
 
     private suspend fun muestraPerfilDeEstudiante(estudianteID: Int) {
-        navigator.emit(Navigator.Action.Toast("Mostrando el perfil de estudiante $estudianteID"))
+        navigator.emit(Navigator.Action.GoTo(AppScreen.Usuario.PerfilAjeno(estudianteID)))
     }
 
     private fun cambiaFiltroEstado(estado: EstadoFilter) {
