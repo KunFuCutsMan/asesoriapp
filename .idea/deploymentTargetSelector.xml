@@ -16,9 +16,6 @@
       <SelectionState runConfigName="PreviewTarjetaAsesoria">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="HistorialEstudianteScreenPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
     </selectionStates>
   </component>
 </project>

@@ -118,7 +118,7 @@ fun ApplicationNavigationDrawer(viewModel: AppViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Padieer") },
+                    title = { Text("PADIEER") },
                     navigationIcon = {
                         IconButton( onClick = {
                             scope.launch { drawerState.open() }
