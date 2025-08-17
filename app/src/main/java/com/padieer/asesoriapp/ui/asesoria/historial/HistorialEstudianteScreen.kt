@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.padieer.asesoriapp.App
+import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.di.FakeAppModule
 import com.padieer.asesoriapp.domain.model.Estudiante
 import com.padieer.asesoriapp.domain.model.toUIModel
@@ -93,11 +97,27 @@ private fun HistorialEstudiante(
             onTiempoFilterChange = onTiempoFilterChange )
 
         if (asesorias is HistorialUIState.Asesorias.NoContent) {
-            Box(
-                Modifier.fillMaxWidth().weight(1f),
-                contentAlignment = Alignment.Center
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("No hay nada")
+                Spacer(Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(R.drawable.tune),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f))
+                Text(
+                    text ="No se encontraron asesorías que coincidan con esos parámetros",
+                    style = MaterialTheme.typography.labelLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 64.dp).weight(1f))
+                Spacer(Modifier.weight(0.5f))
             }
         }
 
@@ -174,6 +194,28 @@ private fun HistorialEstudianteScreenPreview() {
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)) {
                 HistorialEstudianteScreen(null)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun HistorialEstudianteNoContentPreview() {
+    App.appModule = FakeAppModule()
+    AsesoriAppTheme {
+        Scaffold(
+            topBar = { TopAppBar( title = { Text("Historial de Asesorias del estudiante") } ) }
+        ) { paddingValues ->
+            Surface(Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)) {
+                HistorialEstudiante(
+                    asesorias = HistorialUIState.Asesorias.NoContent(),
+                    {}, {}, {},
+                )
             }
         }
     }

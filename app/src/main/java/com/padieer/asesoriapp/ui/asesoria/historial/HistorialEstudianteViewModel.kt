@@ -3,7 +3,6 @@ package com.padieer.asesoriapp.ui.asesoria.historial
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padieer.asesoriapp.App
-import com.padieer.asesoriapp.data.asesoria.AsesoriaRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.getters.AsesoriaConAsesorData
@@ -23,7 +22,6 @@ import kotlin.time.ExperimentalTime
 class HistorialEstudianteViewModel(
     private val getLoggedInUserDataUseCase: GetLoggedInUserDataUseCase,
     private val getAsesoriasConAsesoresDataUseCase: GetAsesoriasConAsesoresDataUseCase,
-    private val asesoriaRepository: AsesoriaRepository
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<HistorialUIState>(HistorialUIState.Loading)
@@ -46,12 +44,6 @@ class HistorialEstudianteViewModel(
         }
 
         val (estudiante) = (dataResult as Result.Success).data
-
-        val asesoriasResult = asesoriaRepository.fetchAsesoriasOfEstudiante(estudiante.id)
-        if ( asesoriasResult is Result.Error ) {
-            _uiState.update { HistorialUIState.Error(asesoriasResult.error.toString()) }
-            return
-        }
 
         asesoriasDelEstudiante = getAsesoriasConAsesoresDataUseCase(estudiante.id)
         if (asesoriasDelEstudiante.isEmpty()) {
@@ -146,7 +138,6 @@ class HistorialEstudianteViewModel(
     companion object {
         fun Factory() = viewModelFactory {
             HistorialEstudianteViewModel(
-                asesoriaRepository = App.appModule.asesoriaRepository,
                 getAsesoriasConAsesoresDataUseCase = GetAsesoriasConAsesoresDataUseCase(
                     estudianteRepository = App.appModule.estudianteRepository,
                     asesoriaRepository = App.appModule.asesoriaRepository,
