@@ -1,17 +1,19 @@
 package com.padieer.asesoriapp.ui.asesoria.asignarAsesor
 
+import com.padieer.asesoriapp.domain.model.Asesoria
+import com.padieer.asesoriapp.domain.model.Asesor
+
 sealed class AsignaAsesorUIState {
+    object Loading : AsignaAsesorUIState()
+    data class Error(val error: String) : AsignaAsesorUIState()
+    data class Success(
+        val asesoria: Asesoria,
+        val asesoresDisponibles: List<Asesor>
+    ) : AsignaAsesorUIState()
+}
 
-    data object Loading: AsignaAsesorUIState()
-    data class Error(val error: String): AsignaAsesorUIState()
-
-    /**
-     * Modifica este estado a lo que consideres justo y necesario
-     *
-     * Recuerda utilizar los modelos que se encuentran en `domain/model`
-     * (aquellos que no tienen el sufijo `Model`)
-     */
-    data class AsignaAsesor(
-        val algo: String
-    ): AsignaAsesorUIState()
+// Eventos que pueden cambiar la pantalla
+sealed class AsignaAsesorEvent {
+    data class AsesorSeleccionado(val asesor: Asesor) : AsignaAsesorEvent()
+    data class EditarAsesoria(val asesoria: Asesoria) : AsignaAsesorEvent()
 }
