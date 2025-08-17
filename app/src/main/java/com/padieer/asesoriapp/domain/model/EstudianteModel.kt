@@ -1,7 +1,11 @@
 package com.padieer.asesoriapp.domain.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
+@OptIn(ExperimentalSerializationApi::class)
+@JsonIgnoreUnknownKeys
 @Serializable
 data class EstudianteModel (
     val id: Int,
@@ -13,7 +17,10 @@ data class EstudianteModel (
     val semestre: Int,
     val carrera: CarreraModel,
     val especialidad: EspecialidadModel? = null,
-    val asesor: AsesorModel? = null
+    val asesor: AsesorModel? = null,
+
+    val carreraID: Int? = null,
+    val especialidadID: Int? = null,
 )
 
 data class Estudiante(

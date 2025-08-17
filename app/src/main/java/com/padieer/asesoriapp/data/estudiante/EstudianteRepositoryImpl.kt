@@ -56,4 +56,13 @@ class EstudianteRepositoryImpl(
 
         return remoteEstudianteRes
     }
+
+    override suspend fun getEstudianteByID(estudianteID: Int): Result<EstudianteModel, DataError> {
+        val tokenResult = preferencesSource.fetchToken()
+        if (tokenResult is Result.Error)
+            return Result.Error(DataError.Network.UNAUTHENTICATED)
+        val token = (tokenResult as Result.Success).data
+
+        return remoteEstudianteSource.fetch(token, estudianteID)
+    }
 }
