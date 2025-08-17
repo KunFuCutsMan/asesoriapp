@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.padieer.asesoriapp.ui.asesoria.historial.HistorialEstudianteScreen
+import com.padieer.asesoriapp.ui.asesoria.asignarAsesor.AsignaAsesorScreen
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaScreen
 import com.padieer.asesoriapp.ui.disponibilidad.DisponibilidadAsesorScreen
 import com.padieer.asesoriapp.ui.nav.AppScreen
@@ -28,7 +29,7 @@ fun AppGraph(navController: NavHostController) {
             HistorialEstudianteScreen(navController)
         }
         composable<AppScreen.Asesoria.AsignarAsesorScreen> {
-            Text("Pantalla para que un admin asigne un asesor a las asesorias pendientes")
+            AsignaAsesorScreen(navController)
         }
 
         composable<AppScreen.Asesor.AsesoriaAsesorScreen> {
