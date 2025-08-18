@@ -17,6 +17,7 @@ import com.padieer.asesoriapp.data.token.FakeLoginRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.domain.model.SearchableAsignatura
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
+import com.padieer.asesoriapp.domain.phone.ContactWhatsappUseCase
 import com.padieer.asesoriapp.domain.search.Searcher
 
 class FakeAppModule() : AppModule {
@@ -27,6 +28,7 @@ class FakeAppModule() : AppModule {
     override val horarioRepository: HorarioRepository = FakeHorarioRepository()
     override val asignaturaRepository: AsignaturaRepository = FakeAsignaturaRepository()
     override val callPhoneUseCase: CallPhoneUseCase = CallPhoneUseCase(null)
+    override val contactWhatsappUseCase: ContactWhatsappUseCase = ContactWhatsappUseCase(null)
     override val asesoriaRepository: AsesoriaRepository = FakeAsesoriaRepository()
     override val asignaturaSearcher: Searcher<SearchableAsignatura> = FakeAsignaturaSearcher(this.asignaturaRepository)
 }

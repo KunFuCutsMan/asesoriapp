@@ -45,7 +45,7 @@ fun PerfilAjenoScreen(estudianteID: Int) {
             PerfilAjeno(
                 state = uiState as PerfilUiState.EstudiantePerfil,
                 onTelefonoClick = { viewModel.onEvent(PerfilUIEvent.TelefonoClick) },
-                onWhatsappClick = {},
+                onWhatsappClick = { viewModel.onEvent(PerfilUIEvent.WhatsappClick) },
             )
         }
         PerfilUiState.Loading -> {

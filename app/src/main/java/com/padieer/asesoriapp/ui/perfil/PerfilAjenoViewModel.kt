@@ -8,6 +8,7 @@ import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.toUIModel
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
+import com.padieer.asesoriapp.domain.phone.ContactWhatsappUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 class PerfilAjenoViewModel(
     private val estudianteID: Int,
     private val estudianteRepository: EstudianteRepository,
-    private val callPhoneUseCase: CallPhoneUseCase
+    private val callPhoneUseCase: CallPhoneUseCase,
+    private val contactWhatsappUseCase: ContactWhatsappUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<PerfilUiState>(PerfilUiState.Loading)
@@ -50,10 +52,17 @@ class PerfilAjenoViewModel(
         telefono?.let { callPhoneUseCase(it) }
     }
 
+    fun contactaPorWhats() {
+        telefono?.let { contactWhatsappUseCase(it) }
+    }
+
     fun onEvent(event: PerfilUIEvent) {
         when (event) {
             PerfilUIEvent.TelefonoClick -> viewModelScope.launch {
                 llamaPerfil()
+            }
+            PerfilUIEvent.WhatsappClick -> viewModelScope.launch {
+                contactaPorWhats()
             }
         }
     }
@@ -64,6 +73,7 @@ class PerfilAjenoViewModel(
                 estudianteRepository = App.appModule.estudianteRepository,
                 estudianteID = estudianteID,
                 callPhoneUseCase = App.appModule.callPhoneUseCase,
+                contactWhatsappUseCase = App.appModule.contactWhatsappUseCase
             )
         }
     }

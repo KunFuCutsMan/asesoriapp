@@ -9,10 +9,12 @@ import com.padieer.asesoriapp.data.password.PasswordRepository
 import com.padieer.asesoriapp.data.token.LoginRepository
 import com.padieer.asesoriapp.domain.model.SearchableAsignatura
 import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
+import com.padieer.asesoriapp.domain.phone.ContactWhatsappUseCase
 import com.padieer.asesoriapp.domain.search.Searcher
 
 interface AppModule {
     val callPhoneUseCase: CallPhoneUseCase
+    val contactWhatsappUseCase: ContactWhatsappUseCase
     val carreraRepository: CarreraRepository
     val asignaturaRepository: AsignaturaRepository
     val estudianteRepository: EstudianteRepository
