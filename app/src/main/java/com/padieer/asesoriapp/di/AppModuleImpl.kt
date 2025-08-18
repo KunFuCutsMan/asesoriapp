@@ -13,6 +13,7 @@ import com.padieer.asesoriapp.data.carrera.CarreraRepositoryImpl
 import com.padieer.asesoriapp.data.carrera.sources.CacheCarreraSource
 import com.padieer.asesoriapp.data.carrera.sources.RemoteCarreraSource
 import com.padieer.asesoriapp.data.estudiante.EstudianteRepositoryImpl
+import com.padieer.asesoriapp.data.estudiante.sources.LocalEstudianteSource
 import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.data.horario.HorarioRepositoryImpl
 import com.padieer.asesoriapp.data.horario.sources.LocalHorarioSource
@@ -81,6 +82,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
         LocalAsignaturaSource()
     }
 
+    private val localEstudianteSource by lazy {
+        LocalEstudianteSource()
+    }
+
     private val remoteEstudianteSource by lazy {
         RemoteEstudianteSource(client = client)
     }
@@ -125,7 +130,8 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     override val estudianteRepository by lazy {
         EstudianteRepositoryImpl(
             remoteEstudianteSource = remoteEstudianteSource,
-            preferencesSource = localPreferencesSource
+            preferencesSource = localPreferencesSource,
+            localEstudianteSource = localEstudianteSource,
         )
     }
 

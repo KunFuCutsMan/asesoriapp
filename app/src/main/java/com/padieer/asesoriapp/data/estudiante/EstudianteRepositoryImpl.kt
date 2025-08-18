@@ -1,14 +1,15 @@
 package com.padieer.asesoriapp.data.estudiante
 
-import com.padieer.asesoriapp.data.carrera.CarreraRepository
-import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
+import com.padieer.asesoriapp.data.estudiante.sources.LocalEstudianteSource
+import com.padieer.asesoriapp.data.estudiante.sources.RemoteEstudianteSource
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.EstudianteModel
 
 class EstudianteRepositoryImpl(
     private val remoteEstudianteSource: RemoteEstudianteSource,
+    private val localEstudianteSource: LocalEstudianteSource,
     private val preferencesSource: LocalPreferencesSource,
 ): EstudianteRepository {
     override suspend fun insertEstudiante(
@@ -58,11 +59,20 @@ class EstudianteRepositoryImpl(
     }
 
     override suspend fun getEstudianteByID(estudianteID: Int): Result<EstudianteModel, DataError> {
+
+        val localEstudiante = localEstudianteSource.fetchEstudiante(estudianteID)
+        if (localEstudiante is Result.Success)
+            return localEstudiante
+
         val tokenResult = preferencesSource.fetchToken()
         if (tokenResult is Result.Error)
             return Result.Error(DataError.Network.UNAUTHENTICATED)
         val token = (tokenResult as Result.Success).data
 
-        return remoteEstudianteSource.fetch(token, estudianteID)
+        val remoteEstudianteResult = remoteEstudianteSource.fetch(token, estudianteID)
+        if (remoteEstudianteResult is Result.Success)
+            localEstudianteSource.saveEstudiante(remoteEstudianteResult.data)
+
+        return remoteEstudianteResult
     }
 }
