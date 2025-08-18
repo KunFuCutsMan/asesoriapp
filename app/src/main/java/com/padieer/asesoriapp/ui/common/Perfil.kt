@@ -23,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.padieer.asesoriapp.R
 import com.padieer.asesoriapp.domain.model.Asesor
 import com.padieer.asesoriapp.domain.model.Carrera
 import com.padieer.asesoriapp.domain.model.Especialidad
@@ -38,8 +40,8 @@ fun Perfil(
     estudiante: Estudiante,
     carrera: Carrera,
     especialidad: Especialidad? = null,
-    isCallable: Boolean = false,
-    onTelefonoClick: () -> Unit = {},
+    onTelefonoClick: (() -> Unit)? = null,
+    onWhatsappClick: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background, CardDefaults.shape),
@@ -90,13 +92,34 @@ fun Perfil(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (estudiante.asesor != null)
                 RolTag(text = "Asesor", surfaceColor = MaterialTheme.colorScheme.secondaryContainer)
 
             if (estudiante.admin != null)
                 RolTag(text = "Admin", surfaceColor = MaterialTheme.colorScheme.secondaryContainer)
+
+            Spacer(Modifier.weight(1f))
+
+            onWhatsappClick?.let {
+                FilledTonalIconButton(it) {
+                    Icon(
+                        painter = painterResource(R.drawable.whatsapp),
+                        contentDescription = "Contactar por Whatsapp"
+                    )
+                }
+            }
+
+            onTelefonoClick?.let {
+                FilledTonalIconButton(it) {
+                    Icon(
+                        imageVector = Icons.Outlined.Call,
+                        contentDescription = "Llamar estudiante"
+                    )
+                }
+            }
         }
 
         /* Informacion de contacto */
@@ -116,13 +139,6 @@ fun Perfil(
             Text("Número de Telefono: $noTelefono")
 
             Spacer(Modifier.weight(1f))
-            if (isCallable)
-                FilledTonalIconButton(onClick = onTelefonoClick) {
-                    Icon(
-                        imageVector = Icons.Outlined.Call,
-                        contentDescription = "Llamar estudiante"
-                    )
-                }
         }
     }
 }
@@ -179,7 +195,7 @@ private fun PerfilPreview() {
             modifier = Modifier,
             estudiante, carrera, especialidad,
             onTelefonoClick = {},
-            isCallable = true,
+            onWhatsappClick = {},
         )
     }
 }

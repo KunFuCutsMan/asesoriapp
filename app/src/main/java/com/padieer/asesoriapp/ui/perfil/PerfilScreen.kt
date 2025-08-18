@@ -69,7 +69,6 @@ fun PerfilDeEstudiante(uiState: PerfilUiState.EstudiantePerfil) {
             estudiante = estudiante,
             carrera = carrera,
             especialidad = especialidad,
-            isCallable = false,
         )
 
         Spacer(Modifier.weight(1f, true))
