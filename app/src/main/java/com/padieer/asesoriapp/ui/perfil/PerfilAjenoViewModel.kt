@@ -7,6 +7,7 @@ import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.data.viewModelFactory
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.toUIModel
+import com.padieer.asesoriapp.domain.phone.CallPhoneUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,11 +15,14 @@ import kotlinx.coroutines.launch
 
 class PerfilAjenoViewModel(
     private val estudianteID: Int,
-    private val estudianteRepository: EstudianteRepository
+    private val estudianteRepository: EstudianteRepository,
+    private val callPhoneUseCase: CallPhoneUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<PerfilUiState>(PerfilUiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private var telefono: String? = null
 
     init {
         viewModelScope.launch { loadInitialData() }
@@ -32,6 +36,7 @@ class PerfilAjenoViewModel(
             }
             is Result.Success -> {
                 val estudiante = estudianteRes.data
+                telefono = estudiante.numeroTelefono
                 _uiState.update { PerfilUiState.EstudiantePerfil(
                     estudiante = estudiante.toUIModel(),
                     carrera = estudiante.carrera.toUIModel(),
@@ -41,11 +46,24 @@ class PerfilAjenoViewModel(
         }
     }
 
+    fun llamaPerfil() {
+        telefono?.let { callPhoneUseCase(it) }
+    }
+
+    fun onEvent(event: PerfilUIEvent) {
+        when (event) {
+            PerfilUIEvent.TelefonoClick -> viewModelScope.launch {
+                llamaPerfil()
+            }
+        }
+    }
+
     companion object {
         fun Factory(estudianteID: Int) = viewModelFactory {
             PerfilAjenoViewModel(
                 estudianteRepository = App.appModule.estudianteRepository,
                 estudianteID = estudianteID,
+                callPhoneUseCase = App.appModule.callPhoneUseCase,
             )
         }
     }

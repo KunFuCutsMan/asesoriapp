@@ -42,7 +42,10 @@ fun PerfilAjenoScreen(estudianteID: Int) {
             }
         }
         is PerfilUiState.EstudiantePerfil -> {
-            PerfilAjeno(uiState as PerfilUiState.EstudiantePerfil)
+            PerfilAjeno(
+                state = uiState as PerfilUiState.EstudiantePerfil,
+                onTelefonoClick = { viewModel.onEvent(PerfilUIEvent.TelefonoClick) }
+            )
         }
         PerfilUiState.Loading -> {
             FullScreenLoading()
@@ -51,8 +54,8 @@ fun PerfilAjenoScreen(estudianteID: Int) {
 }
 
 @Composable
-private fun PerfilAjeno(uiState: PerfilUiState.EstudiantePerfil) {
-    val (estudiante, carrera, especialidad) = uiState
+private fun PerfilAjeno(state: PerfilUiState.EstudiantePerfil, onTelefonoClick: () -> Unit) {
+    val (estudiante, carrera, especialidad) = state
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -65,6 +68,7 @@ private fun PerfilAjeno(uiState: PerfilUiState.EstudiantePerfil) {
             carrera = carrera,
             especialidad = especialidad,
             isCallable = true,
+            onTelefonoClick = onTelefonoClick
         )
     }
 }
