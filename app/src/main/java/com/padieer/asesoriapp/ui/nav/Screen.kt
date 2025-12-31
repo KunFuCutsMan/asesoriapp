@@ -68,6 +68,9 @@ sealed class AppScreen: Screen() {
          */
         @Serializable
         data object AsignarAsesorScreen: AppScreen()
+
+        @Serializable
+        data class TerminarAsesoriaScreen(val asesoriaId: Int): AppScreen()
     }
 
     data object Asesor {

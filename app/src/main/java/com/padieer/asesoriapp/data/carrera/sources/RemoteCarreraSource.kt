@@ -21,7 +21,6 @@ class RemoteCarreraSource(
             val response = client.get {
                 url { urlBuilder ->
                     urlBuilder.appendPathSegments( "api", "v1", "carreras")
-                    urlBuilder.port = 8000
                 }
             }
 

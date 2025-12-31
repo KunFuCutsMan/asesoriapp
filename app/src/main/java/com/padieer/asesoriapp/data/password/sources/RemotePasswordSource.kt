@@ -32,7 +32,6 @@ class RemotePasswordSource(
         val response = client.post {
             url {
                 appendPathSegments("api", "v1", "password")
-                port = 8000
             }
             contentType(ContentType.Application.Json)
             setBody(RequestCodeParams(
@@ -59,7 +58,6 @@ class RemotePasswordSource(
         val response = client.post {
             url {
                 appendPathSegments("api", "v1", "password", "verify")
-                port = 8000
             }
             contentType(ContentType.Application.Json)
             setBody(VerifyCodeParams(
@@ -99,7 +97,6 @@ class RemotePasswordSource(
         val response = client.patch {
             url {
                 appendPathSegments("api", "v1", "password")
-                port = 8000
             }
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.token}")

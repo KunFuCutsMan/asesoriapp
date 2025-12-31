@@ -41,7 +41,7 @@ class MainViewModel(
     companion object {
         fun Factory() = viewModelFactory {
             MainViewModel(
-                loginRepository = App.appModule.loginRepository
+                loginRepository = Dependencies.loginRepository
             )
         }
     }

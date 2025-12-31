@@ -105,4 +105,29 @@ class RemoteEstudianteSource(
             }
         }
     }
+
+    suspend fun fetchAsesores(token: String): Result<List<EstudianteModel>, DataError> {
+        try {
+            val response = client.get {
+                url {
+                    appendPathSegments("api", "v1", "asesores")
+                }
+                bearerAuth(token)
+            }
+
+            if (response.status.isSuccess()) {
+                val body: DataResponse<List<EstudianteModel>> = response.body()
+                return Result.Success(body.data)
+            }
+
+            return mapDataNetworkError(response.status.value)
+        }
+        catch (e: Exception) {
+            return when (e) {
+                is SocketTimeoutException -> Result.Error(DataError.Network.TIMEOUT)
+                is IOException -> Result.Error(DataError.Network.NO_CONNECTION)
+                else -> Result.Error(DataError.Network.UNKWOWN)
+            }
+        }
+    }
 }

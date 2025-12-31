@@ -1,3 +1,4 @@
+
 package com.padieer.asesoriapp.data.estudiante
 
 import com.padieer.asesoriapp.domain.error.DataError
@@ -20,4 +21,6 @@ interface EstudianteRepository {
     suspend fun getEstudianteByToken(token: String): Result<EstudianteModel, DataError>
 
     suspend fun getEstudianteByID(estudianteID: Int): Result<EstudianteModel, DataError>
+
+    suspend fun getAsesores(): Result<List<EstudianteModel>, DataError>
 }

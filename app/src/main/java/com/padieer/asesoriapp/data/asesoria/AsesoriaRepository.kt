@@ -3,6 +3,7 @@ package com.padieer.asesoriapp.data.asesoria
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.AsesoriaModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
@@ -15,4 +16,6 @@ interface AsesoriaRepository {
     suspend fun fetchAsesoriasOfEstudiante(estudianteID: Int): Result<List<AsesoriaModel>, DataError>
 
     suspend fun fetchAsesoriasOfAsesor(asesorID: Int): Result<List<AsesoriaModel>, DataError>
+
+    suspend fun getAsesores(): Result<List<EstudianteModel>, DataError>
 }

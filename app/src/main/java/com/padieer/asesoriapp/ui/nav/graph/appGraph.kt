@@ -13,6 +13,8 @@ import androidx.navigation.toRoute
 import com.padieer.asesoriapp.ui.asesoria.asignarAsesor.AsignaAsesorScreen
 import com.padieer.asesoriapp.ui.asesoria.historial.HistorialEstudianteScreen
 import com.padieer.asesoriapp.ui.asesoria.peticion.PedirAsesoriaScreen
+import com.padieer.asesoriapp.ui.asesoria.terminar.TerminarAsesoriaScreen
+import com.padieer.asesoriapp.ui.asesoria.terminar.TerminarAsesoriaViewModel
 import com.padieer.asesoriapp.ui.disponibilidad.DisponibilidadAsesorScreen
 import com.padieer.asesoriapp.ui.nav.AppScreen
 import com.padieer.asesoriapp.ui.perfil.PerfilAjenoScreen
@@ -47,6 +49,9 @@ fun AppGraph(navController: NavHostController) {
         composable<AppScreen.Asesoria.AsignarAsesorScreen> {
             AsignaAsesorScreen(navController)
         }
+        composable<AppScreen.Asesoria.TerminarAsesoriaScreen> {
+            TerminarAsesoriaScreen(viewModel = TerminarAsesoriaViewModel(), onBackPressed = { navController.popBackStack() })
+        }
 
         composable<AppScreen.Asesor.AsesoriaAsesorScreen> {
             Text("Pantalla que lista las asesorias del asesor pendiente")
@@ -58,7 +63,7 @@ fun AppGraph(navController: NavHostController) {
             Text("Pantalla que muestra el historial de asesorias del asesor")
         }
         composable<AppScreen.Asesor.EstadisticasAsesorScreen> {
-            Text("Pantalla que muestra las estadisticas del asesor")
+            com.padieer.asesoriapp.ui.asesor.EstadisticasAsesorScreen()
         }
 
         /* Pantallas no accesibles desde el AppDrawer */

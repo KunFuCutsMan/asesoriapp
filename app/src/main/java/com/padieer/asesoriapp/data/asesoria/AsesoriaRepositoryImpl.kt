@@ -1,15 +1,16 @@
 package com.padieer.asesoriapp.data.asesoria
 
 import com.padieer.asesoriapp.crypto.LocalPreferencesSource
-import com.padieer.asesoriapp.data.asesoria.sources.RemoteAsesoriaSource
+import com.padieer.asesoriapp.data.estudiante.EstudianteRepository
 import com.padieer.asesoriapp.domain.error.DataError
 import com.padieer.asesoriapp.domain.error.Result
 import com.padieer.asesoriapp.domain.model.AsesoriaModel
+import com.padieer.asesoriapp.domain.model.EstudianteModel
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 class AsesoriaRepositoryImpl(
-    private val remoteAsesoriaSource: RemoteAsesoriaSource,
+    private val estudianteRepository: EstudianteRepository,
     private val preferencesSource: LocalPreferencesSource,
 ): AsesoriaRepository {
     override suspend fun postAsesoria(
@@ -25,17 +26,7 @@ class AsesoriaRepositoryImpl(
 
         val token = (tokenResult as Result.Success).data
 
-        val asesoriaResult = remoteAsesoriaSource.post(
-            token = token,
-            carreraID = carreraID,
-            asignaturaID = asignaturaID,
-            fecha = fecha,
-            horaInicio = horaInicio,
-            horaFinal = horaFinal
-        )
-
-        if (asesoriaResult is Result.Error)
-            return Result.Error(asesoriaResult.error)
+        // TODO: Implementar la lógica para postear una asesoría
 
         return Result.Success(Unit)
     }
@@ -47,13 +38,9 @@ class AsesoriaRepositoryImpl(
 
         val token = (tokenResult as Result.Success).data
 
-        val asesorias = remoteAsesoriaSource.fetch(token, estudianteID = estudianteID)
+        // TODO: Implementar la lógica para obtener las asesorías de un estudiante
 
-        if (asesorias is Result.Success) {
-            return Result.Success(asesorias.data)
-        }
-
-        return asesorias
+        return Result.Success(emptyList())
     }
 
     override suspend fun fetchAsesoriasOfAsesor(asesorID: Int): Result<List<AsesoriaModel>, DataError> {
@@ -63,12 +50,12 @@ class AsesoriaRepositoryImpl(
 
         val token = (tokenResult as Result.Success).data
 
-        val asesorias = remoteAsesoriaSource.fetch(token, asesorID = asesorID)
+        // TODO: Implementar la lógica para obtener las asesorías de un asesor
 
-        if (asesorias is Result.Success) {
-            return Result.Success(asesorias.data)
-        }
+        return Result.Success(emptyList())
+    }
 
-        return asesorias
+    override suspend fun getAsesores(): Result<List<EstudianteModel>, DataError> {
+        return estudianteRepository.getAsesores()
     }
 }
